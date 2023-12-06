@@ -1,4 +1,4 @@
-rootProject.name = "MyApplication"
+rootProject.name = "ChatClient"
 
 include(":androidApp")
 include(":shared")
