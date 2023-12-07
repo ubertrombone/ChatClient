@@ -1,0 +1,9 @@
+settings:
+    android:
+        minSdk: 26
+        targetSdk: 33
+        compileSdk: 34
+    jvm:
+        target: 17
+    compose:
+        enabled: true

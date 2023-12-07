@@ -1,0 +1,52 @@
+product:
+  type: lib
+  platforms: [jvm, android, iosArm64, iosSimulatorArm64, iosX64]
+
+module:
+  layout: gradle-kmp
+
+aliases:
+  - ios: [iosArm64, iosSimulatorArm64, iosX64]
+
+apply:
+  - ../common.module-template.yaml
+
+dependencies:
+  - $compose.runtime: exported
+  - $compose.foundation: exported
+  - $compose.material3: exported
+  - $compose.components.resources: exported
+  - com.arkivanov.decompose:decompose:2.2.0: exported
+  - com.arkivanov.decompose:extensions-compose-jetbrains:2.2.0: exported
+  - io.ktor:ktor-client-core:2.3.3
+  - io.ktor:ktor-client-content-negotiation:2.3.3
+  - io.ktor:ktor-serialization-kotlinx-json:2.3.3
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
+  - org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5
+  - io.github.aakira:napier:2.6.1: exported
+  - com.russhwolf:multiplatform-settings:1.1.0: exported
+  - app.cash.sqldelight:coroutines-extensions:2.0.0
+
+dependencies@android:
+  - androidx.core:core-ktx:1.12.0: exported
+  - androidx.activity:activity-compose:1.8.0: exported
+  - androidx.preference:preference-ktx:1.2.1: exported
+  - io.ktor:ktor-client-okhttp:2.3.3
+  - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3
+  - app.cash.sqldelight:android-driver:2.0.0
+
+dependencies@ios:
+  - com.arkivanov.decompose:decompose:2.2.0-compose-experimental-alpha01: exported
+  - io.ktor:ktor-client-darwin:2.3.3
+  - app.cash.sqldelight:native-driver:2.0.0
+
+dependencies@jvm:
+  - $compose.desktop.common: exported
+  - io.ktor:ktor-client-okhttp:2.3.3
+  - org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3
+  - app.cash.sqldelight:sqlite-driver:2.0.0
+  - com.github.Dansoftowner:jSystemThemeDetector:3.8
+
+settings:
+  android:
+    namespace: "com.joshrose.common"

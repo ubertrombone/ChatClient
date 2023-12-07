@@ -1,0 +1,12 @@
+product: android/app
+
+dependencies:
+  - ../shared
+
+apply:
+  - ../common.module-template.yaml
+
+settings:
+  android:
+    namespace: "com.joshrose"
+    applicationId: "com.joshrose.ChatClient"
