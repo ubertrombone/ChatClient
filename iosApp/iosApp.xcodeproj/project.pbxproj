@@ -56,6 +56,8 @@
 				7555FF7D242A565900829871 /* iosApp */,
 				7555FF7C242A565900829871 /* Products */,
 				42799AB246E5F90AF97AA0EF /* Frameworks */,
+				BD3CA082584211CD76ACBF68 /* Pods */,
+				BD3CAB99FECE23D010792478 /* iosApp.xcworkspace */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,6 +87,92 @@
 				AB3632DC29227652001CCB65 /* Config.xcconfig */,
 			);
 			path = Configuration;
+			sourceTree = "<group>";
+		};
+		BD3CA0365249945F33F94FB7 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		BD3CA082584211CD76ACBF68 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BD3CA0365249945F33F94FB7 /* Headers */,
+				BD3CAF4F3732935D5E68757B /* Local Podspecs */,
+				BD3CA7475048DEF07CAAFE41 /* Target Support Files */,
+				BD3CA21151D830653DA8F89A /* Pods.xcodeproj */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		BD3CA21151D830653DA8F89A /* Pods.xcodeproj */ = {
+			isa = PBXGroup;
+			children = (
+				BD3CAAE16930A5F6FD9858F1 /* xcuserdata */,
+			);
+			path = Pods.xcodeproj;
+			sourceTree = "<group>";
+		};
+		BD3CA321E5E5F2BC7FE18F04 /* Pods-iosApp */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Pods-iosApp";
+			sourceTree = "<group>";
+		};
+		BD3CA3963D2A3A93A7682064 /* joshrose.xcuserdatad */ = {
+			isa = PBXGroup;
+			children = (
+				BD3CA4D3B4F7E590A9CE9BD7 /* xcschemes */,
+			);
+			path = joshrose.xcuserdatad;
+			sourceTree = "<group>";
+		};
+		BD3CA4D3B4F7E590A9CE9BD7 /* xcschemes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = xcschemes;
+			sourceTree = "<group>";
+		};
+		BD3CA7475048DEF07CAAFE41 /* Target Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				BD3CA86688122A489B731C80 /* shared */,
+				BD3CA321E5E5F2BC7FE18F04 /* Pods-iosApp */,
+			);
+			path = "Target Support Files";
+			sourceTree = "<group>";
+		};
+		BD3CA86688122A489B731C80 /* shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = shared;
+			sourceTree = "<group>";
+		};
+		BD3CAAE16930A5F6FD9858F1 /* xcuserdata */ = {
+			isa = PBXGroup;
+			children = (
+				BD3CA3963D2A3A93A7682064 /* joshrose.xcuserdatad */,
+			);
+			path = xcuserdata;
+			sourceTree = "<group>";
+		};
+		BD3CAB99FECE23D010792478 /* iosApp.xcworkspace */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = iosApp.xcworkspace;
+			sourceTree = "<group>";
+		};
+		BD3CAF4F3732935D5E68757B /* Local Podspecs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Local Podspecs";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
