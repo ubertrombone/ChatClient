@@ -24,25 +24,35 @@ import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+import com.russhwolf.settings.PreferencesSettings
 import component.root.DefaultRootComponent
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import settings.SettingsRepository
 import java.awt.Dimension
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.prefs.Preferences
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
     val lifecycle = LifecycleRegistry()
     val stateKeeper = StateKeeperDispatcher(tryRestoreStateFromFile())
 
+    val settingsRepository by lazy {
+        val preferences = Preferences.userRoot()
+        val settings = PreferencesSettings(preferences)
+        SettingsRepository(settings)
+    }
+
     val root = runOnUiThread {
         DefaultRootComponent(
             componentContext = DefaultComponentContext(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper
-            )
+            ),
+            settingsRepository = settingsRepository
         )
     }
 

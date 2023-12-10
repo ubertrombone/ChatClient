@@ -5,7 +5,7 @@ import shared
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         NapierProxyKt.debugBuild()
-        return Main_iosKt.MainViewController()
+        return Main_iosKt.MainViewController(defaults: UserDefaults.standard)
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
