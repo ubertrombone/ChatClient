@@ -11,9 +11,10 @@ sqldelight {
     databases {
         create("ChatDatabase") {
             packageName.set("com.joshrose.chat")
-            schemaOutputDirectory.set(file("shared/build/sqldelight"))
+            schemaOutputDirectory.set(file("build/sqldelight"))
         }
     }
+    linkSqlite.set(true)
 }
 
 kotlin {
@@ -25,6 +26,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "shared"
             isStatic = true
+
+            compilation.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
         }
     }
 
