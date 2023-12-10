@@ -1,7 +1,6 @@
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import component.root.RootComponent
 import theme.ChatTheme
 
-actual fun getPlatformName(): String = "Android"
-
-@Composable fun MainView() = ChatTheme(darkTheme = isSystemInDarkTheme()) { App() }
+@Composable fun MainView(root: RootComponent) = ChatTheme(darkTheme = isSystemInDarkTheme()) { App(root) }

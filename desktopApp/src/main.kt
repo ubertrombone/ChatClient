@@ -18,11 +18,13 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+import component.root.DefaultRootComponent
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import java.awt.Dimension
@@ -34,6 +36,15 @@ import java.io.ObjectOutputStream
 fun main() {
     val lifecycle = LifecycleRegistry()
     val stateKeeper = StateKeeperDispatcher(tryRestoreStateFromFile())
+
+    val root = runOnUiThread {
+        DefaultRootComponent(
+            componentContext = DefaultComponentContext(
+                lifecycle = lifecycle,
+                stateKeeper = stateKeeper
+            )
+        )
+    }
 
     Napier.base(DebugAntilog())
 
@@ -59,7 +70,25 @@ fun main() {
             )
 
             WindowDraggableArea {
-                MainView()
+                MainView(
+                    root,
+                    isMaximized = windowState.placement == WindowPlacement.Maximized,
+                    minimizeWindow = { windowState.isMinimized = !windowState.isMinimized },
+                    adjustWindow = {
+                        windowState.placement =
+                            if (windowState.placement != WindowPlacement.Maximized) WindowPlacement.Maximized
+                            else WindowPlacement.Floating
+                    },
+                    closeRequest = { isCloseRequested = true }
+                ) {
+                    if (isCloseRequested) {
+                        SaveStateDialog(
+                            onSaveState = { saveStateToFile(stateKeeper.save()) },
+                            onExitApplication = ::exitApplication,
+                            onDismiss = { isCloseRequested = false },
+                        )
+                    }
+                }
             }
         }
     }

@@ -8,13 +8,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jthemedetecor.OsThemeDetector
+import component.root.RootComponent
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
 import theme.ChatTheme
 
-actual fun getPlatformName(): String = "Desktop"
-
-@Composable fun MainView() = ChatTheme(darkTheme = rememberDesktopDarkTheme()) { App() }
+@Composable
+fun MainView(
+    root: RootComponent,
+    isMaximized: Boolean,
+    minimizeWindow: () -> Unit,
+    adjustWindow: () -> Unit,
+    closeRequest: () -> Unit,
+    saveContent: @Composable () -> Unit
+) = ChatTheme(darkTheme = rememberDesktopDarkTheme()) {
+    App(root)
+    saveContent()
+}
 
 @Composable
 fun rememberDesktopDarkTheme(): Boolean {
