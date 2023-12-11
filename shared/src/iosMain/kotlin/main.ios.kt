@@ -22,7 +22,7 @@ fun MainViewController(defaults: NSUserDefaults): UIViewController {
 
     return ComposeUIViewController {
         ChatTheme(darkTheme = isSystemInDarkTheme()) {
-            App(root)
+            ChatApp(root)
 
             DisposableEffect(Unit) {
                 lifecycle.resume()

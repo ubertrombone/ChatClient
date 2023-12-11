@@ -3,4 +3,4 @@ import androidx.compose.runtime.Composable
 import component.root.RootComponent
 import theme.ChatTheme
 
-@Composable fun MainView(root: RootComponent) = ChatTheme(darkTheme = isSystemInDarkTheme()) { App(root) }
+@Composable fun MainView(root: RootComponent) = ChatTheme(darkTheme = isSystemInDarkTheme()) { ChatApp(root) }

@@ -1,12 +1,4 @@
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.jthemedetecor.OsThemeDetector
 import component.root.RootComponent
 import org.jetbrains.skiko.SystemTheme
@@ -22,7 +14,7 @@ fun MainView(
     closeRequest: () -> Unit,
     saveContent: @Composable () -> Unit
 ) = ChatTheme(darkTheme = rememberDesktopDarkTheme()) {
-    App(root)
+    ChatApp(root)
     saveContent()
 }
 

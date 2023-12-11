@@ -10,7 +10,7 @@ import component.root.RootComponent
 import ui.root.RootContent
 
 @Composable
-fun App(root: RootComponent) {
+fun ChatApp(root: RootComponent) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         RootContent(
             component = root,
