@@ -7,10 +7,8 @@ import util.Username
 interface LoginComponent {
     val title: String
     val token: String
-    val username: Value<Username>
-    val password: Value<String>
     
     val server: String //TODO: This should be a custom server class
     
-    fun pushTo(phase: MainPhases)
+    val pushTo: (MainPhases) -> Unit
 }

@@ -6,10 +6,8 @@ import util.Username
 
 interface RegisterComponent {
     val title: String
-    val username: Value<Username>
-    val password: Value<String>
     
     val server: String //TODO: This should be a custom server class
     
-    fun pushTo(phase: MainPhases)
+    val pushTo: (MainPhases) -> Unit
 }

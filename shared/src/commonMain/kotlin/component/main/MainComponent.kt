@@ -10,12 +10,12 @@ interface MainComponent {
     val title: String
     val server: String //TODO: This should be a custom server class
     
-    val childStack: Value<ChildStack<*, Child>>
-    
-    fun onChatsTabClicked()
-    fun onGroupChatsTabClicked()
-    fun onSettingsTabClicked()
-    fun onLogoutClicked()
+//    val childStack: Value<ChildStack<*, Child>>
+//    
+//    fun onChatsTabClicked()
+//    fun onGroupChatsTabClicked()
+//    fun onSettingsTabClicked()
+//    fun onLogoutClicked()
     
     sealed class Child {
         class ChatsChild() : Child()

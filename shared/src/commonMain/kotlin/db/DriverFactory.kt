@@ -3,7 +3,7 @@ package db
 import app.cash.sqldelight.db.SqlDriver
 import com.joshrose.chat.ChatDatabase
 
-expect class DriverFactory {
+expect class DriverFactory() {
     fun createDriver(): SqlDriver
 }
 
