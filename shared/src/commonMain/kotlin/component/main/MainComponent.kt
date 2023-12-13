@@ -2,12 +2,14 @@ package component.main
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import db.ChatRepository
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import util.Username
 
 interface MainComponent {
     val title: String
+    val chatRepository: ChatRepository
     val server: String //TODO: This should be a custom server class
     
 //    val childStack: Value<ChildStack<*, Child>>

@@ -74,6 +74,7 @@ class DefaultRootComponent(
     private fun main(componentContext: ComponentContext): MainComponent =
         DefaultMainComponent(
             componentContext = componentContext,
+            chatRepository = chatRepository,
             server = "SERVER"
         )
 
