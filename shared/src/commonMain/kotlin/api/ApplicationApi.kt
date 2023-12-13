@@ -6,4 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 interface ApplicationApi {
     val scope: CoroutineScope
     val client: HttpClient
+
+    
 }
