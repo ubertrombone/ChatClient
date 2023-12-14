@@ -4,6 +4,9 @@ import com.russhwolf.settings.Settings
 
 class SettingsRepository(private val settings: Settings) {
     val token = SettingConfig(settings, "TOKEN", "")
+    val username = SettingConfig(settings, "USERNAME", "")
+    val password = SettingConfig(settings, "PASSWORD", "")
+    val rememberMe = SettingConfig(settings, "REMEMBER_ME", false)
 
     fun clear() = settings.clear()
 }
