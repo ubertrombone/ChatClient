@@ -3,6 +3,8 @@ package api
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
@@ -12,13 +14,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
-class ApplicationApiImpl : InstanceKeeper.Instance, ApplicationApi {
+class ApplicationApiImpl(override val token: String) : InstanceKeeper.Instance, ApplicationApi {
     override val scope = CoroutineScope(Dispatchers.Main)
     override val client = HttpClient(CIO) {
         install(ContentNegotiation) {
-            json(kotlinx.serialization.json.Json {
-                prettyPrint = true
-            })
+            json(Json { prettyPrint = true })
+        }
+
+        install(Auth) {
+            bearer {
+                loadTokens { BearerTokens(token, "") }
+            }
         }
     }
 
