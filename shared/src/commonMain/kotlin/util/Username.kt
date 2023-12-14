@@ -16,3 +16,5 @@ value class Username(val name: String) {
         require(name.none { !it.isLetterOrDigit() }) { INVALID_CHARS_USERNAME }
     }
 }
+
+fun String.toUsername() = Username(this)
