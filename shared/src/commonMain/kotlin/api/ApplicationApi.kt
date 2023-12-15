@@ -4,6 +4,7 @@ import api.model.*
 import io.ktor.client.*
 import kotlinx.coroutines.CoroutineScope
 import settings.SettingsRepository
+import util.Status
 import util.Username
 
 interface ApplicationApi {
@@ -11,9 +12,9 @@ interface ApplicationApi {
     val scope: CoroutineScope
     val client: HttpClient
 
-    suspend fun register(account: AccountRequest)
+    suspend fun register(account: AccountRequest, status: (Status) -> Unit = {}): Status
     suspend fun login(account: LoginRequest)
-    suspend fun logout()
+    suspend fun logout(status: (Status) -> Unit = {}): Status
 
     suspend fun getFriends()
     suspend fun add(friend: Username)
@@ -22,7 +23,7 @@ interface ApplicationApi {
     suspend fun getSentFriendRequests()
     suspend fun getReceivedFriendRequests()
     suspend fun sendFriendRequest(to: Username)
-    suspend fun cancelFriendRequest(to: Username) // TODO: This should be reworked on server side
+    suspend fun cancelFriendRequest(to: Username)
 
     suspend fun getBlockList()
     suspend fun block(user: Username)
