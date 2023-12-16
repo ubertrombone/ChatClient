@@ -1,5 +1,6 @@
 package api
 
+import androidx.compose.runtime.MutableState
 import api.model.*
 import io.ktor.client.*
 import kotlinx.coroutines.CoroutineScope
@@ -12,14 +13,14 @@ interface ApplicationApi {
     val scope: CoroutineScope
     val client: HttpClient
 
-    suspend fun register(account: AccountRequest, status: (Status) -> Unit = {}): Status
-    suspend fun login(status: (Status) -> Unit = {}): Status
-    suspend fun authenticate(credentials: AuthenticationRequest, status: (Status) -> Unit = {}): Status
-    suspend fun logout(status: (Status) -> Unit = {}): Status
+    suspend fun register(account: AccountRequest): Status
+    suspend fun login(): Status
+    suspend fun authenticate(credentials: AuthenticationRequest): Status
+    suspend fun logout(): Status
 
-    suspend fun getFriends(status: (Status) -> Unit = {}): Set<FriendInfo>?
-    suspend fun add(friend: Username)
-    suspend fun remove(friend: Username)
+    suspend fun getFriends(): Set<FriendInfo>?
+    suspend fun add(friend: Username): Status
+    suspend fun remove(friend: Username): Status
 
     suspend fun getSentFriendRequests()
     suspend fun getReceivedFriendRequests()

@@ -1,5 +1,6 @@
 package api
 
+import androidx.compose.runtime.MutableState
 import api.model.*
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import io.github.aakira.napier.Napier
@@ -17,6 +18,7 @@ import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
+import io.ktor.http.HttpStatusCode.Companion.UnprocessableEntity
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
@@ -29,6 +31,7 @@ import util.Status
 import util.Status.*
 import util.Username
 import util.toUsername
+import kotlin.coroutines.coroutineContext
 
 class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
     override val scope = CoroutineScope(Dispatchers.Main)
@@ -39,7 +42,7 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
 
         install(Auth) {
             bearer {
-                loadTokens { BearerTokens(settings.token.get(), "") }
+                loadTokens { BearerTokens(settings.token.get(), "") } // TODO: Encrypt token
             }
         }
 
@@ -48,113 +51,87 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }
     }
 
-    override suspend fun register(account: AccountRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        status(Loading)
-
-        return@withContext try {
-            client.post("/register") {
-                contentType(ContentType.Application.Json)
-                setBody(account)
-            }.let { response ->
-                if (response.status == Conflict) Error(response.bodyAsText()).also(status)
-                else {
-                    val body = response.body<SimpleResponse>()
-                    if (body.successful) {
-                        settings.apply {
-                            token.set(body.message)
-                            username.set(account.username.name)
-                            password.set(account.password) // TODO: Encrypt password in local storage
-                        }
-                        Success.also(status)
-                    } else Error(body.message).also(status)
-                }
-            }
-        } catch (e: Exception) {
-            Error(e.message ?: "Exception called in ApplicationApiImpl.register").also {
-                status(it)
-                Napier.e(message = it.message, throwable = e)
+    override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
+        client.post("/register") {
+            contentType(ContentType.Application.Json)
+            setBody(account)
+        }.let { response ->
+            if (response.status == Conflict) Error(response.bodyAsText())
+            else {
+                val body = response.body<SimpleResponse>()
+                if (body.successful) {
+                    settings.apply {
+                        token.set(body.message)
+                        username.set(account.username.name)
+                        password.set(account.password) // TODO: Encrypt password in local storage
+                    }
+                    Success
+                } else Error(body.message)
             }
         }
     }
 
-    override suspend fun login(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        status(Loading)
-
-        return@withContext try {
-            when (client.get("/login").status) {
-                OK -> Success.also(status)
-                Unauthorized -> authenticate(
-                    credentials = AuthenticationRequest(
-                        username = settings.username.get().toUsername(),
-                        password = settings.password.get()
-                    ),
-                    status = status
+    override suspend fun login() = withContext(scope.coroutineContext) {
+        when (client.get("/login").status) {
+            OK -> Success
+            Unauthorized -> authenticate(
+                credentials = AuthenticationRequest(
+                    username = settings.username.get().toUsername(),
+                    password = settings.password.get()
                 )
+            )
+            else -> Error("Unknown error - the server may be down. Try logging in again later.")
+        }
+    }
+
+    override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
+        client.post("/authenticate") {
+            contentType(ContentType.Application.Json)
+            setBody(credentials)
+        }.let { response ->
+            when (response.status) {
+                OK -> {
+                    settings.token.set(response.bodyAsText())
+                    Success
+                }
+                BadRequest -> Error(response.bodyAsText())
                 else -> Error("Unknown error - the server may be down. Try logging in again later.")
             }
-        } catch (e: Exception) {
-            Error(e.message ?: "Exception called in ApplicationApiImpl.login").also {
-                status(it)
-                Napier.e(message = it.message, throwable = e)
+        }
+    }
+
+    override suspend fun logout() = withContext(scope.coroutineContext) {
+        if (client.get("/logout").status == OK) Success else Error("There was a problem logging out!")
+    }
+
+    override suspend fun getFriends() = withContext(scope.coroutineContext) {
+        with (client.get("/friends")) { if (status == OK) body<Set<FriendInfo>>() else null }
+    }
+
+    override suspend fun add(friend: Username) = withContext(coroutineContext) {
+        client.post("/friends/add") {
+            contentType(ContentType.Application.Json)
+            setBody(friend)
+        }.let { response ->
+            when (response.status) {
+                OK -> Success
+                UnprocessableEntity -> Error(response.bodyAsText())
+                else -> Error("Unknown error.\n- Friend username may not exist or account has been deleted.\n- Server may be down.")
             }
         }
     }
 
-    override suspend fun authenticate(credentials: AuthenticationRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        status(Loading)
-
-        return@withContext try {
-            client.post("/authenticate") {
-                contentType(ContentType.Application.Json)
-                setBody(credentials)
-            }.let { response ->
-                when (response.status) {
-                    OK -> {
-                        settings.token.set(response.bodyAsText())
-                        Success.also(status)
-                    }
-                    BadRequest -> Error(response.bodyAsText()).also(status)
-                    else -> Error("Unknown error - the server may be down. Try logging in again later.")
-                }
-            }
-        } catch (e: Exception) {
-            Error(e.message ?: "Exception called in ApplicationApiImpl.login").also {
-                status(it)
-                Napier.e(message = it.message, throwable = e)
+    override suspend fun remove(friend: Username) = withContext(coroutineContext) {
+        client.post("/friends/remove") {
+            contentType(ContentType.Application.Json)
+            setBody(friend)
+        }.let { response ->
+            when (response.status) {
+                OK -> Success
+                UnprocessableEntity -> Error(response.bodyAsText())
+                else -> Error("Unknown error.\n- Friend may not exist or account has been deleted.\n- Server may be down.")
             }
         }
-    }
-
-    override suspend fun logout(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        status(Loading)
-        return@withContext try {
-            if (client.get("/logout").status == OK) Success.also(status) else Error("There was a problem logging out!").also(status)
-        } catch (e: Exception) {
-            Error(e.message ?: "Exception called in ApplicationApiImpl.logout").also {
-                status(it)
-                Napier.e(message = it.message, throwable = e)
-            }
-        }
-    }
-
-    override suspend fun getFriends(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        status(Loading)
-        return@withContext try {
-            val response = client.get("/friends")
-            if (response.status == OK) response.body<Set<FriendInfo>>().also { status(Success) }
-            else null.also { status(Error("There was a problem fetching your friend list.")) }
-        } catch (e: Exception) {
-            with (e.message ?: "Exception called in ApplicationApiImpl.getFriends") {
-                status(Error(this)).also { Napier.e(message = this, throwable = e) }
-                null
-            }
-        }
-    }
-    override suspend fun add(friend: Username) {
-        TODO("Not yet implemented")
-    }
-    override suspend fun remove(friend: Username) {
-        TODO("Not yet implemented")
     }
 
     override suspend fun getSentFriendRequests() {
@@ -202,6 +179,7 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
     }
     override suspend fun deleteAccount(decision: Boolean) {
         TODO("Not yet implemented")
+        // TODO: Account deletion should delete everything but the username which should be archived.
     }
 
     override fun onDestroy() {
