@@ -13,7 +13,7 @@ interface ApplicationApi {
     val client: HttpClient
 
     suspend fun register(account: AccountRequest, status: (Status) -> Unit = {}): Status
-    suspend fun login(account: LoginRequest)
+    suspend fun login(credentials: AuthenticationRequest, status: (Status) -> Unit = {}): Status
     suspend fun logout(status: (Status) -> Unit = {}): Status
 
     suspend fun getFriends()

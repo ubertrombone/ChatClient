@@ -13,7 +13,10 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
@@ -50,18 +53,23 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         status(Loading)
 
         return@withContext try {
-            val post = client.post("/register") {
+            client.post("/register") {
                 contentType(ContentType.Application.Json)
                 setBody(account)
-            }.body<SimpleResponse>()
-            if (post.successful) {
-                settings.apply {
-                    token.set(post.message)
-                    username.set(account.username.name)
-                    password.set(account.password) // TODO: Encrypt password in local storage
+            }.let { response ->
+                if (response.status == Conflict) Error(response.bodyAsText()).also(status)
+                else {
+                    val body = response.body<SimpleResponse>()
+                    if (body.successful) {
+                        settings.apply {
+                            token.set(body.message)
+                            username.set(account.username.name)
+                            password.set(account.password) // TODO: Encrypt password in local storage
+                        }
+                        Success.also(status)
+                    } else Error(body.message).also(status)
                 }
-                Success.also(status)
-            } else Error(post.message).also(status)
+            }
         } catch (e: Exception) {
             Error(e.message ?: "Exception called in ApplicationApiImpl.register").also {
                 status(it)
@@ -69,22 +77,45 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
             }
         }
     }
-    override suspend fun login(account: LoginRequest) {
-        // TODO: send just token to login route,
-        //  If token is valid, response from server should return simple OK status
-        //  If not valid, response should return Unauthorized
-        //      this function will then call a new "reAuth" route with the user's user/pass from settings
-        //      the server will return a new token
-        //  Login route should also have the possibility to simply login with creds and not a token
-        TODO("Not yet implemented")
+
+    override suspend fun login(credentials: AuthenticationRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
+        status(Loading)
+
+        return@withContext try {
+            when (client.get("/login").status) {
+                OK -> Success.also(status)
+                Unauthorized -> {
+                    client.post("/authenticate") {
+                        contentType(ContentType.Application.Json)
+                        setBody(credentials)
+                    }.let { response ->
+                        when (response.status) {
+                            OK -> {
+                                settings.token.set(response.bodyAsText())
+                                Success.also(status)
+                            }
+                            BadRequest -> Error(response.bodyAsText()).also(status)
+                            else -> Error("Unknown error - the server may be down. Try logging in again later.")
+                        }
+                    }
+                }
+                else -> Error("Unknown error - the server may be down. Try logging in again later.")
+            }
+        } catch (e: Exception) {
+            Error(e.message ?: "Exception called in ApplicationApiImpl.login").also {
+                status(it)
+                Napier.e(message = it.message, throwable = e)
+            }
+        }
     }
+
     override suspend fun logout(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
         status(Loading)
         return@withContext try {
-            val post = client.post("login/logout")
+            val post = client.get("/logout")
             if (post.status == OK) Success.also(status) else Error("There was a problem logging out!").also(status)
         } catch (e: Exception) {
-            Error(e.message ?: "Exception called in ApplicationApiImpl.register").also {
+            Error(e.message ?: "Exception called in ApplicationApiImpl.logout").also {
                 status(it)
                 Napier.e(message = it.message, throwable = e)
             }
