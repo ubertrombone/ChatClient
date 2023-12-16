@@ -28,6 +28,7 @@ import settings.SettingsRepository
 import util.Status
 import util.Status.*
 import util.Username
+import util.toUsername
 
 class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
     override val scope = CoroutineScope(Dispatchers.Main)
@@ -78,28 +79,45 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }
     }
 
-    override suspend fun login(credentials: AuthenticationRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
+    override suspend fun login(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
         status(Loading)
 
         return@withContext try {
             when (client.get("/login").status) {
                 OK -> Success.also(status)
-                Unauthorized -> {
-                    client.post("/authenticate") {
-                        contentType(ContentType.Application.Json)
-                        setBody(credentials)
-                    }.let { response ->
-                        when (response.status) {
-                            OK -> {
-                                settings.token.set(response.bodyAsText())
-                                Success.also(status)
-                            }
-                            BadRequest -> Error(response.bodyAsText()).also(status)
-                            else -> Error("Unknown error - the server may be down. Try logging in again later.")
-                        }
-                    }
-                }
+                Unauthorized -> authenticate(
+                    credentials = AuthenticationRequest(
+                        username = settings.username.get().toUsername(),
+                        password = settings.password.get()
+                    ),
+                    status = status
+                )
                 else -> Error("Unknown error - the server may be down. Try logging in again later.")
+            }
+        } catch (e: Exception) {
+            Error(e.message ?: "Exception called in ApplicationApiImpl.login").also {
+                status(it)
+                Napier.e(message = it.message, throwable = e)
+            }
+        }
+    }
+
+    override suspend fun authenticate(credentials: AuthenticationRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
+        status(Loading)
+
+        return@withContext try {
+            client.post("/authenticate") {
+                contentType(ContentType.Application.Json)
+                setBody(credentials)
+            }.let { response ->
+                when (response.status) {
+                    OK -> {
+                        settings.token.set(response.bodyAsText())
+                        Success.also(status)
+                    }
+                    BadRequest -> Error(response.bodyAsText()).also(status)
+                    else -> Error("Unknown error - the server may be down. Try logging in again later.")
+                }
             }
         } catch (e: Exception) {
             Error(e.message ?: "Exception called in ApplicationApiImpl.login").also {
