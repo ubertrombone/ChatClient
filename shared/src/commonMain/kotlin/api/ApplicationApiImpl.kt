@@ -49,8 +49,7 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
     }
 
     override suspend fun register(account: AccountRequest, status: (Status) -> Unit) = withContext(scope.coroutineContext) {
-        // TODO: Username format validation on client side - Username uniqueness on server side
-        // TODO: Password format validation on client side
+        // TODO: Password format validation on client side -- value class
         status(Loading)
 
         return@withContext try {
