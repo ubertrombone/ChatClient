@@ -130,8 +130,7 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
     override suspend fun logout(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
         status(Loading)
         return@withContext try {
-            val post = client.get("/logout")
-            if (post.status == OK) Success.also(status) else Error("There was a problem logging out!").also(status)
+            if (client.get("/logout").status == OK) Success.also(status) else Error("There was a problem logging out!").also(status)
         } catch (e: Exception) {
             Error(e.message ?: "Exception called in ApplicationApiImpl.logout").also {
                 status(it)
@@ -140,8 +139,18 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }
     }
 
-    override suspend fun getFriends() {
-        TODO("Not yet implemented")
+    override suspend fun getFriends(status: (Status) -> Unit) = withContext(scope.coroutineContext) {
+        status(Loading)
+        return@withContext try {
+            val response = client.get("/friends")
+            if (response.status == OK) response.body<Set<FriendInfo>>().also { status(Success) }
+            else null.also { status(Error("There was a problem fetching your friend list.")) }
+        } catch (e: Exception) {
+            with (e.message ?: "Exception called in ApplicationApiImpl.getFriends") {
+                status(Error(this)).also { Napier.e(message = this, throwable = e) }
+                null
+            }
+        }
     }
     override suspend fun add(friend: Username) {
         TODO("Not yet implemented")

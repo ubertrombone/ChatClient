@@ -17,7 +17,7 @@ interface ApplicationApi {
     suspend fun authenticate(credentials: AuthenticationRequest, status: (Status) -> Unit = {}): Status
     suspend fun logout(status: (Status) -> Unit = {}): Status
 
-    suspend fun getFriends()
+    suspend fun getFriends(status: (Status) -> Unit = {}): Set<FriendInfo>?
     suspend fun add(friend: Username)
     suspend fun remove(friend: Username)
 
