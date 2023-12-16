@@ -1,5 +1,6 @@
 package component.root
 
+import api.ApplicationApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import component.login.LoginComponent
@@ -9,6 +10,7 @@ import db.ChatRepository
 
 interface RootComponent {
     val chatRepository: ChatRepository
+    val server: ApplicationApi
     val childStack: Value<ChildStack<*, Child>>
 
     fun onBackPressed()

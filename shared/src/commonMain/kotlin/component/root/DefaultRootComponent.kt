@@ -1,5 +1,6 @@
 package component.root
 
+import api.ApplicationApiImpl
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
@@ -9,13 +10,14 @@ import component.main.DefaultMainComponent
 import component.main.MainComponent
 import component.register.DefaultRegisterComponent
 import component.register.RegisterComponent
+import component.root.DefaultRootComponent.Config.*
 import component.root.RootComponent.Child.*
 import db.ChatRepository
 import db.DriverFactory
 import db.createDatabase
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
-import util.MainPhases
+import util.MainPhases.*
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
@@ -23,13 +25,12 @@ class DefaultRootComponent(
 ) : RootComponent, ComponentContext by componentContext {
     private val database = createDatabase(DriverFactory())
     override val chatRepository = ChatRepository(database)
-
+    override val server = ApplicationApiImpl(settingsRepository)
     private val navigation = StackNavigation<Config>()
-
     private val _childStack = childStack(
         source = navigation,
         serializer = Config.serializer(),
-        initialConfiguration = Config.Login,
+        initialConfiguration = Login,
         handleBackButton = false,
         childFactory = ::createChild
     )
@@ -39,21 +40,21 @@ class DefaultRootComponent(
         config: Config,
         componentContext: ComponentContext
     ): RootComponent.Child = when (config) {
-        is Config.Login -> LoginChild(login(componentContext))
-        is Config.Main -> MainChild(main(componentContext))
-        is Config.Register -> RegisterChild(register(componentContext))
+        is Login -> LoginChild(login(componentContext))
+        is Main -> MainChild(main(componentContext))
+        is Register -> RegisterChild(register(componentContext))
     }
 
     private fun login(componentContext: ComponentContext): LoginComponent =
         DefaultLoginComponent(
             componentContext = componentContext,
             token = settingsRepository.token.get(),
-            server = "SERVER",
+            server = server,
             pushTo = {
                 when (it) {
-                    MainPhases.LOGIN -> {}
-                    MainPhases.REGISTER -> navigation.push(Config.Register)
-                    MainPhases.MAIN -> navigation.push(Config.Main)
+                    LOGIN -> {}
+                    REGISTER -> navigation.push(Register)
+                    MAIN -> navigation.push(Main)
                 }
             }
         )
@@ -61,12 +62,12 @@ class DefaultRootComponent(
     private fun register(componentContext: ComponentContext): RegisterComponent =
         DefaultRegisterComponent(
             componentContext = componentContext,
-            server = "SERVER",
+            server = server,
             pushTo = {
                 when (it) {
-                    MainPhases.LOGIN -> navigation.pop()
-                    MainPhases.REGISTER -> {}
-                    MainPhases.MAIN -> navigation.push(Config.Main)
+                    LOGIN -> navigation.pop()
+                    REGISTER -> {}
+                    MAIN -> navigation.push(Main)
                 }
             }
         )
@@ -75,7 +76,7 @@ class DefaultRootComponent(
         DefaultMainComponent(
             componentContext = componentContext,
             chatRepository = chatRepository,
-            server = "SERVER"
+            server = server
         )
 
     override fun onBackPressed() = navigation.pop()

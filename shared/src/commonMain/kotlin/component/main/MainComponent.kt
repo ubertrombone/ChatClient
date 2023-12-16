@@ -1,5 +1,6 @@
 package component.main
 
+import api.ApplicationApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import db.ChatRepository
@@ -10,7 +11,7 @@ import util.Username
 interface MainComponent {
     val title: String
     val chatRepository: ChatRepository
-    val server: String //TODO: This should be a custom server class
+    val server: ApplicationApi
     
 //    val childStack: Value<ChildStack<*, Child>>
 //    
