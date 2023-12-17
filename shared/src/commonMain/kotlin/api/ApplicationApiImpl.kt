@@ -183,26 +183,43 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         with (client.get("/group_chat")) { if (status == OK) body<Set<GroupChat>>() else null }
     }
     
-    override suspend fun createGroupChat(name: GroupChatNameRequest) {
-        TODO("Not yet implemented")
+    override suspend fun createGroupChat(name: GroupChatNameRequest) = withContext(scope.coroutineContext) {
+        client.post("/group_chat") {
+            contentType(ContentType.Application.Json)
+            setBody(name)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
-    override suspend fun getStatus() {
-        TODO("Not yet implemented")
-    }
-    override suspend fun update(status: StatusRequest) {
-        TODO("Not yet implemented")
+    override suspend fun getStatus() = withContext(scope.coroutineContext) {
+        with (client.get("/status")) { if (status == OK) body<String?>() else null }
     }
 
-    override suspend fun update(password: UpdatePasswordRequest) {
-        TODO("Not yet implemented")
+    override suspend fun update(status: StatusRequest) = withContext(scope.coroutineContext) {
+        client.post("/status") {
+            contentType(ContentType.Application.Json)
+            setBody(status)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
-    override suspend fun update(username: UpdateUsernameRequest) {
-        TODO("Not yet implemented")
+
+    override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
+        client.post("/settings/updatepwd") {
+            contentType(ContentType.Application.Json)
+            setBody(password)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
-    override suspend fun deleteAccount(decision: Boolean) {
-        TODO("Not yet implemented")
-        // TODO: Account deletion should delete everything but the username which should be archived.
+
+    override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
+        client.post("/settings/updateuser") {
+            contentType(ContentType.Application.Json)
+            setBody(username)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    }
+
+    override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
+        client.post("/settings/delete") {
+            contentType(ContentType.Application.Json)
+            setBody(decision)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override fun onDestroy() {

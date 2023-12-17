@@ -32,12 +32,12 @@ interface ApplicationApi {
     suspend fun unblock(user: Username): Status
 
     suspend fun getGroupChats(): Set<GroupChat>?
-    suspend fun createGroupChat(name: GroupChatNameRequest)
+    suspend fun createGroupChat(name: GroupChatNameRequest): Status
 
-    suspend fun getStatus()
-    suspend fun update(status: StatusRequest)
+    suspend fun getStatus(): String?
+    suspend fun update(status: StatusRequest): Status
 
-    suspend fun update(password: UpdatePasswordRequest)
-    suspend fun update(username: UpdateUsernameRequest)
-    suspend fun deleteAccount(decision: Boolean)
+    suspend fun update(password: UpdatePasswordRequest): Status
+    suspend fun update(username: UpdateUsernameRequest): Status
+    suspend fun deleteAccount(decision: Boolean): Status
 }
