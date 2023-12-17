@@ -14,6 +14,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.Accepted
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -134,32 +135,54 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }
     }
 
-    override suspend fun getSentFriendRequests() {
-        TODO("Not yet implemented")
-    }
-    override suspend fun getReceivedFriendRequests() {
-        TODO("Not yet implemented")
-    }
-    override suspend fun sendFriendRequest(to: Username) {
-        TODO("Not yet implemented")
-    }
-    override suspend fun cancelFriendRequest(to: Username) {
-        TODO("Not yet implemented")
+    override suspend fun getSentFriendRequests() = withContext(scope.coroutineContext) {
+        with (client.get("/friend_request/sent_friend_requests")) {
+            if (status == OK) body<Set<FriendRequest>>() else null
+        }
     }
 
-    override suspend fun getBlockList() {
-        TODO("Not yet implemented")
-    }
-    override suspend fun block(user: Username) {
-        TODO("Not yet implemented")
-    }
-    override suspend fun unblock(user: Username) {
-        TODO("Not yet implemented")
+    override suspend fun getReceivedFriendRequests() = withContext(scope.coroutineContext) {
+        with (client.get("/friend_request/received_friend_requests")) {
+            if (status == OK) body<Set<FriendRequest>>() else null
+        }
     }
 
-    override suspend fun getGroupChats() {
-        TODO("Not yet implemented")
+    override suspend fun sendFriendRequest(to: Username) = withContext(coroutineContext) {
+        client.post("/friend_request") {
+            contentType(ContentType.Application.Json)
+            setBody(to)
+        }.let { if (it.status == Accepted) Success else Error(it.bodyAsText()) }
     }
+
+    override suspend fun cancelFriendRequest(to: Username) = withContext(coroutineContext) {
+        client.post("/friend_request/cancel_request") {
+            contentType(ContentType.Application.Json)
+            setBody(to)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    }
+
+    override suspend fun getBlockList() = withContext(scope.coroutineContext) {
+        with (client.get("/block")) { if (status == OK) body<Set<Username>>() else null }
+    }
+
+    override suspend fun block(user: Username) = withContext(scope.coroutineContext) {
+        client.post("/block") {
+            contentType(ContentType.Application.Json)
+            setBody(user)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    }
+
+    override suspend fun unblock(user: Username) = withContext(scope.coroutineContext) {
+        client.post("/block/unblock") {
+            contentType(ContentType.Application.Json)
+            setBody(user)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    }
+
+    override suspend fun getGroupChats() = withContext(scope.coroutineContext) {
+        with (client.get("/group_chat")) { if (status == OK) body<Set<GroupChat>>() else null }
+    }
+    
     override suspend fun createGroupChat(name: GroupChatNameRequest) {
         TODO("Not yet implemented")
     }

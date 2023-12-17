@@ -22,16 +22,16 @@ interface ApplicationApi {
     suspend fun add(friend: Username): Status
     suspend fun remove(friend: Username): Status
 
-    suspend fun getSentFriendRequests()
-    suspend fun getReceivedFriendRequests()
-    suspend fun sendFriendRequest(to: Username)
-    suspend fun cancelFriendRequest(to: Username)
+    suspend fun getSentFriendRequests(): Set<FriendRequest>?
+    suspend fun getReceivedFriendRequests(): Set<FriendRequest>?
+    suspend fun sendFriendRequest(to: Username): Status
+    suspend fun cancelFriendRequest(to: Username): Status
 
-    suspend fun getBlockList()
-    suspend fun block(user: Username)
-    suspend fun unblock(user: Username)
+    suspend fun getBlockList(): Set<Username>?
+    suspend fun block(user: Username): Status
+    suspend fun unblock(user: Username): Status
 
-    suspend fun getGroupChats()
+    suspend fun getGroupChats(): Set<GroupChat>?
     suspend fun createGroupChat(name: GroupChatNameRequest)
 
     suspend fun getStatus()
