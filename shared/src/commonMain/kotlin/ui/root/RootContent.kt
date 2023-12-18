@@ -4,9 +4,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.root.RootComponent
+import component.root.RootComponent.Child
+import component.root.RootComponent.Child.*
+import ui.login.LoginContent
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
@@ -23,7 +29,15 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     //          2. Top App Bar with useful information like app/view name? Logout?
     //          3. Bottom App Bar with nav to Chats/Groups/Settings
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Text("Chat", Modifier.align(Alignment.Center))
+    val childStack by component.childStack.subscribeAsState()
+
+    Box(modifier = modifier) {
+        Children(stack = childStack) {
+            when (val child = it.instance) {
+                is LoginChild -> LoginContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is MainChild -> TODO()
+                is RegisterChild -> TODO()
+            }
+        }
     }
 }
