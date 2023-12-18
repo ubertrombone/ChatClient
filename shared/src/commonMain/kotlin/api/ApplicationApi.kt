@@ -37,6 +37,7 @@ interface ApplicationApi {
     suspend fun getStatus(): String?
     suspend fun update(status: StatusRequest): Status
 
+    suspend fun getCache(): Boolean?
     suspend fun update(password: UpdatePasswordRequest): Status
     suspend fun update(username: UpdateUsernameRequest): Status
     suspend fun update(cache: Boolean): Status

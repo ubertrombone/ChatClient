@@ -201,6 +201,10 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
+    override suspend fun getCache() = withContext(scope.coroutineContext) {
+        with (client.get("/settings/cache")) { if (status == OK) body<Boolean>() else null }
+    }
+
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
         client.post("/settings/updatepwd") {
             contentType(ContentType.Application.Json)
