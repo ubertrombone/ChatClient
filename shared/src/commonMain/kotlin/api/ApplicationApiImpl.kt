@@ -58,16 +58,15 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
             setBody(account)
         }.let { response ->
             if (response.status == Conflict) Error(response.bodyAsText())
-            else {
-                val body = response.body<SimpleResponse>()
-                if (body.successful) {
+            else response.body<SimpleResponse>().run {
+                if (successful) {
                     settings.apply {
-                        token.set(body.message)
+                        token.set(message)
                         username.set(account.username.name)
                         password.set(account.password) // TODO: Encrypt password in local storage
                     }
                     Success
-                } else Error(body.message)
+                } else Error(message)
             }
         }
     }
