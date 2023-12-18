@@ -215,6 +215,13 @@ class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKe
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
+    override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
+        client.post("/settings/cache") {
+            contentType(ContentType.Application.Json)
+            setBody(cache)
+        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    }
+
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
         client.post("/settings/delete") {
             contentType(ContentType.Application.Json)

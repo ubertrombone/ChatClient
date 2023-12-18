@@ -39,5 +39,6 @@ interface ApplicationApi {
 
     suspend fun update(password: UpdatePasswordRequest): Status
     suspend fun update(username: UpdateUsernameRequest): Status
+    suspend fun update(cache: Boolean): Status
     suspend fun deleteAccount(decision: Boolean): Status
 }
