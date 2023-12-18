@@ -13,6 +13,7 @@ interface LoginComponent {
     val pushTo: (MainPhases) -> Unit
 
     val status: Value<Status>
+    val username: Value<String>
 
     fun update(status: Status)
 }
