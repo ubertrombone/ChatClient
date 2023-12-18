@@ -37,6 +37,8 @@ class DefaultLoginComponent(
         scope.launch { _status.update { status } }
     }
 
+    override fun update(username: String) { _username::update }
+
     init {
         stateKeeper.register(
             key = USERNAME_STATE,

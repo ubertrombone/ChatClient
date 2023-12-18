@@ -16,4 +16,5 @@ interface LoginComponent {
     val username: Value<String>
 
     fun update(status: Status)
+    fun update(username: String)
 }
