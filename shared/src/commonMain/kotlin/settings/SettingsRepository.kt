@@ -20,6 +20,7 @@ class SettingConfig<T>(
     private fun getValue(settings: Settings, key: String, defaultValue: T): String = when (defaultValue) {
         is String -> settings.getString(key, defaultValue)
         is Int -> settings.getInt(key, defaultValue).toString()
+        is Boolean -> settings.getBoolean(key, defaultValue).toString()
         else -> throw ClassCastException("Type could not be inferred. Value must be String or Int.")
     }
 
@@ -27,6 +28,7 @@ class SettingConfig<T>(
         when (value) {
             is String -> settings.putString(key, value)
             is Int -> settings.putInt(key, value)
+            is Boolean -> settings.putBoolean(key, value)
             else -> throw ClassCastException("Type could not be inferred. Value must be String or Int.")
         }
     }
