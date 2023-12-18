@@ -34,8 +34,8 @@ import util.Username
 import util.toUsername
 import kotlin.coroutines.coroutineContext
 
-class ApplicationApiImpl(override val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
-    override val scope = CoroutineScope(Dispatchers.Main)
+class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
+    private val scope = CoroutineScope(Dispatchers.Main)
     override val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json { prettyPrint = true })

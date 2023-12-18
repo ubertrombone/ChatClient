@@ -9,8 +9,6 @@ import util.Status
 import util.Username
 
 interface ApplicationApi {
-    val settings: SettingsRepository
-    val scope: CoroutineScope
     val client: HttpClient
 
     suspend fun register(account: AccountRequest): Status
