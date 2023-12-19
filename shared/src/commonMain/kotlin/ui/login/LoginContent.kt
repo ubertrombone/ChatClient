@@ -11,12 +11,10 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
-import util.MainPhases
+import ui.components.UsernameField
 import util.MainPhases.REGISTER
 import util.ShapeTokens
 import util.textFieldColors
@@ -28,9 +26,10 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
     val username by component.username.subscribeAsState()
     var usernameInput by remember(username) { mutableStateOf(username) }
     var password by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf(false) }
 
     LaunchedEffect(status) {
-        component.server.login()
+        component.update(component.server.login())
     }
 
     Scaffold(
@@ -65,20 +64,14 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-             OutlinedTextField(
-                 value = usernameInput,
-                 onValueChange = {
-                    usernameInput = it
-                    component.update(it)
-                 },
-                 label = { Text(text = "Username", fontSize = typography.labelMedium.fontSize) },
-                 leadingIcon = { Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Username") },
-                 colors = textFieldColors(),
-                 shape = RoundedCornerShape(ShapeTokens.roundedCorners),
-                 singleLine = true,
-                 modifier = Modifier.width(200.dp).height(200.dp),
-                 // TODO: onError
-             )
+            UsernameField(
+                usernameInput = usernameInput,
+                isError = error,
+                modifier = Modifier.width(200.dp).height(200.dp),
+            ) {
+                usernameInput = it
+                component.update(it)
+            }
         }
     }
 }
