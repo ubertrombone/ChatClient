@@ -1,6 +1,7 @@
 package ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Outlined
@@ -12,6 +13,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -25,23 +27,23 @@ fun PasswordField(
     password: String,
     isError: Boolean,
     modifier: Modifier = Modifier,
-    //visibility: Boolean = false,
     onValueChange: (String) -> Unit,
-    //showPassword: (Boolean) -> Unit
 ) {
     var visibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = password,
         onValueChange = onValueChange,
-        label = { Text(text = "Username", fontSize = typography.labelMedium.fontSize) },
+        label = { Text(text = "Password", fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
         trailingIcon = {
             Icon(
-                painter = painterResource(if (visibility) "visibility.xml" else "visibility_off.xml"),
+                painter = painterResource(if (visibility) "visibility_off.xml" else "visibility.xml"),
                 contentDescription = "Show Password?",
-                modifier = Modifier.clickable { visibility = !visibility }
-            )               
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable { visibility = !visibility }
+            )
         },
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
         colors = textFieldColors(),
