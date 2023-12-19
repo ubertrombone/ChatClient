@@ -2,9 +2,6 @@ package ui.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -14,10 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
+import ui.components.PasswordField
 import ui.components.UsernameField
 import util.MainPhases.REGISTER
-import util.ShapeTokens
-import util.textFieldColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,10 +64,17 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                 usernameInput = usernameInput,
                 isError = error,
                 modifier = Modifier.width(200.dp).height(200.dp),
-            ) {
-                usernameInput = it
-                component.update(it)
+            ) { input ->
+                usernameInput = input
+                component.update(input)
             }
         }
+
+        PasswordField(
+            password = password,
+            isError = error,
+            modifier = Modifier.width(200.dp).height(200.dp),
+            onValueChange = { input -> password = input }
+        )
     }
 }
