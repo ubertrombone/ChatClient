@@ -10,7 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -25,10 +25,12 @@ fun PasswordField(
     password: String,
     isError: Boolean,
     modifier: Modifier = Modifier,
-    visibility: Boolean = false,
+    //visibility: Boolean = false,
     onValueChange: (String) -> Unit,
-    showPassword: (Boolean) -> Unit
+    //showPassword: (Boolean) -> Unit
 ) {
+    var visibility by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = password,
         onValueChange = onValueChange,
@@ -38,7 +40,7 @@ fun PasswordField(
             Icon(
                 painter = painterResource(if (visibility) "visibility.xml" else "visibility_off.xml"),
                 contentDescription = "Show Password?",
-                modifier = Modifier.clickable { showPassword(!visibility) }
+                modifier = Modifier.clickable { visibility = !visibility }
             )               
         },
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
