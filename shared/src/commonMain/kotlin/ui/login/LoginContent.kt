@@ -25,7 +25,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
     var error by remember { mutableStateOf(false) }
 
     LaunchedEffect(status) {
-        component.update(component.server.login())
+        //component.update(component.server.login())
     }
 
     Scaffold(
@@ -63,18 +63,20 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             UsernameField(
                 usernameInput = usernameInput,
                 isError = error,
-                modifier = Modifier.width(200.dp).height(200.dp),
+                modifier = Modifier.width(200.dp),
             ) { input ->
                 usernameInput = input
                 component.update(input)
             }
-        }
 
-        PasswordField(
-            password = password,
-            isError = error,
-            modifier = Modifier.width(200.dp).height(200.dp),
-            onValueChange = { input -> password = input }
-        )
+            Spacer(Modifier.height(50.dp))
+
+            PasswordField(
+                password = password,
+                isError = error,
+                modifier = Modifier.width(200.dp),
+                onValueChange = { input -> password = input }
+            )
+        }
     }
 }
