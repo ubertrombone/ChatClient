@@ -29,14 +29,14 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.padding(top = 24.dp),
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = component.title,
-                        fontSize = typography.headlineLarge.fontSize,
-                        fontWeight = typography.headlineLarge.fontWeight
+                        fontSize = typography.displayLarge.fontSize,
+                        fontWeight = typography.displayLarge.fontWeight,
                     )
                 },
                 actions = {
@@ -44,7 +44,9 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                         text = "Register",
                         fontSize = typography.bodyMedium.fontSize,
                         fontWeight = typography.bodyMedium.fontWeight,
-                        modifier = Modifier.clickable { component.pushTo(REGISTER) }
+                        modifier = Modifier
+                            .padding(end = 24.dp)
+                            .clickable { component.pushTo(REGISTER) }
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -63,7 +65,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             UsernameField(
                 usernameInput = usernameInput,
                 isError = error,
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.width(300.dp),
             ) { input ->
                 usernameInput = input
                 component.update(input)
@@ -74,7 +76,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             PasswordField(
                 password = password,
                 isError = error,
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.width(300.dp),
                 onValueChange = { input -> password = input }
             )
         }
