@@ -33,5 +33,5 @@ fun textFieldColors(): TextFieldColors = colors(
 )
 
 object ShapeTokens {
-    val roundedCorners = 24.dp
+    val roundedCorners = 8.dp
 }
