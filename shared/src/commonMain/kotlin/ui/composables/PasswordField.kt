@@ -1,4 +1,4 @@
-package ui.components
+package ui.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
@@ -16,24 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.composables.states.AuthenticationFieldState
 import util.ShapeTokens
 import util.textFieldColors
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PasswordField(
-    password: String,
-    isError: Boolean,
     modifier: Modifier = Modifier,
-    onValueChange: (String) -> Unit,
+    state: AuthenticationFieldState
 ) {
+    val input by state.input.subscribeAsState()
+    val isValid by state.isValid.subscribeAsState()
     var visibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = password,
-        onValueChange = onValueChange,
+        value = input,
+        onValueChange = state::updateInput,
         label = { Text(text = "Password", fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
         trailingIcon = {
@@ -49,7 +51,7 @@ fun PasswordField(
         colors = textFieldColors(),
         shape = RoundedCornerShape(ShapeTokens.roundedCorners),
         singleLine = true,
-        isError = isError,
+        isError = !isValid,
         modifier = modifier
     )
 }
