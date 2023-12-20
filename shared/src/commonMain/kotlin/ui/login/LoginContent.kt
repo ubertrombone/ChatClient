@@ -11,8 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
-import ui.components.PasswordField
-import ui.components.UsernameField
+import ui.composables.PasswordField
+import ui.composables.UsernameField
+import ui.composables.states.rememberLoginAuthenticationFieldState
 import util.MainPhases.REGISTER
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,9 +21,8 @@ import util.MainPhases.REGISTER
 fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
     val status by component.status.subscribeAsState()
     val username by component.username.subscribeAsState()
-    var usernameInput by remember(username) { mutableStateOf(username) }
-    var password by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf(false) }
+    val usernamestate = rememberLoginAuthenticationFieldState(username)
+    val passwordState = rememberLoginAuthenticationFieldState(initialInput = "")
 
     LaunchedEffect(status) {
         //component.update(component.server.login())
@@ -62,23 +62,14 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            UsernameField(
-                usernameInput = usernameInput,
-                isError = error,
-                modifier = Modifier.width(300.dp),
-            ) { input ->
-                usernameInput = input
-                component.update(input)
-            }
+            UsernameField(modifier = Modifier.width(300.dp), state = usernamestate)
 
             Spacer(Modifier.height(50.dp))
 
-            PasswordField(
-                password = password,
-                isError = error,
-                modifier = Modifier.width(300.dp),
-                onValueChange = { input -> password = input }
-            )
+            PasswordField(modifier = Modifier.width(300.dp), state = passwordState)
+
+            // TODO: Login Button
+            // TODO: Register Button impl
         }
     }
 }
