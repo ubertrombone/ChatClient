@@ -48,4 +48,4 @@ dependencies@jvm:
 
 settings:
   android:
-    namespace: "com.joshrose.common"
+    namespace: "com.shared.common"
