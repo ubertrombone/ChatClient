@@ -40,14 +40,16 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                     )
                 },
                 actions = {
-                    Text(
-                        text = "Register",
-                        fontSize = typography.bodyMedium.fontSize,
-                        fontWeight = typography.bodyMedium.fontWeight,
-                        modifier = Modifier
-                            .padding(end = 24.dp)
-                            .clickable { component.pushTo(REGISTER) }
-                    )
+                    TextButton(
+                        modifier = Modifier.padding(end = 24.dp),
+                        onClick = { component.pushTo(REGISTER) }
+                    ) {
+                        Text(
+                            text = "Register",
+                            fontSize = typography.bodyMedium.fontSize,
+                            fontWeight = typography.bodyMedium.fontWeight
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
@@ -67,7 +69,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             Spacer(Modifier.height(50.dp))
 
             PasswordField(modifier = Modifier.width(300.dp), state = passwordState)
-
+            
             // TODO: Login Button
             // TODO: Register Button impl
         }
