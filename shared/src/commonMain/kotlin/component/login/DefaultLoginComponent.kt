@@ -54,10 +54,30 @@ class DefaultLoginComponent(
         }
     }
 
+    private val _isInitLoading = MutableValue(true)
+    override val isInitLoading: Value<Boolean> = _isInitLoading
+
+    private val _isLoading = MutableValue(false)
+    override val isLoading: Value<Boolean> = _isLoading
+
+    override fun initLogin() {
+        scope.launch {
+            callWrapper(
+                isLoading = _isInitLoading,
+                operation = server::login,
+                onSuccess = {
+                    if (it is Error) update(status = Success)
+                    if (it == Success) pushTo(MAIN)
+                },
+                onError = { update(status = Error(it)) }
+            )
+        }
+    }
+
     override fun login() {
         scope.launch {
             callWrapper(
-                isLoading = mutableStateOf(true), // TODO: Implement _status here somehow
+                isLoading = _isLoading, // TODO: Implement _status here somehow
                 operation = server::login,
                 onSuccess = {
                     when (it) {
