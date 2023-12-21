@@ -1,16 +1,10 @@
 package ui.composables.states
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LoginAuthenticationFieldState(input: String = "", isValid: Boolean = true) : AuthenticationFieldState {
     private var _input = MutableValue(input)
