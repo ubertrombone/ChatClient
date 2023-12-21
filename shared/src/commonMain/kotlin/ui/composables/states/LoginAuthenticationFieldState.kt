@@ -8,6 +8,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginAuthenticationFieldState(input: String = "", isValid: Boolean = true) : AuthenticationFieldState {
     private var _input = MutableValue(input)
@@ -22,7 +25,7 @@ class LoginAuthenticationFieldState(input: String = "", isValid: Boolean = true)
     
     companion object {
         val saver = Saver<LoginAuthenticationFieldState, List<Any>>(
-            save = { listOf(it._input, it._isValid) },
+            save = { listOf(it._input.value, it._isValid.value) },
             restore = {
                 LoginAuthenticationFieldState(
                     input = it[0] as String,
