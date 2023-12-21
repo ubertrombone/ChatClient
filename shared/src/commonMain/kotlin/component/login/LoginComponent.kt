@@ -5,7 +5,6 @@ import com.arkivanov.decompose.value.Value
 import settings.SettingsRepository
 import util.MainPhases
 import util.Status
-import util.Username
 
 interface LoginComponent {
     val title: String
