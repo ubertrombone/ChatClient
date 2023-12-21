@@ -1,6 +1,8 @@
 package component.login
 
+import androidx.compose.runtime.mutableStateOf
 import api.ApplicationApi
+import api.callWrapper
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -11,13 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.serialization.builtins.serializer
+import settings.SettingsRepository
 import util.MainPhases
+import util.MainPhases.MAIN
 import util.Status
-import util.Status.Loading
+import util.Status.*
 
 class DefaultLoginComponent(
     componentContext: ComponentContext,
-    override val token: String,
+    override val settings: SettingsRepository,
     override val server: ApplicationApi,
     override val pushTo: (MainPhases) -> Unit
 ) : LoginComponent, ComponentContext by componentContext {
@@ -33,11 +37,35 @@ class DefaultLoginComponent(
     }
     override val username: Value<String> = _username.username
 
+    private val _rememberMe: MutableValue<Boolean> = MutableValue(settings.rememberMe.get().toBooleanStrict())
+    override val rememberMe: Value<Boolean> = _rememberMe
+
     override fun update(status: Status) {
         scope.launch { _status.update { status } }
     }
 
     override fun update(username: String) { _username::update }
+    override fun update(rememberMe: Boolean) {
+        scope.launch { _rememberMe.update { rememberMe } }
+    }
+
+    // TODO: Add state for remember me and populate textfields if true
+    override fun login() {
+        scope.launch {
+            callWrapper(
+                isLoading = mutableStateOf(true), // TODO: Implement _status here somehow
+                operation = server::login,
+                onSuccess = {
+                    when (it) {
+                        is Error -> TODO("Show red, somehow integrate reason")
+                        Loading -> TODO("Won't be Loading")
+                        Success -> pushTo(MAIN)
+                    }
+                },
+                onError = null // TODO
+            )
+        }
+    }
 
     init {
         stateKeeper.register(

@@ -53,7 +53,7 @@ class DefaultRootComponent(
     private fun login(componentContext: ComponentContext): LoginComponent =
         DefaultLoginComponent(
             componentContext = componentContext,
-            token = settingsRepository.token.get(),
+            settings = settingsRepository,
             server = server,
             pushTo = {
                 when (it) {
