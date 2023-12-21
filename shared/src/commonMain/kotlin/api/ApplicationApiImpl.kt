@@ -1,9 +1,7 @@
 package api
 
-import androidx.compose.runtime.MutableState
 import api.model.*
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -24,11 +22,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import settings.SettingsRepository
-import util.Status
 import util.Status.*
 import util.Username
 import util.toUsername
@@ -48,7 +42,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         }
 
         defaultRequest {
-            url("http://0.0.0.0:8080")
+            url("http://192.168.0.10:8080")
         }
     }
 
@@ -74,12 +68,15 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     override suspend fun login() = withContext(scope.coroutineContext) {
         when (client.get("/login").status) {
             OK -> Success
-            Unauthorized -> authenticate(
-                credentials = AuthenticationRequest(
-                    username = settings.username.get().toUsername(),
-                    password = settings.password.get()
+            Unauthorized -> {
+                if (settings.username.get().isBlank()) Error("User has not logged in before")
+                else authenticate(
+                    credentials = AuthenticationRequest(
+                        username = settings.username.get().toUsername(),
+                        password = settings.password.get()
+                    )
                 )
-            )
+            }
             else -> Error("Unknown error - the server may be down. Try logging in again later.")
         }
     }
