@@ -24,8 +24,9 @@ import util.textFieldColors
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun PasswordField(
-    modifier: Modifier = Modifier,
-    state: AuthenticationFieldState
+    state: AuthenticationFieldState,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
 ) {
     val input by state.input.subscribeAsState()
     val isValid by state.isValid.subscribeAsState()
@@ -50,6 +51,7 @@ fun PasswordField(
         shape = RoundedCornerShape(ShapeTokens.roundedCorners),
         singleLine = true,
         isError = !isValid,
+        enabled = enabled,
         modifier = modifier
     )
 }

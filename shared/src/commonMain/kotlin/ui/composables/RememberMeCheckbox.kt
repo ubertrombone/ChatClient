@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun RememberMeCheckbox(
     rememberMe: Boolean,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
     onCheckChanged: (Boolean) -> Unit
 ) {
@@ -25,6 +26,7 @@ fun RememberMeCheckbox(
         Checkbox(
             checked = rememberMe,
             onCheckedChange = onCheckChanged,
+            enabled = enabled,
             colors = CheckboxDefaults.colors(
                 checkedColor = colorScheme.primary,
                 checkmarkColor = colorScheme.onPrimary,
