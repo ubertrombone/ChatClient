@@ -15,6 +15,7 @@ import ui.composables.UsernameField
 import ui.composables.states.LoginAuthenticationFieldState
 import ui.composables.states.Types.PASSWORD
 import ui.composables.states.Types.USERNAME
+import util.Constants.INVALID_USERNAME
 import util.Constants.NO_PASSWORD_PROVIDED
 import util.Status
 import util.Status.Error
@@ -43,11 +44,13 @@ fun LoginForm(
             text = when {
                 loginStatus == Success -> ""
                 (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> ""
+                loginStatus.message == INVALID_USERNAME -> ""
                 else -> loginStatus.message
             },
             color = when {
                 loginStatus == Success -> colorScheme.background
                 (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> colorScheme.background
+                loginStatus.message == INVALID_USERNAME -> colorScheme.background
                 else -> colorScheme.error
             },
             fontSize = typography.bodyLarge.fontSize,
@@ -59,32 +62,25 @@ fun LoginForm(
         UsernameField(
             state = usernameState,
             enabled = !isLoading,
-            modifier = Modifier.width(300.dp)
+            modifier = Modifier.width(300.dp),
+            label = when {
+                loginStatus == Success -> "Username"
+                (loginStatus as Error).message == INVALID_USERNAME -> loginStatus.message
+                else -> "Username"
+            }
         )
 
-        Spacer(Modifier.height(30.dp))
-
-        Text(
-            text = when {
-                loginStatus == Success -> ""
-                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> loginStatus.message
-                else -> ""
-            },
-            color = when {
-                loginStatus == Success -> colorScheme.background
-                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> colorScheme.error
-                else -> colorScheme.background
-            },
-            fontSize = typography.bodyLarge.fontSize,
-            fontWeight = typography.bodyLarge.fontWeight
-        )
-
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(50.dp))
 
         PasswordField(
             state = passwordState,
             enabled = !isLoading,
-            modifier = Modifier.width(300.dp)
+            modifier = Modifier.width(300.dp),
+            label = when {
+                loginStatus == Success -> "Password"
+                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> loginStatus.message
+                else -> "Password"
+            }
         )
 
         Spacer(Modifier.height(15.dp))
