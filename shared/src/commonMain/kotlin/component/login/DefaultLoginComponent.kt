@@ -2,15 +2,14 @@ package component.login
 
 import api.ApplicationApi
 import api.callWrapper
+import api.model.AuthenticationRequest
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
 import settings.SettingsRepository
 import util.MainPhases
 import util.MainPhases.MAIN
@@ -27,25 +26,21 @@ class DefaultLoginComponent(
 
     override val title: String = "Login"
 
-    private val _status: MutableValue<Status> = MutableValue(Loading)
-    override val status: Value<Status> = _status
+    private val _initStatus: MutableValue<Status> = MutableValue(Loading)
+    override val initStatus: Value<Status> = _initStatus
+
+    private val _loginStatus: MutableValue<Status> = MutableValue(Success)
+    override val loginStatus: Value<Status> = _loginStatus
 
     private val _rememberMe: MutableValue<Boolean> = MutableValue(settings.rememberMe.get().toBooleanStrict())
     override val rememberMe: Value<Boolean> = _rememberMe
 
-    private val _username = instanceKeeper.getOrCreate(USERNAME_INSTANCE) {
-        UsernameModelImpl(
-            stateKeeper.consume(key = USERNAME_STATE, strategy = String.serializer())
-                ?: if (_rememberMe.value) settings.username.get() else ""
-        )
+    override fun updateInit(status: Status) {
+        scope.launch { _initStatus.update { status } }
     }
-    override val username: Value<String> = _username.username
-
-    override fun update(status: Status) {
-        scope.launch { _status.update { status } }
+    override fun updateLogin(status: Status) {
+        scope.launch { _loginStatus.update { status } }
     }
-
-    override fun update(username: String) { _username::update }
     override fun update(rememberMe: Boolean) {
         scope.launch {
             settings.rememberMe.set(rememberMe)
@@ -65,40 +60,31 @@ class DefaultLoginComponent(
                 isLoading = _isInitLoading,
                 operation = server::login,
                 onSuccess = {
-                    if (it is Error) update(status = Success)
+                    if (it is Error) updateInit(status = Success)
                     if (it == Success) pushTo(MAIN)
                 },
-                onError = { update(status = Error(it)) }
+                onError = { updateInit(status = Error(it)) }
             )
         }
     }
 
-    override fun login() {
+    override fun login(credentials: AuthenticationRequest) {
         scope.launch {
             callWrapper(
-                isLoading = _isLoading, // TODO: Implement _status here somehow
-                operation = server::login,
+                isLoading = _isLoading,
+                operation = { server.authenticate(credentials) },
                 onSuccess = {
-                    when (it) {
-                        is Error -> TODO("Show red, somehow integrate reason")
-                        Loading -> TODO("Won't be Loading")
-                        Success -> pushTo(MAIN)
+                    if (it is Error) updateLogin(status = it)
+                    if (it == Success) {
+                        if (rememberMe.value) {
+                            settings.username.set(credentials.username.name)
+                            settings.password.set(credentials.password)
+                        }
+                        pushTo(MAIN)
                     }
                 },
-                onError = null // TODO
+                onError = { updateLogin(status = Error(it)) }
             )
         }
-    }
-
-    init {
-        stateKeeper.register(
-            key = USERNAME_STATE,
-            strategy = String.serializer()
-        ) { _username.username.value }
-    }
-
-    private companion object {
-        private const val USERNAME_INSTANCE = "USERNAME_INSTANCE"
-        private const val USERNAME_STATE = "USERNAME_STATE"
     }
 }

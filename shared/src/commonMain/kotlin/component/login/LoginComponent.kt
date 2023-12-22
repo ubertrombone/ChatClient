@@ -1,6 +1,7 @@
 package component.login
 
 import api.ApplicationApi
+import api.model.AuthenticationRequest
 import com.arkivanov.decompose.value.Value
 import settings.SettingsRepository
 import util.MainPhases
@@ -12,15 +13,15 @@ interface LoginComponent {
     val server: ApplicationApi
     val pushTo: (MainPhases) -> Unit
 
-    val status: Value<Status>
-    val username: Value<String>
+    val initStatus: Value<Status>
+    val loginStatus: Value<Status>
     val rememberMe: Value<Boolean>
     val isInitLoading: Value<Boolean>
     val isLoading: Value<Boolean>
 
-    fun update(status: Status)
-    fun update(username: String)
+    fun updateInit(status: Status)
+    fun updateLogin(status: Status)
     fun update(rememberMe: Boolean)
     fun initLogin()
-    fun login()
+    fun login(credentials: AuthenticationRequest)
 }
