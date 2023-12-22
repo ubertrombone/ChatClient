@@ -1,35 +1,50 @@
 package ui.login
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import api.model.AuthenticationRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
-import ui.composables.PasswordField
-import ui.composables.UsernameField
 import ui.composables.states.rememberLoginAuthenticationFieldState
+import util.Constants
+import util.Constants.INVALID_USERNAME
+import util.Constants.NO_PASSWORD_PROVIDED
 import util.MainPhases.REGISTER
+import util.Status
+import util.Status.Error
+import util.Status.Success
+import util.toUsername
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
-    val status by component.status.subscribeAsState()
-    val username by component.username.subscribeAsState()
-    val usernamestate = rememberLoginAuthenticationFieldState(username)
-    val passwordState = rememberLoginAuthenticationFieldState(initialInput = "")
+    val initStatus by component.initStatus.subscribeAsState()
+    val isInitLoading by component.isInitLoading.subscribeAsState()
+    val loginStatus by component.loginStatus.subscribeAsState()
+    val isLoading by component.isLoading.subscribeAsState()
+    val rememberMe by component.rememberMe.subscribeAsState()
+    val usernameState = rememberLoginAuthenticationFieldState(
+        initialInput = if (rememberMe) component.settings.username.get() else ""
+    )
+    val passwordState = rememberLoginAuthenticationFieldState(
+        initialInput = if (rememberMe) component.settings.password.get() else ""
+    )
 
-    LaunchedEffect(status) {
-        //component.update(component.server.login())
-    }
+    LaunchedEffect(initStatus) { component.initLogin() }
 
     Scaffold(
-        modifier = modifier.padding(top = 24.dp),
+        modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -42,7 +57,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                 actions = {
                     TextButton(
                         modifier = Modifier.padding(end = 24.dp),
-                        onClick = { component.pushTo(REGISTER) }
+                        onClick = { component.pushTo(REGISTER) } // TODO: Register Button impl
                     ) {
                         Text(
                             text = "Register",
@@ -59,19 +74,44 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
         },
         containerColor = colorScheme.background
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(it),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            UsernameField(modifier = Modifier.width(300.dp), state = usernamestate)
-
-            Spacer(Modifier.height(50.dp))
-
-            PasswordField(modifier = Modifier.width(300.dp), state = passwordState)
-            
-            // TODO: Login Button
-            // TODO: Register Button impl
+        Box(modifier = Modifier.fillMaxSize().padding(it)) {
+            if (isInitLoading) LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).align(Alignment.Center),
+                color = colorScheme.primary,
+                trackColor = colorScheme.surfaceVariant
+            ) else {
+                when (initStatus) {
+                    is Error -> Text(
+                        text = (initStatus as Error).message,
+                        fontSize = typography.bodyLarge.fontSize,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    Status.Loading -> { /* Loading is handled by isInitLoading and isLoading */ }
+                    Success -> {
+                        LoginForm(
+                            modifier = Modifier.align(Alignment.Center),
+                            usernameState = usernameState,
+                            passwordState = passwordState,
+                            rememberMe = rememberMe,
+                            isLoading = isLoading,
+                            loginStatus = loginStatus,
+                            onCheckChange = component::update
+                        ) {
+                            when {
+                                usernameState.input.value.length < Constants.USERNAME_REQUIREMENT_MIN ->
+                                    component.updateLogin(Error(INVALID_USERNAME))
+                                passwordState.input.value.isBlank() -> component.updateLogin(Error(NO_PASSWORD_PROVIDED))
+                                else -> component.login(
+                                    credentials = AuthenticationRequest(
+                                        username = usernameState.input.value.toUsername(),
+                                        password = passwordState.input.value
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
