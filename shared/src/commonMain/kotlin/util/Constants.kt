@@ -11,4 +11,6 @@ object Constants {
     const val INVALID_CHARS_PASSWORD = "Invalid characters!"
     const val PASSWORD_SHORT = "Password must be at least $PASSWORD_REQUIREMENT_MIN characters!"
     const val PASSWORD_LONG = "Password must be no more than $REQUIREMENT_MAX characters!"
+    const val INVALID_USERNAME = "Invalid Username"
+    const val NO_PASSWORD_PROVIDED = "Password field is empty"
 }
