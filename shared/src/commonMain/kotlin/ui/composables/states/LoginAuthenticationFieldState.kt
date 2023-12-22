@@ -8,7 +8,6 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import ui.composables.states.Types.PASSWORD
 import ui.composables.states.Types.USERNAME
-import util.Constants
 import util.Constants.INVALID_USERNAME
 import util.Constants.NO_PASSWORD_PROVIDED
 import util.Status
