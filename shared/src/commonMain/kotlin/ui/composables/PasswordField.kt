@@ -26,7 +26,8 @@ import util.textFieldColors
 fun PasswordField(
     state: AuthenticationFieldState,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    label: String = "Password"
 ) {
     val input by state.input.subscribeAsState()
     val isValid by state.isValid.subscribeAsState()
@@ -35,7 +36,7 @@ fun PasswordField(
     OutlinedTextField(
         value = input,
         onValueChange = state::updateInput,
-        label = { Text(text = "Password", fontSize = typography.labelMedium.fontSize) },
+        label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
         trailingIcon = {
             Icon(

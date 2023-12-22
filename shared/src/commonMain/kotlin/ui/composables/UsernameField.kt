@@ -19,7 +19,8 @@ import util.textFieldColors
 fun UsernameField(
     state: AuthenticationFieldState,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    label: String = "Username"
 ) {
     val input by state.input.subscribeAsState()
     val isValid by state.isValid.subscribeAsState()
@@ -27,7 +28,7 @@ fun UsernameField(
     OutlinedTextField(
         value = input,
         onValueChange = state::updateInput,
-        label = { Text(text = "Username", fontSize = typography.labelMedium.fontSize) },
+        label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Username") },
         colors = textFieldColors(),
         shape = RoundedCornerShape(ShapeTokens.roundedCorners),
