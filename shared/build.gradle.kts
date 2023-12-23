@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("kotlin-parcelize")
     id("app.cash.sqldelight") version ("2.0.0")
 }
 
