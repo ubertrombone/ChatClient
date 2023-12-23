@@ -36,7 +36,7 @@ class DefaultRootComponent(
         source = navigation,
         serializer = Config.serializer(),
         initialConfiguration = Login,
-        handleBackButton = false,
+        handleBackButton = true,
         childFactory = ::createChild
     )
     override val childStack: Value<ChildStack<*, RootComponent.Child>> = _childStack
