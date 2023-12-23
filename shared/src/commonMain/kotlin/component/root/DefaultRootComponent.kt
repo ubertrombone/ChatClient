@@ -72,7 +72,7 @@ class DefaultRootComponent(
                 when (it) {
                     LOGIN -> navigation.pop()
                     REGISTER -> {}
-                    MAIN -> navigation.push(Main)
+                    MAIN -> navigation.replaceAll(Main)
                 }
             }
         )
@@ -84,7 +84,7 @@ class DefaultRootComponent(
             server = server,
             settings = settingsRepository,
             onLogoutClicked = {
-                navigation.popTo(0)
+                navigation.replaceAll(Login)
                 scope.launch { server.logout() } // TODO: Review if this is the right place for this
             }
         )
