@@ -35,6 +35,12 @@ class DefaultLoginComponent(
     private val _rememberMe: MutableValue<Boolean> = MutableValue(settings.rememberMe.get().toBooleanStrict())
     override val rememberMe: Value<Boolean> = _rememberMe
 
+    private val _isInitLoading = MutableValue(true)
+    override val isInitLoading: Value<Boolean> = _isInitLoading
+
+    private val _isLoading = MutableValue(false)
+    override val isLoading: Value<Boolean> = _isLoading
+
     override fun updateInit(status: Status) {
         scope.launch { _initStatus.update { status } }
     }
@@ -47,12 +53,6 @@ class DefaultLoginComponent(
             _rememberMe.update { rememberMe }
         }
     }
-
-    private val _isInitLoading = MutableValue(true)
-    override val isInitLoading: Value<Boolean> = _isInitLoading
-
-    private val _isLoading = MutableValue(false)
-    override val isLoading: Value<Boolean> = _isLoading
 
     override fun initLogin() {
         scope.launch {
