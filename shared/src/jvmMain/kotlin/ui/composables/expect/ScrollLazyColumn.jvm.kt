@@ -28,7 +28,7 @@ actual fun ScrollLazyColumn(
         LazyColumn(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(end = 12.dp),
             state = state
         ) { items() }
         VerticalScrollbar(
