@@ -1,16 +1,10 @@
 package api
 
-import androidx.compose.runtime.MutableState
 import api.model.*
-import io.ktor.client.*
-import kotlinx.coroutines.CoroutineScope
-import settings.SettingsRepository
 import util.Status
 import util.Username
 
 interface ApplicationApi {
-    val client: HttpClient
-
     suspend fun register(account: AccountRequest): Status
     suspend fun login(): Status
     suspend fun authenticate(credentials: AuthenticationRequest): Status

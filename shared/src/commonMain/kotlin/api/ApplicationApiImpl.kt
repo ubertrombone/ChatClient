@@ -4,7 +4,6 @@ import api.model.*
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
@@ -12,6 +11,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Accepted
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Conflict
@@ -19,20 +19,23 @@ import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.HttpStatusCode.Companion.UnprocessableEntity
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.*
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import settings.SettingsRepository
-import util.Status.*
+import util.Status.Error
+import util.Status.Success
 import util.Username
 import util.toUsername
 import kotlin.coroutines.coroutineContext
 
 class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
     private val scope = CoroutineScope(Dispatchers.Main)
-    override val client = HttpClient(CIO) {
+    private val client = HttpClient {
         install(ContentNegotiation) {
-            json(Json { prettyPrint = true })
+            json(json = Json { prettyPrint = true })
         }
 
         install(Auth) {
@@ -48,7 +51,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
         client.post("/register") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(account)
         }.let { response ->
             if (response.status == Conflict) Error(response.bodyAsText())
@@ -83,7 +86,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
         client.post("/authenticate") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(credentials)
         }.let { response ->
             when (response.status) {
@@ -107,7 +110,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun add(friend: Username) = withContext(coroutineContext) {
         client.post("/friends/add") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(friend)
         }.let { response ->
             when (response.status) {
@@ -120,7 +123,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun remove(friend: Username) = withContext(coroutineContext) {
         client.post("/friends/remove") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(friend)
         }.let { response ->
             when (response.status) {
@@ -145,14 +148,14 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun sendFriendRequest(to: Username) = withContext(coroutineContext) {
         client.post("/friend_request") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(to)
         }.let { if (it.status == Accepted) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun cancelFriendRequest(to: Username) = withContext(coroutineContext) {
         client.post("/friend_request/cancel_request") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(to)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
@@ -163,14 +166,14 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun block(user: Username) = withContext(scope.coroutineContext) {
         client.post("/block") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(user)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun unblock(user: Username) = withContext(scope.coroutineContext) {
         client.post("/block/unblock") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(user)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
@@ -181,7 +184,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     
     override suspend fun createGroupChat(name: GroupChatNameRequest) = withContext(scope.coroutineContext) {
         client.post("/group_chat") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(name)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
@@ -192,7 +195,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun update(status: StatusRequest) = withContext(scope.coroutineContext) {
         client.post("/status") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(status)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
@@ -203,21 +206,21 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
         client.post("/settings/updatepwd") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(password)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
         client.post("/settings/updateuser") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(username)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
         client.post("/settings/cache") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(cache)
         }.let {
             if (it.status == OK) Success.also { settings.cache.set(cache) }
@@ -227,7 +230,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
         client.post("/settings/delete") {
-            contentType(ContentType.Application.Json)
+            contentType(Json)
             setBody(decision)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
