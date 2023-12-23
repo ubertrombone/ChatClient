@@ -12,9 +12,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import component.register.RegisterComponent
-import util.MainPhases
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
