@@ -1,9 +1,8 @@
 package ui.register
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
@@ -12,7 +11,11 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import component.register.RegisterComponent
+import util.MainPhases
+import util.MainPhases.LOGIN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +32,17 @@ fun RegisterContent(component: RegisterComponent, modifier: Modifier = Modifier)
                     )
                 },
                 navigationIcon = {
-                    Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = "Return to Login")
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Return to Login",
+                        tint = colorScheme.primary,
+                        modifier = Modifier
+                            .padding(start = 12.dp, top = 12.dp)
+                            .size(40.dp)
+                            .padding(5.dp)
+                            .clip(CircleShape)
+                            .clickable { component.pushTo(LOGIN) }
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
