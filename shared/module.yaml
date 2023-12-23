@@ -27,6 +27,7 @@ dependencies:
   - io.ktor:ktor-serialization-kotlinx-json:2.3.7
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
   - org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5
+  - org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2
   - app.cash.sqldelight:coroutines-extensions:2.0.0
   - org.jetbrains.kotlinx:kotlinx-datetime:0.5.0
 
@@ -34,14 +35,17 @@ dependencies@android:
   - androidx.core:core-ktx:1.12.0: exported
   - androidx.activity:activity-compose:1.8.0: exported
   - androidx.preference:preference-ktx:1.2.1: exported
+  - io.ktor:ktor-client-okhttp:2.3.7
   - org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3
   - app.cash.sqldelight:android-driver:2.0.0
 
 dependencies@ios:
+  - io.ktor:ktor-client-darwin:2.3.7
   - app.cash.sqldelight:native-driver:2.0.0
 
 dependencies@jvm:
   - $compose.desktop.common: exported
+  - io.ktor:ktor-client-okhttp:2.3.7
   - org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3
   - app.cash.sqldelight:sqlite-driver:2.0.0
   - com.github.Dansoftowner:jSystemThemeDetector:3.8
