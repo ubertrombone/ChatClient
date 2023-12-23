@@ -23,7 +23,6 @@ actual fun ScrollLazyColumn(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val state = rememberLazyListState()
-        val padding = paddingValues ?: PaddingValues(vertical = 0.dp)
 
         LazyColumn(
             verticalArrangement = verticalArrangement,
