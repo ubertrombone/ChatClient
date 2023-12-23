@@ -57,7 +57,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                 actions = {
                     TextButton(
                         modifier = Modifier.padding(end = 24.dp),
-                        onClick = { component.pushTo(REGISTER) } // TODO: Register Button impl
+                        onClick = { component.pushTo(REGISTER) }
                     ) {
                         Text(
                             text = "Register",
