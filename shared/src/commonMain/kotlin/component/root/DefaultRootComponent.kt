@@ -59,7 +59,7 @@ class DefaultRootComponent(
                 when (it) {
                     LOGIN -> {}
                     REGISTER -> navigation.push(Register)
-                    MAIN -> navigation.push(Main)
+                    MAIN -> navigation.replaceAll(Main)
                 }
             }
         )
