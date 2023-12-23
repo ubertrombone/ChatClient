@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import ui.composables.PasswordField
 import ui.composables.RememberMeCheckbox
 import ui.composables.UsernameField
+import ui.composables.expect.ScrollLazyColumn
 import ui.composables.states.LoginAuthenticationFieldState
 import ui.composables.states.Types.PASSWORD
 import ui.composables.states.Types.USERNAME
@@ -35,73 +36,83 @@ fun LoginForm(
     usernameState.validateInput(loginStatus, type = USERNAME)
     passwordState.validateInput(loginStatus, type = PASSWORD)
 
-    Column(
+    ScrollLazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = when {
-                loginStatus == Success -> ""
-                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> ""
-                loginStatus.message == INVALID_USERNAME -> ""
-                else -> loginStatus.message
-            },
-            color = when {
-                loginStatus == Success -> colorScheme.background
-                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> colorScheme.background
-                loginStatus.message == INVALID_USERNAME -> colorScheme.background
-                else -> colorScheme.error
-            },
-            fontSize = typography.bodyLarge.fontSize,
-            fontWeight = typography.bodyLarge.fontWeight
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        UsernameField(
-            state = usernameState,
-            enabled = !isLoading,
-            modifier = Modifier.width(300.dp),
-            label = when {
-                loginStatus == Success -> "Username"
-                (loginStatus as Error).message == INVALID_USERNAME -> loginStatus.message
-                else -> "Username"
-            }
-        )
-
-        Spacer(Modifier.height(50.dp))
-
-        PasswordField(
-            state = passwordState,
-            enabled = !isLoading,
-            modifier = Modifier.width(300.dp),
-            label = when {
-                loginStatus == Success -> "Password"
-                (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> loginStatus.message
-                else -> "Password"
-            }
-        )
-
-        Spacer(Modifier.height(15.dp))
-
-        RememberMeCheckbox(
-            rememberMe = rememberMe,
-            enabled = !isLoading,
-            onCheckChanged = onCheckChange
-        )
-
-        Spacer(Modifier.height(50.dp))
-
-        OutlinedButton(
-            modifier = Modifier.width(160.dp),
-            onClick = onButtonClick
-        ) {
+        item {
             Text(
-                text = "Login",
+                text = when {
+                    loginStatus == Success -> ""
+                    (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> ""
+                    loginStatus.message == INVALID_USERNAME -> ""
+                    else -> loginStatus.message
+                },
+                color = when {
+                    loginStatus == Success -> colorScheme.background
+                    (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> colorScheme.background
+                    loginStatus.message == INVALID_USERNAME -> colorScheme.background
+                    else -> colorScheme.error
+                },
                 fontSize = typography.bodyLarge.fontSize,
                 fontWeight = typography.bodyLarge.fontWeight
             )
+
+            Spacer(Modifier.height(20.dp))
+        }
+
+        item {
+            UsernameField(
+                state = usernameState,
+                enabled = !isLoading,
+                modifier = Modifier.width(300.dp),
+                label = when {
+                    loginStatus == Success -> "Username"
+                    (loginStatus as Error).message == INVALID_USERNAME -> loginStatus.message
+                    else -> "Username"
+                }
+            )
+
+            Spacer(Modifier.height(50.dp))
+        }
+
+        item {
+            PasswordField(
+                state = passwordState,
+                enabled = !isLoading,
+                modifier = Modifier.width(300.dp),
+                label = when {
+                    loginStatus == Success -> "Password"
+                    (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> loginStatus.message
+                    else -> "Password"
+                }
+            )
+
+            Spacer(Modifier.height(15.dp))
+        }
+
+        item {
+            RememberMeCheckbox(
+                rememberMe = rememberMe,
+                enabled = !isLoading,
+                onCheckChanged = onCheckChange
+            )
+
+            Spacer(Modifier.height(50.dp))
+        }
+
+        item {
+            OutlinedButton(
+                modifier = Modifier.width(160.dp),
+                onClick = onButtonClick
+            ) {
+                Text(
+                    text = "Login",
+                    fontSize = typography.bodyLarge.fontSize,
+                    fontWeight = typography.bodyLarge.fontWeight
+                )
+            }
         }
     }
 }
