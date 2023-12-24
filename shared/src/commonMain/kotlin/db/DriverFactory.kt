@@ -1,7 +1,7 @@
 package db
 
 import app.cash.sqldelight.db.SqlDriver
-import com.joshrose.chat.ChatDatabase
+import com.ubertrombone.chat.ChatDatabase
 
 expect class DriverFactory() {
     fun createDriver(): SqlDriver

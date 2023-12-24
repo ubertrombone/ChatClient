@@ -2,8 +2,8 @@ package db
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.joshrose.chat.ChatDatabase
-import com.joshrose.chat.Chats
+import com.ubertrombone.chat.ChatDatabase
+import com.ubertrombone.chat.Chats
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
