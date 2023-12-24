@@ -1,4 +1,4 @@
-package com.joshrose
+package com.ubertrombone.chatclient
 
 import android.app.Application
 import android.content.Context
