@@ -2,8 +2,8 @@ package db
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.joshrose.ChatClientApp
-import com.joshrose.chat.ChatDatabase
+import com.ubertrombone.chat.ChatDatabase
+import com.ubertrombone.chatclient.ChatClientApp
 
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver =

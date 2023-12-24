@@ -1,4 +1,4 @@
-package com.joshrose
+package com.ubertrombone.chatclient
 
 import MainView
 import android.os.Bundle
