@@ -2,7 +2,7 @@
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,8 +10,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.sqldelight)
-    //alias(libs.plugins.kotlin.native.cocoapods)
-//    kotlin("native.cocoapods")
 }
 
 sqldelight {
@@ -42,7 +40,7 @@ kotlin {
     }
 
     compilerOptions {
-        languageVersion.set(KOTLIN_2_0)
+        languageVersion.set(KOTLIN_1_9)
     }
 
     sourceSets {
