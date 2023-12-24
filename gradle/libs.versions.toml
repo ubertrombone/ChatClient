@@ -1,0 +1,60 @@
+[versions]
+gradle = "8.2.0"
+kotlin = "1.9.21"
+compose = "1.5.11"
+decompose = "3.0.0-alpha01"
+androidxCore = "1.12.0"
+androidxActivityCompose = "1.8.2"
+json = "1.6.2"
+ktor = "2.3.7"
+coroutines = "1.7.3"
+collections = "0.3.5"
+datetime = "0.5.0"
+napier = "2.6.1"
+settings = "1.1.1"
+preferences = "1.2.1"
+sqldelight = "2.0.1"
+minSdk = "26"
+targetSdk = "33"
+compileSdk = "34"
+
+[libraries]
+androidx-core-coreKtx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
+androidx-preference-preferenceKtx = { module = "androidx.preference:preference-ktx", version.ref = "preferences" }
+decompose-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-extensionsCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+kotlinx-kotlinxSerialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
+ktor-ktorClientCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-ktorClientAuth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-ktorClientContentNegotation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-ktorSerializationJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-ktorClientOkhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-ktorClientDarwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+kotlinx-kotlinxCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-kotlinxCoroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-kotlinxCoroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+kotlinx-Collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "collections" }
+aakira-napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+themedetector = "com.github.Dansoftowner:jSystemThemeDetector:3.8"
+multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "settings" }
+android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+
+[bundles]
+ktor-common = ["ktor-ktorClientAuth", "ktor-ktorClientContentNegotation", "ktor-ktorClientCore", "ktor-ktorSerializationJson"]
+kotlinx-common = ["kotlinx-kotlinxCoroutinesCore", "kotlinx-Collections", "kotlinx-datetime", "kotlinx-kotlinxSerialization-json"]
+androidx-common = ["androidx-core-coreKtx", "androidx-activity-activityCompose", "androidx-preference-preferenceKtx"]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradle" }
+android-library = { id = "com.android.library", version.ref = "gradle" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
