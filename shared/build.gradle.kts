@@ -2,7 +2,7 @@
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -41,25 +41,8 @@ kotlin {
         }
     }
 
-//    iosX64()
-//    iosArm64()
-//    iosSimulatorArm64()
-//
-//    cocoapods {
-//        version = "1.0.0"
-//        summary = "Chat Client project"
-//        homepage = "Link to the Shared Module homepage"
-//        ios.deploymentTarget = "14.1"
-//        podfile = project.file("../iosApp/Podfile")
-//        framework {
-//            baseName = "shared"
-//            isStatic = true
-//            compilation.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
-//        }
-//    }
-
     compilerOptions {
-        languageVersion.set(KOTLIN_1_9)
+        languageVersion.set(KOTLIN_2_0)
     }
 
     sourceSets {
