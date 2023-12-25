@@ -36,11 +36,11 @@ fun RegisterForm(
     onCheckChange: (Boolean) -> Unit,
     onClick: () -> Unit
 ) {
-    usernameState.updateIsValid(usernameStatus == Success)
-    passwordState.updateIsValid(passwordStatus == Success)
+    usernameState.updateIsValid(usernameStatus == Success && registerStatus == Success)
+    passwordState.updateIsValid(passwordStatus == Success && registerStatus == Success)
     confirmPasswordState.updateIsValid(
         when {
-            passwordStatus == Success -> true
+            passwordStatus == Success -> registerStatus == Success
             (passwordStatus as Error).message == PASSWORDS_NOT_MATCH -> false
             else -> true
         }
@@ -59,7 +59,7 @@ fun RegisterForm(
                 fontWeight = typography.bodyLarge.fontWeight
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(12.dp))
         }
 
         item {
@@ -70,7 +70,7 @@ fun RegisterForm(
                 label = if (usernameStatus is Error) usernameStatus.message else "Username"
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
@@ -81,7 +81,7 @@ fun RegisterForm(
                 label = if (passwordStatus is Error) passwordStatus.message else "Password"
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
@@ -96,7 +96,7 @@ fun RegisterForm(
                 }
             )
 
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(8.dp))
         }
 
         item {
@@ -107,7 +107,7 @@ fun RegisterForm(
                 modifier = Modifier.width(300.dp)
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
