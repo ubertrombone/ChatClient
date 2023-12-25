@@ -21,3 +21,5 @@ value class Password(val pass: String) {
         require(pass.length <= REQUIREMENT_MAX) { PASSWORD_LONG }
     }
 }
+
+fun String.toPassword() = Password(this)
