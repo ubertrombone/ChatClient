@@ -9,16 +9,30 @@ import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.register.RegisterComponent
+import ui.composables.expect.ScrollLazyColumn
+import ui.composables.states.rememberRegisterAuthenticationFieldState
 import util.MainPhases.LOGIN
 
+@Suppress("DuplicatedCode")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterContent(component: RegisterComponent, modifier: Modifier = Modifier) {
+    val isLoading by component.isLoading.subscribeAsState()
+    val registrationStatus by component.registrationStatus.subscribeAsState()
+    val usernameStatus by component.usernameStatus.subscribeAsState()
+    val passwordStatus by component.passwordStatus.subscribeAsState()
+    val rememberMe by component.rememberMe.subscribeAsState()
+    val username = rememberRegisterAuthenticationFieldState(input = "")
+    val password = rememberRegisterAuthenticationFieldState(input = "")
+    val confirmPassword = rememberRegisterAuthenticationFieldState(input = "")
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -51,15 +65,22 @@ fun RegisterContent(component: RegisterComponent, modifier: Modifier = Modifier)
         },
         containerColor = colorScheme.background
     ) {
-        // TODO: scrollable
-        Column(
+        RegisterForm(
             modifier = Modifier.fillMaxSize().padding(it),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            usernameState = username,
+            passwordState = password,
+            confirmPasswordState = confirmPassword,
+            rememberMe = rememberMe,
+            registerStatus = registrationStatus,
+            usernameStatus = usernameStatus,
+            passwordStatus = passwordStatus,
+            isLoading = isLoading,
+            onCheckChange = component::update
         ) {
-            Text(
-                text = "REGISTER",
-                fontSize = typography.displayLarge.fontSize
+            component.validateCredentials(
+                username = username.input.value,
+                password = password.input.value,
+                confirmation = confirmPassword.input.value
             )
         }
     }
