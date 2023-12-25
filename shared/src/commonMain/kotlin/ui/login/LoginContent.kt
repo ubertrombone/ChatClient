@@ -26,6 +26,7 @@ import util.Status.Error
 import util.Status.Success
 import util.toUsername
 
+@Suppress("DuplicatedCode")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
