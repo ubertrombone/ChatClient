@@ -1,6 +1,9 @@
 package ui.login
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
@@ -96,7 +99,8 @@ fun LoginForm(
             RememberMeCheckbox(
                 rememberMe = rememberMe,
                 enabled = !isLoading,
-                onCheckChanged = onCheckChange
+                onCheckChanged = onCheckChange,
+                modifier = Modifier.width(300.dp)
             )
 
             Spacer(Modifier.height(50.dp))
