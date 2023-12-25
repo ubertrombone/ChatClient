@@ -62,7 +62,7 @@ fun LoginForm(
                 fontWeight = typography.bodyLarge.fontWeight
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(12.dp))
         }
 
         item {
@@ -77,7 +77,7 @@ fun LoginForm(
                 }
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
@@ -92,7 +92,7 @@ fun LoginForm(
                 }
             )
 
-            Spacer(Modifier.height(15.dp))
+            Spacer(Modifier.height(8.dp))
         }
 
         item {
@@ -103,7 +103,7 @@ fun LoginForm(
                 modifier = Modifier.width(300.dp)
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
