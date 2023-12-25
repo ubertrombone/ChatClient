@@ -21,7 +21,7 @@ fun RememberMeCheckbox(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start
     ) {
         Checkbox(
             checked = rememberMe,
