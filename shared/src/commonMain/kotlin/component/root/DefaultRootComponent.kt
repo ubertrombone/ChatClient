@@ -67,6 +67,7 @@ class DefaultRootComponent(
     private fun register(componentContext: ComponentContext): RegisterComponent =
         DefaultRegisterComponent(
             componentContext = componentContext,
+            settings = settingsRepository,
             server = server,
             pushTo = {
                 when (it) {
