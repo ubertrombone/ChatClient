@@ -13,4 +13,6 @@ object Constants {
     const val PASSWORD_LONG = "Password must be no more than $REQUIREMENT_MAX characters!"
     const val INVALID_USERNAME = "Invalid Username"
     const val NO_PASSWORD_PROVIDED = "Password field is empty"
+    const val PASSWORDS_NOT_MATCH = "Passwords do not match!"
+    const val UNKNOWN_ERROR = "An unknown error occurred"
 }
