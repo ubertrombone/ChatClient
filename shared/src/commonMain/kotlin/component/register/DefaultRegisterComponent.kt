@@ -3,19 +3,21 @@ package component.register
 import api.ApplicationApi
 import api.callWrapper
 import api.model.AccountRequest
-import api.model.AuthenticationRequest
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import io.ktor.client.utils.EmptyContent.status
 import kotlinx.coroutines.*
 import settings.SettingsRepository
-import util.*
 import util.Constants.PASSWORDS_NOT_MATCH
 import util.Constants.UNKNOWN_ERROR
+import util.MainPhases
 import util.MainPhases.MAIN
-import util.Status.*
+import util.Status
+import util.Status.Error
+import util.Status.Success
+import util.toPassword
+import util.toUsername
 
 class DefaultRegisterComponent(
     componentContext: ComponentContext,

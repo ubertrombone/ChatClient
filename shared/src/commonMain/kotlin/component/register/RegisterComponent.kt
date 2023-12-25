@@ -2,7 +2,6 @@ package component.register
 
 import api.ApplicationApi
 import api.model.AccountRequest
-import api.model.AuthenticationRequest
 import com.arkivanov.decompose.value.Value
 import settings.SettingsRepository
 import util.MainPhases
