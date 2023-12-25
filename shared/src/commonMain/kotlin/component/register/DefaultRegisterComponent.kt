@@ -59,6 +59,7 @@ class DefaultRegisterComponent(
     override suspend fun validateUsername(username: String): Boolean = withContext(scope.coroutineContext) {
         try {
             username.toUsername()
+            _usernameStatus.update { Success }
             true
         } catch (e: IllegalArgumentException) {
             _usernameStatus.update { Error(e.message ?: UNKNOWN_ERROR) }
@@ -74,6 +75,7 @@ class DefaultRegisterComponent(
 
         try {
             password.toPassword()
+            _passwordStatus.update { Success }
             true
         } catch (e: IllegalArgumentException) {
             _passwordStatus.update { Error(e.message ?: UNKNOWN_ERROR) }
