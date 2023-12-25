@@ -7,6 +7,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import io.ktor.client.utils.EmptyContent.status
 import kotlinx.coroutines.*
 import settings.SettingsRepository
 import util.Constants.PASSWORDS_NOT_MATCH
@@ -88,7 +89,7 @@ class DefaultRegisterComponent(
             isLoading = _isLoading,
             operation = { server.register(account) },
             onSuccess = {
-                if (it is Error) _registrationStatus.update { status -> status }
+                if (it is Error) _registrationStatus.update { _ -> it }
                 if (it == Success) pushTo(MAIN)
             },
             onError = { _registrationStatus.update { _ -> Error(it) } }
