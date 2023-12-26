@@ -13,17 +13,20 @@ import settings.SettingsRepository
 import util.Username
 
 interface MainComponent {
-    val title: String
     val chatRepository: ChatRepository
     val server: ApplicationApi
     val settings: SettingsRepository
     val onLogoutClicked: () -> Unit
 
+    val title: String
+    val isLoading: Value<Boolean>
     val childStack: Value<ChildStack<*, Child>>
     
     fun onChatsTabClicked()
     fun onGroupChatsTabClicked()
     fun onSettingsTabClicked()
+
+    fun logout()
     
     sealed class Child {
         class ChatChild(val component: ChatComponent) : Child()

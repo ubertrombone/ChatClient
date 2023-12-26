@@ -29,7 +29,7 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
                 actions = {// TODO: Temporary
                     TextButton(
                         modifier = Modifier.padding(end = 24.dp),
-                        onClick = component.onLogoutClicked
+                        onClick = component::logout
                     ) {
                         Text(
                             text = "Logout",
