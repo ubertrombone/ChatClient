@@ -7,10 +7,7 @@ import component.main.chat.ChatComponent
 import component.main.group.GroupComponent
 import component.main.settings.SettingsComponent
 import db.ChatRepository
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableSet
 import settings.SettingsRepository
-import util.Username
 
 interface MainComponent {
     val chatRepository: ChatRepository
