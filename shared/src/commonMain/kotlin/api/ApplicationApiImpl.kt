@@ -167,14 +167,13 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         route: String,
         body: T,
         crossinline operation: suspend HttpResponse.() -> Status
-    ): Status =
-        withContext(scope.coroutineContext) {
-            client.post(route) {
-                contentType(Json)
-                setBody(body)
-                bearerAuth(settings.token.get())
-            }.let { operation(it) }
-        }
+    ): Status = withContext(scope.coroutineContext) {
+        client.post(route) {
+            contentType(Json)
+            setBody(body)
+            bearerAuth(settings.token.get())
+        }.let { operation(it) }
+    }
 
     private suspend inline fun <T> getHelper(route: String, crossinline operation: suspend HttpResponse.() -> T): T =
         withContext(scope.coroutineContext) {
