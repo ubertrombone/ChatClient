@@ -55,6 +55,11 @@ class DefaultLoginComponent(
     }
 
     override fun initLogin() {
+        if (settings.token.get().isEmpty()) {
+            _isInitLoading.update { false }
+            updateInit(status = Success)
+            return
+        }
         scope.launch {
             callWrapper(
                 isLoading = _isInitLoading,
@@ -80,6 +85,8 @@ class DefaultLoginComponent(
                             settings.username.set(credentials.username.name)
                             settings.password.set(credentials.password)
                         }
+                        updateLogin(status = Success)
+                        _isLoading.update { false }
                         pushTo(MAIN)
                     }
                 },
