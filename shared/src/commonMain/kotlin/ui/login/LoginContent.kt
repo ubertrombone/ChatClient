@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import api.model.AuthenticationRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
+import kotlinx.coroutines.delay
 import ui.composables.states.rememberLoginAuthenticationFieldState
 import util.Constants
 import util.Constants.INVALID_USERNAME
@@ -42,7 +43,11 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
         initialInput = if (rememberMe) component.settings.password.get() else ""
     )
 
-    LaunchedEffect(initStatus) { component.initLogin() }
+    LaunchedEffect(initStatus) {
+        // Prevents loading bar from looking like a screen flicker
+        delay(500)
+        component.initLogin()
+    }
 
     Scaffold(
         modifier = modifier,
