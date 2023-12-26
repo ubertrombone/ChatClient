@@ -15,6 +15,9 @@ import component.root.RootComponent.Child.*
 import db.ChatRepository
 import db.DriverFactory
 import db.createDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
 import util.MainPhases.*
@@ -26,6 +29,7 @@ class DefaultRootComponent(
     private val database = createDatabase(DriverFactory())
     override val chatRepository = ChatRepository(database)
     override val server = ApplicationApiImpl(settingsRepository)
+    private val scope = CoroutineScope(Dispatchers.Main)
     private val navigation = StackNavigation<Config>()
     private val _childStack = childStack(
         source = navigation,
@@ -79,7 +83,7 @@ class DefaultRootComponent(
             chatRepository = chatRepository,
             server = server,
             settings = settingsRepository,
-            onLogoutClicked = { navigation.replaceAll(Login) }
+            onLogoutClicked = { scope.launch { navigation.replaceAll(Login) } }
         )
 
     override fun onBackPressed() = navigation.pop()
