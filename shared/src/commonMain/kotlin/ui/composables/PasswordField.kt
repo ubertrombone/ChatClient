@@ -27,7 +27,8 @@ fun PasswordField(
     state: AuthenticationFieldState,
     enabled: Boolean,
     modifier: Modifier = Modifier,
-    label: String = "Password"
+    label: String = "Password",
+    hasTrailingIcon: Boolean = true
 ) {
     val input by state.input.subscribeAsState()
     val isValid by state.isValid.subscribeAsState()
@@ -39,7 +40,7 @@ fun PasswordField(
         label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
         trailingIcon = {
-            IconToggleButton(
+            if (hasTrailingIcon) IconToggleButton(
                 checked = visibility,
                 onCheckedChange = { visibility = !visibility },
                 modifier = Modifier.clip(CircleShape)
