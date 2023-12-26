@@ -34,12 +34,6 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
             json(json = Json { prettyPrint = true })
         }
 
-//        install(Auth) {
-//            bearer {
-//                loadTokens { bearerTokens.value } // TODO: Encrypt token
-//            }
-//        }
-
         defaultRequest {
             url("http://192.168.0.10:8080")
         }
@@ -62,26 +56,19 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun login() = withContext(scope.coroutineContext) {
-        client.get("/login") { bearerAuth(settings.token.get()) }
-            .let {
-                when (it.status) {
-                    OK -> Success
-                    Unauthorized -> Error("Token is not valid or has expired")
-                    else -> Error("Unknown error - the server may be down. Try logging in again later.")
-                }
+        getHelper("/login") {
+            when (status) {
+                OK -> Success
+                Unauthorized -> Error("Token is not valid or has expired")
+                else -> Error("Unknown error - the server may be down. Try logging in again later.")
             }
+        }
     }
 
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
-        client.post("/authenticate") {
-            contentType(Json)
-            setBody(credentials)
-        }.let { response ->
+        postHelper(route = "/authenticate", body = credentials) { response ->
             when (response.status) {
-                OK -> {
-                    settings.token.set(response.bodyAsText())
-                    Success
-                }
+                OK -> Success.also { settings.token.set(response.bodyAsText()) }
                 BadRequest -> Error(response.bodyAsText())
                 else -> Error("Unknown error - the server may be down. Try logging in again later.")
             }
@@ -89,22 +76,15 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun logout() = withContext(scope.coroutineContext) {
-        client.get("/logout") { bearerAuth(settings.token.get()) }
-            .let { if (it.status == OK) Success else Error("There was a problem logging out!") }
+        getHelper("/logout") { if (status == OK) Success else Error("There was a problem logging out!") }
     }
 
     override suspend fun getFriends() = withContext(scope.coroutineContext) {
-        with (client.get("/friends") { bearerAuth(settings.token.get()) }) {
-            if (status == OK) body<Set<FriendInfo>>() else null
-        }
+        getHelper("/friends") { if (status == OK) body<Set<FriendInfo>>() else null }
     }
 
     override suspend fun add(friend: Username) = withContext(coroutineContext) {
-        client.post("/friends/add") {
-            contentType(Json)
-            setBody(friend)
-            bearerAuth(settings.token.get())
-        }.let { response ->
+        postHelper(route = "/friends/add", body = friend) { response ->
             when (response.status) {
                 OK -> Success
                 UnprocessableEntity -> Error(response.bodyAsText())
@@ -114,10 +94,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun remove(friend: Username) = withContext(coroutineContext) {
-        client.post("/friends/remove") {
-            contentType(Json)
-            setBody(friend)
-        }.let { response ->
+        postHelper(route = "/friends/remove", body = friend) { response ->
             when (response.status) {
                 OK -> Success
                 UnprocessableEntity -> Error(response.bodyAsText())
@@ -127,104 +104,69 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun getSentFriendRequests() = withContext(scope.coroutineContext) {
-        with (client.get("/friend_request/sent_friend_requests")) {
-            if (status == OK) body<Set<FriendRequest>>() else null
-        }
+        getHelper("/friend_request/sent_friend_requests") { if (status == OK) body<Set<FriendRequest>>() else null }
     }
 
     override suspend fun getReceivedFriendRequests() = withContext(scope.coroutineContext) {
-        with (client.get("/friend_request/received_friend_requests")) {
-            if (status == OK) body<Set<FriendRequest>>() else null
-        }
+        getHelper("/friend_request/received_friend_requests") { if (status == OK) body<Set<FriendRequest>>() else null }
     }
 
     override suspend fun sendFriendRequest(to: Username) = withContext(coroutineContext) {
-        client.post("/friend_request") {
-            contentType(Json)
-            setBody(to)
-        }.let { if (it.status == Accepted) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/friend_request", body = to) { if (it.status == Accepted) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun cancelFriendRequest(to: Username) = withContext(coroutineContext) {
-        client.post("/friend_request/cancel_request") {
-            contentType(Json)
-            setBody(to)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/friend_request/cancel_request", body = to) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun getBlockList() = withContext(scope.coroutineContext) {
-        with (client.get("/block")) { if (status == OK) body<Set<Username>>() else null }
+        getHelper("/block") { if (status == OK) body<Set<Username>>() else null }
     }
 
     override suspend fun block(user: Username) = withContext(scope.coroutineContext) {
-        client.post("/block") {
-            contentType(Json)
-            setBody(user)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/block", body = user) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun unblock(user: Username) = withContext(scope.coroutineContext) {
-        client.post("/block/unblock") {
-            contentType(Json)
-            setBody(user)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/block/unblock", body = user) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun getGroupChats() = withContext(scope.coroutineContext) {
-        with (client.get("/group_chat")) { if (status == OK) body<Set<GroupChat>>() else null }
+        getHelper("group_chat") { if (status == OK) body<Set<GroupChat>>() else null }
     }
     
     override suspend fun createGroupChat(name: GroupChatNameRequest) = withContext(scope.coroutineContext) {
-        client.post("/group_chat") {
-            contentType(Json)
-            setBody(name)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/group_chat", body = name) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun getStatus() = withContext(scope.coroutineContext) {
-        with (client.get("/status")) { if (status == OK) body<String?>() else null }
+        getHelper("/status") { if (status == OK) body<String?>() else null }
     }
 
     override suspend fun update(status: StatusRequest) = withContext(scope.coroutineContext) {
-        client.post("/status") {
-            contentType(Json)
-            setBody(status)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/status", body = status) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun getCache() = withContext(scope.coroutineContext) {
-        with (client.get("/settings/cache")) { if (status == OK) body<Boolean>() else null }
+        getHelper("/settings/cache") { if (status == OK) body<Boolean>() else null }
     }
 
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
-        client.post("/settings/updatepwd") {
-            contentType(Json)
-            setBody(password)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/updatepwd", body = password) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
-        client.post("/settings/updateuser") {
-            contentType(Json)
-            setBody(username)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/updateuser", body = username) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
-        client.post("/settings/cache") {
-            contentType(Json)
-            setBody(cache)
-        }.let {
-            if (it.status == OK) Success.also { settings.cache.set(cache) }
-            else Error(it.bodyAsText())
+        postHelper(route = "/settings/cache", body = cache) {
+            if (it.status == OK) Success.also { settings.cache.set(cache) } else Error(it.bodyAsText())
         }
     }
 
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
-        client.post("/settings/delete") {
-            contentType(Json)
-            setBody(decision)
-        }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/delete", body = decision) { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
 
     private suspend inline fun <reified T> postHelper( // TODO: Study inline fun and reified type generics
@@ -238,6 +180,11 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
                 setBody(body)
                 bearerAuth(settings.token.get())
             }.let { operation(it) }
+        }
+
+    private suspend fun <T> getHelper(route: String, operation: suspend HttpResponse.() -> T): T =
+        withContext(scope.coroutineContext) {
+            with(client.get(route) { bearerAuth(settings.token.get()) }) { operation(this) }
         }
 
     override fun onDestroy() {
