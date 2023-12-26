@@ -85,8 +85,8 @@ class DefaultRootComponent(
             server = server,
             settings = settingsRepository,
             onLogoutClicked = {
+                scope.launch { server.logout() }
                 navigation.replaceAll(Login)
-                scope.launch { server.logout() } // TODO: Review if this is the right place for this
             }
         )
 

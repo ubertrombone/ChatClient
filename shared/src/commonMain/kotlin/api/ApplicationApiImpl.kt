@@ -28,7 +28,6 @@ import settings.SettingsRepository
 import util.Status.Error
 import util.Status.Success
 import util.Username
-import util.toUsername
 import kotlin.coroutines.coroutineContext
 
 class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
@@ -71,15 +70,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     override suspend fun login() = withContext(scope.coroutineContext) {
         when (client.get("/login").status) {
             OK -> Success
-            Unauthorized -> {
-                if (settings.username.get().isBlank()) Error("User has not logged in before")
-                else authenticate(
-                    credentials = AuthenticationRequest(
-                        username = settings.username.get().toUsername(),
-                        password = settings.password.get()
-                    )
-                )
-            }
+            Unauthorized -> Error("Token is not valid or has expired")
             else -> Error("Unknown error - the server may be down. Try logging in again later.")
         }
     }
