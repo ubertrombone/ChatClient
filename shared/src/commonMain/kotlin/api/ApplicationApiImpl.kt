@@ -163,10 +163,10 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         postHelper(route = "/settings/delete", body = decision) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
-    private suspend inline fun <reified T> postHelper( // TODO: Study inline fun and reified type generics
+    private suspend inline fun <reified T> postHelper(
         route: String,
         body: T,
-        crossinline operation: suspend HttpResponse.() -> Status // TODO: Study crossinline parameters
+        crossinline operation: suspend HttpResponse.() -> Status
     ): Status =
         withContext(scope.coroutineContext) {
             client.post(route) {
@@ -176,7 +176,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
             }.let { operation(it) }
         }
 
-    private suspend fun <T> getHelper(route: String, operation: suspend HttpResponse.() -> T): T =
+    private suspend inline fun <T> getHelper(route: String, crossinline operation: suspend HttpResponse.() -> T): T =
         withContext(scope.coroutineContext) {
             with(client.get(route) { bearerAuth(settings.token.get()) }) { operation(this) }
         }
