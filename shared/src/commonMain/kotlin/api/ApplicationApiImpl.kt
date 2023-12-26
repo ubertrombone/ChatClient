@@ -5,8 +5,6 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -22,23 +20,25 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import settings.SettingsRepository
+import util.Status
 import util.Status.Error
 import util.Status.Success
 import util.Username
 import kotlin.coroutines.coroutineContext
 
 class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     private val client = HttpClient {
         install(ContentNegotiation) {
             json(json = Json { prettyPrint = true })
         }
 
-        install(Auth) {
-            bearer {
-                loadTokens { BearerTokens(settings.token.get(), "") } // TODO: Encrypt token
-            }
-        }
+//        install(Auth) {
+//            bearer {
+//                loadTokens { bearerTokens.value } // TODO: Encrypt token
+//            }
+//        }
 
         defaultRequest {
             url("http://192.168.0.10:8080")
@@ -46,10 +46,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
-        client.post("/register") {
-            contentType(Json)
-            setBody(account)
-        }.let { response ->
+        postHelper(route = "/register", body = account) { response ->
             if (response.status == Conflict) Error(response.bodyAsText())
             else response.body<SimpleResponse>().run {
                 if (successful) {
@@ -65,11 +62,14 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun login() = withContext(scope.coroutineContext) {
-        when (client.get("/login").status) {
-            OK -> Success
-            Unauthorized -> Error("Token is not valid or has expired")
-            else -> Error("Unknown error - the server may be down. Try logging in again later.")
-        }
+        client.get("/login") { bearerAuth(settings.token.get()) }
+            .let {
+                when (it.status) {
+                    OK -> Success
+                    Unauthorized -> Error("Token is not valid or has expired")
+                    else -> Error("Unknown error - the server may be down. Try logging in again later.")
+                }
+            }
     }
 
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
@@ -89,17 +89,21 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun logout() = withContext(scope.coroutineContext) {
-        if (client.get("/logout").status == OK) Success else Error("There was a problem logging out!")
+        client.get("/logout") { bearerAuth(settings.token.get()) }
+            .let { if (it.status == OK) Success else Error("There was a problem logging out!") }
     }
 
     override suspend fun getFriends() = withContext(scope.coroutineContext) {
-        with (client.get("/friends")) { if (status == OK) body<Set<FriendInfo>>() else null }
+        with (client.get("/friends") { bearerAuth(settings.token.get()) }) {
+            if (status == OK) body<Set<FriendInfo>>() else null
+        }
     }
 
     override suspend fun add(friend: Username) = withContext(coroutineContext) {
         client.post("/friends/add") {
             contentType(Json)
             setBody(friend)
+            bearerAuth(settings.token.get())
         }.let { response ->
             when (response.status) {
                 OK -> Success
@@ -222,6 +226,19 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
             setBody(decision)
         }.let { if (it.status == OK) Success else Error(it.bodyAsText()) }
     }
+
+    private suspend inline fun <reified T> postHelper( // TODO: Study inline fun and reified type generics
+        route: String,
+        body: T,
+        crossinline operation: suspend (HttpResponse) -> Status // TODO: Study crossinline parameters
+    ): Status =
+        withContext(scope.coroutineContext) {
+            client.post(route) {
+                contentType(Json)
+                setBody(body)
+                bearerAuth(settings.token.get())
+            }.let { operation(it) }
+        }
 
     override fun onDestroy() {
         scope.cancel()
