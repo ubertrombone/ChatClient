@@ -89,7 +89,8 @@ fun LoginForm(
                     loginStatus == Success -> "Password"
                     (loginStatus as Error).message == NO_PASSWORD_PROVIDED -> loginStatus.message
                     else -> "Password"
-                }
+                },
+                hasTrailingIcon = false
             )
 
             Spacer(Modifier.height(8.dp))
