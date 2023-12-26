@@ -1,11 +1,11 @@
 package ui.composables
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -39,13 +39,16 @@ fun PasswordField(
         label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
         leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
         trailingIcon = {
-            Icon(
-                painter = painterResource(if (visibility) "visibility_off.xml" else "visibility.xml"),
-                contentDescription = "Show Password?",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable { visibility = !visibility }
-            )
+            IconToggleButton(
+                checked = visibility,
+                onCheckedChange = { visibility = !visibility },
+                modifier = Modifier.clip(CircleShape)
+            ) {
+                Icon(
+                    painter = painterResource(if (visibility) "visibility_off.xml" else "visibility.xml"),
+                    contentDescription = "Show Password?"
+                )
+            }
         },
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
         colors = textFieldColors(),
