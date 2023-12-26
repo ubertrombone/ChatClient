@@ -12,7 +12,6 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Accepted
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.HttpStatusCode.Companion.UnprocessableEntity
@@ -24,7 +23,6 @@ import util.Status
 import util.Status.Error
 import util.Status.Success
 import util.Username
-import kotlin.coroutines.coroutineContext
 
 class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -40,18 +38,14 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/register", body = account) { response ->
-            if (response.status == Conflict) Error(response.bodyAsText())
-            else response.body<SimpleResponse>().run {
-                if (successful) {
-                    settings.apply {
-                        token.set(message)
-                        username.set(account.username.name)
-                        password.set(account.password) // TODO: Encrypt password in local storage
-                    }
-                    Success
-                } else Error(message)
-            }
+        postHelper(route = "/register", body = account) {
+            if (status == OK) Success.also {
+                settings.apply {
+                    token.set(bodyAsText())
+                    username.set(account.username.name)
+                    password.set(account.password) // TODO: Encrypt password in local storage
+                }
+            } else Error(bodyAsText())
         }
     }
 
@@ -66,10 +60,10 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/authenticate", body = credentials) { response ->
-            when (response.status) {
-                OK -> Success.also { settings.token.set(response.bodyAsText()) }
-                BadRequest -> Error(response.bodyAsText())
+        postHelper(route = "/authenticate", body = credentials) {
+            when (status) {
+                OK -> Success.also { settings.token.set(bodyAsText()) }
+                BadRequest -> Error(bodyAsText())
                 else -> Error("Unknown error - the server may be down. Try logging in again later.")
             }
         }
@@ -83,21 +77,21 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         getHelper("/friends") { if (status == OK) body<Set<FriendInfo>>() else null }
     }
 
-    override suspend fun add(friend: Username) = withContext(coroutineContext) {
-        postHelper(route = "/friends/add", body = friend) { response ->
-            when (response.status) {
+    override suspend fun add(friend: Username) = withContext(scope.coroutineContext) {
+        postHelper(route = "/friends/add", body = friend) {
+            when (status) {
                 OK -> Success
-                UnprocessableEntity -> Error(response.bodyAsText())
+                UnprocessableEntity -> Error(bodyAsText())
                 else -> Error("Unknown error.\n- Friend username may not exist or account has been deleted.\n- Server may be down.")
             }
         }
     }
 
-    override suspend fun remove(friend: Username) = withContext(coroutineContext) {
-        postHelper(route = "/friends/remove", body = friend) { response ->
-            when (response.status) {
+    override suspend fun remove(friend: Username) = withContext(scope.coroutineContext) {
+        postHelper(route = "/friends/remove", body = friend) {
+            when (status) {
                 OK -> Success
-                UnprocessableEntity -> Error(response.bodyAsText())
+                UnprocessableEntity -> Error(bodyAsText())
                 else -> Error("Unknown error.\n- Friend may not exist or account has been deleted.\n- Server may be down.")
             }
         }
@@ -111,12 +105,12 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         getHelper("/friend_request/received_friend_requests") { if (status == OK) body<Set<FriendRequest>>() else null }
     }
 
-    override suspend fun sendFriendRequest(to: Username) = withContext(coroutineContext) {
-        postHelper(route = "/friend_request", body = to) { if (it.status == Accepted) Success else Error(it.bodyAsText()) }
+    override suspend fun sendFriendRequest(to: Username) = withContext(scope.coroutineContext) {
+        postHelper(route = "/friend_request", body = to) { if (status == Accepted) Success else Error(bodyAsText()) }
     }
 
-    override suspend fun cancelFriendRequest(to: Username) = withContext(coroutineContext) {
-        postHelper(route = "/friend_request/cancel_request", body = to) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+    override suspend fun cancelFriendRequest(to: Username) = withContext(scope.coroutineContext) {
+        postHelper(route = "/friend_request/cancel_request", body = to) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun getBlockList() = withContext(scope.coroutineContext) {
@@ -124,11 +118,11 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun block(user: Username) = withContext(scope.coroutineContext) {
-        postHelper(route = "/block", body = user) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/block", body = user) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun unblock(user: Username) = withContext(scope.coroutineContext) {
-        postHelper(route = "/block/unblock", body = user) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/block/unblock", body = user) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun getGroupChats() = withContext(scope.coroutineContext) {
@@ -136,7 +130,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
     
     override suspend fun createGroupChat(name: GroupChatNameRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/group_chat", body = name) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/group_chat", body = name) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun getStatus() = withContext(scope.coroutineContext) {
@@ -144,7 +138,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun update(status: StatusRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/status", body = status) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/status", body = status) { if (this.status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun getCache() = withContext(scope.coroutineContext) {
@@ -152,27 +146,27 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/updatepwd", body = password) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/updatepwd", body = password) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/updateuser", body = username) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/updateuser", body = username) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/cache", body = cache) {
-            if (it.status == OK) Success.also { settings.cache.set(cache) } else Error(it.bodyAsText())
+            if (status == OK) Success.also { settings.cache.set(cache) } else Error(bodyAsText())
         }
     }
 
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/delete", body = decision) { if (it.status == OK) Success else Error(it.bodyAsText()) }
+        postHelper(route = "/settings/delete", body = decision) { if (status == OK) Success else Error(bodyAsText()) }
     }
 
     private suspend inline fun <reified T> postHelper( // TODO: Study inline fun and reified type generics
         route: String,
         body: T,
-        crossinline operation: suspend (HttpResponse) -> Status // TODO: Study crossinline parameters
+        crossinline operation: suspend HttpResponse.() -> Status // TODO: Study crossinline parameters
     ): Status =
         withContext(scope.coroutineContext) {
             client.post(route) {
