@@ -8,6 +8,7 @@ import component.main.group.GroupComponent
 import component.main.settings.SettingsComponent
 import db.ChatRepository
 import settings.SettingsRepository
+import util.Status
 
 interface MainComponent {
     val chatRepository: ChatRepository
@@ -16,7 +17,10 @@ interface MainComponent {
     val onLogoutClicked: () -> Unit
 
     val title: String
-    val isLoading: Value<Boolean>
+    val isLogoutLoading: Value<Boolean>
+    val logoutStatus: Value<Status>
+    val isInitLoading: Value<Boolean>
+    val initStatus: Value<Status>
     val childStack: Value<ChildStack<*, Child>>
     
     fun onChatsTabClicked()

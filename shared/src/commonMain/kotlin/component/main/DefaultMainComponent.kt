@@ -9,6 +9,7 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
 import component.main.DefaultMainComponent.Config.*
 import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
@@ -25,6 +26,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
+import util.Constants.UNKNOWN_ERROR
+import util.Status
 import util.Status.*
 
 class DefaultMainComponent(
@@ -37,8 +40,17 @@ class DefaultMainComponent(
     private val scope = CoroutineScope(Dispatchers.IO)
     override val title: String = "Friends"
 
-    private val _isLoading = MutableValue(false)
-    override val isLoading: Value<Boolean> = _isLoading
+    private val _isLogoutLoading = MutableValue(false)
+    override val isLogoutLoading: Value<Boolean> = _isLogoutLoading
+
+    private val _logoutStatus: MutableValue<Status> = MutableValue(Success)
+    override val logoutStatus: Value<Status> = _logoutStatus
+
+    private val _isInitLoading = MutableValue(true)
+    override val isInitLoading: Value<Boolean> = _isInitLoading
+
+    private val _initStatus: MutableValue<Status> = MutableValue(Loading)
+    override val initStatus: Value<Status> = _initStatus
 
     private val navigation = StackNavigation<Config>()
     private val _childStack = childStack(
@@ -88,16 +100,17 @@ class DefaultMainComponent(
     override fun logout() {
         scope.launch {
             callWrapper(
-                isLoading = _isLoading,
+                isLoading = _isLogoutLoading,
                 operation = { server.logout() },
                 onSuccess = {
-                    if (it is Error) println(it.message) // TODO: Handle this error in a snackbar?
+                    if (it is Error) _logoutStatus.update { _ -> it }
                     if (it == Success) {
+                        _logoutStatus.update { _ -> it }
                         settings.token.remove()
                         onLogoutClicked()
                     }
                 },
-                onError = {} //TODO
+                onError = { _logoutStatus.update { _ -> Error(UNKNOWN_ERROR) } }
             )
         }
     }
