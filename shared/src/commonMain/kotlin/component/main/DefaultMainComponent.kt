@@ -13,12 +13,12 @@ import com.arkivanov.decompose.value.update
 import component.main.DefaultMainComponent.Config.*
 import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
+import component.main.add.AddComponent
+import component.main.add.DefaultAddComponent
 import component.main.chat.ChatComponent
 import component.main.chat.DefaultChatComponent
 import component.main.group.DefaultGroupComponent
 import component.main.group.GroupComponent
-import component.main.settings.DefaultSettingsComponent
-import component.main.settings.SettingsComponent
 import db.ChatRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +68,7 @@ class DefaultMainComponent(
     ): Child = when (config) {
         Chat -> ChatChild(chat(componentContext))
         Group -> GroupChild(group(componentContext))
-        Settings -> SettingsChild(settings(componentContext))
+        Add -> AddChild(addComponent(componentContext))
     }
 
     private fun chat(componentContext: ComponentContext): ChatComponent =
@@ -86,16 +86,17 @@ class DefaultMainComponent(
             chatRepository = chatRepository
         )
 
-    private fun settings(componentContext: ComponentContext): SettingsComponent =
-        DefaultSettingsComponent(
+    private fun addComponent(componentContext: ComponentContext): AddComponent =
+        DefaultAddComponent(
             componentContext = componentContext,
             server = server,
-            settings = settings
+            settings = settings,
+            chatRepository = chatRepository
         )
 
     override fun onChatsTabClicked() = navigation.bringToFront(Chat)
     override fun onGroupChatsTabClicked() = navigation.bringToFront(Group)
-    override fun onSettingsTabClicked() = navigation.bringToFront(Settings)
+    override fun onAddTabClicked() = navigation.bringToFront(Add)
 
     override fun logout() {
         scope.launch {
@@ -119,6 +120,6 @@ class DefaultMainComponent(
     private sealed class Config {
         @Serializable data object Chat : Config()
         @Serializable data object Group : Config()
-        @Serializable data object Settings : Config()
+        @Serializable data object Add : Config()
     }
 }

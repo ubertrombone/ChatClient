@@ -3,6 +3,7 @@ package component.main
 import api.ApplicationApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import component.main.add.AddComponent
 import component.main.chat.ChatComponent
 import component.main.group.GroupComponent
 import component.main.settings.SettingsComponent
@@ -25,13 +26,13 @@ interface MainComponent {
     
     fun onChatsTabClicked()
     fun onGroupChatsTabClicked()
-    fun onSettingsTabClicked()
+    fun onAddTabClicked()
 
     fun logout()
     
     sealed class Child {
         class ChatChild(val component: ChatComponent) : Child()
         class GroupChild(val component: GroupComponent) : Child()
-        class SettingsChild(val component: SettingsComponent) : Child()
+        class AddChild(val component: AddComponent) : Child()
     }
 }
