@@ -17,9 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import component.main.MainComponent.Child.*
+import ui.main.add.AddContent
+import ui.main.chat.ChatContent
+import ui.main.group.GroupContent
 import util.Status.Error
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,15 +36,11 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
 
     // TODO:
     //  Components:
-    //      1. Bottom bar - Friends; group chats; settings
-    //      2. Add friend button - top bar action item (icon button) - WHAT IF SETTINGS IS IN THE TOP BAR AND ADD FRIEND/FRIEND REQUESTS IS IN THE BOTTOM BAR?
-    //          - popup with search bar to search for friends
+    //      2. Settings button - top bar action item (icon button)
+    //          - popup with settings options to search for friends
     //          - Requires slot stack component
     //      3. friend list in lazy column
     //          - immutable list returned by API
-    //      4. Friend Requests
-    //          - similar to add friend button
-    //          - requires own navigation component
 
     LaunchedEffect(logoutStatus) {
         if (logoutStatus is Error) snackbarHostState.showSnackbar(
@@ -129,13 +129,15 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = colorScheme.background
-    ) {
-        // TODO: Children here
-        Box(modifier = Modifier.fillMaxSize().padding(it), contentAlignment = Alignment.Center) {
-            Text(
-                text = "MAIN VIEW",
-                fontSize = typography.displayLarge.fontSize
-            )
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            Children(stack = childStack) {
+                when (val child = it.instance) {
+                    is AddChild -> AddContent(component = child.component, modifier = Modifier.fillMaxSize())
+                    is ChatChild -> ChatContent(component = child.component, modifier = Modifier.fillMaxSize())
+                    is GroupChild -> GroupContent(component = child.component, modifier = Modifier.fillMaxSize())
+                }
+            }
         }
     }
 }
