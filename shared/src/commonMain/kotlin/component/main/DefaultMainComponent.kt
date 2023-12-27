@@ -3,6 +3,10 @@ package component.main
 import api.ApplicationApi
 import api.callWrapper
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -19,6 +23,8 @@ import component.main.chat.ChatComponent
 import component.main.chat.DefaultChatComponent
 import component.main.group.DefaultGroupComponent
 import component.main.group.GroupComponent
+import component.main.settings.DefaultSettingsComponent
+import component.main.settings.SettingsComponent
 import db.ChatRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +68,21 @@ class DefaultMainComponent(
     )
     override val childStack: Value<ChildStack<*, Child>> = _childStack
 
+    private val settingsNavigation = SlotNavigation<SettingsConfig>()
+    private val _settingsSlot =
+        childSlot(
+            source = settingsNavigation,
+            serializer = SettingsConfig.serializer(),
+            handleBackButton = true
+        ) { _, childComponentContext ->
+            DefaultSettingsComponent(
+                componentContext = childComponentContext,
+                server = server,
+                settings = settings
+            ) // TODO: Add a dismiss listener
+        }
+    override val settingsStack: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
+
     private fun createChild(
         config: Config,
         componentContext: ComponentContext
@@ -97,6 +118,7 @@ class DefaultMainComponent(
     override fun onChatsTabClicked() = navigation.bringToFront(Chat)
     override fun onGroupChatsTabClicked() = navigation.bringToFront(Group)
     override fun onAddTabClicked() = navigation.bringToFront(Add)
+    override fun showSettings() { settingsNavigation.activate(SettingsConfig) }
 
     override fun logout() {
         scope.launch {
@@ -122,4 +144,7 @@ class DefaultMainComponent(
         @Serializable data object Group : Config()
         @Serializable data object Add : Config()
     }
+
+    @Serializable
+    private data object SettingsConfig
 }

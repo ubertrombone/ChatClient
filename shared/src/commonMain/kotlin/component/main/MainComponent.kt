@@ -1,11 +1,13 @@
 package component.main
 
 import api.ApplicationApi
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import component.main.add.AddComponent
 import component.main.chat.ChatComponent
 import component.main.group.GroupComponent
+import component.main.settings.SettingsComponent
 import db.ChatRepository
 import settings.SettingsRepository
 import util.Status
@@ -22,10 +24,12 @@ interface MainComponent {
     val isInitLoading: Value<Boolean>
     val initStatus: Value<Status>
     val childStack: Value<ChildStack<*, Child>>
+    val settingsStack: Value<ChildSlot<*, SettingsComponent>>
     
     fun onChatsTabClicked()
     fun onGroupChatsTabClicked()
     fun onAddTabClicked()
+    fun showSettings()
 
     fun logout()
     
