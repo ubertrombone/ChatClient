@@ -6,7 +6,6 @@ import com.arkivanov.decompose.value.Value
 import component.main.add.AddComponent
 import component.main.chat.ChatComponent
 import component.main.group.GroupComponent
-import component.main.settings.SettingsComponent
 import db.ChatRepository
 import settings.SettingsRepository
 import util.Status
