@@ -19,13 +19,16 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import component.main.MainComponent.Child.*
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import ui.composables.NavBarItem
 import ui.main.add.AddContent
 import ui.main.chat.ChatContent
 import ui.main.group.GroupContent
 import ui.main.settings.SettingsContent
 import util.Status.Error
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
     val settingsSlot by component.settingsSlot.subscribeAsState()
@@ -83,49 +86,25 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
         },
         bottomBar = {
             NavigationBar(containerColor = colorScheme.primary) {
-                NavigationBarItem(
-                    label = { Text(text = "Chat") },
-                    icon = { Icon(imageVector = Icons.Default.List, contentDescription = "Friends list") },
+                NavBarItem(
+                    label = "Chat",
+                    icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
                     selected = activeComponent is ChatChild,
-                    onClick = component::onChatsTabClicked,
-                    alwaysShowLabel = false,
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = colorScheme.onPrimary,
-                        unselectedTextColor = colorScheme.onPrimary,
-                        selectedIconColor = colorScheme.onPrimaryContainer,
-                        selectedTextColor = colorScheme.primaryContainer,
-                        indicatorColor = colorScheme.primaryContainer
-                    )
+                    onClick = component::onChatsTabClicked
                 )
 
-                NavigationBarItem(
-                    label = { Text(text = "Group Chats", softWrap = true) },
-                    icon = { Icon(imageVector = Icons.Default.Menu, contentDescription = "Group chats") }, // TODO: Icon
+                NavBarItem(
+                    label = "Group Chats",
+                    icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
                     selected = activeComponent is GroupChild,
-                    onClick = component::onGroupChatsTabClicked,
-                    alwaysShowLabel = false,
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = colorScheme.onPrimary,
-                        unselectedTextColor = colorScheme.onPrimary,
-                        selectedIconColor = colorScheme.onPrimaryContainer,
-                        selectedTextColor = colorScheme.primaryContainer,
-                        indicatorColor = colorScheme.primaryContainer
-                    )
+                    onClick = component::onGroupChatsTabClicked
                 )
 
-                NavigationBarItem(
-                    label = { Text(text = "Add Friend", softWrap = true) },
-                    icon = { Icon(imageVector = Icons.Default.Add, contentDescription = "Add friend") },
+                NavBarItem(
+                    label = "Add Friend",
+                    icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Add friend") },
                     selected = activeComponent is AddChild,
-                    onClick = component::onAddTabClicked,
-                    alwaysShowLabel = false,
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = colorScheme.onPrimary,
-                        unselectedTextColor = colorScheme.onPrimary,
-                        selectedIconColor = colorScheme.onPrimaryContainer,
-                        selectedTextColor = colorScheme.primaryContainer,
-                        indicatorColor = colorScheme.primaryContainer
-                    )
+                    onClick = component::onAddTabClicked
                 )
             }
         },
@@ -143,5 +122,10 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
         }
     }
 
-    settingsSlot.child?.instance?.also { SettingsContent(component = it, modifier = Modifier.fillMaxSize().padding(60.dp)) }
+    settingsSlot.child?.instance?.also {
+        SettingsContent(
+            component = it,
+            modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp, vertical = 60.dp)
+        )
+    }
 }
