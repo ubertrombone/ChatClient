@@ -3,10 +3,7 @@ package component.main
 import api.ApplicationApi
 import api.callWrapper
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.router.slot.SlotNavigation
-import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.*
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -78,8 +75,9 @@ class DefaultMainComponent(
             DefaultSettingsComponent(
                 componentContext = childComponentContext,
                 server = server,
-                settings = settings
-            ) // TODO: Add a dismiss listener
+                settings = settings,
+                onDismissed = settingsNavigation::dismiss
+            )
         }
     override val settingsStack: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
 

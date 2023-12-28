@@ -6,4 +6,5 @@ import settings.SettingsRepository
 interface SettingsComponent {
     val settings: SettingsRepository
     val server: ApplicationApi
+    val onDismissed: () -> Unit
 }
