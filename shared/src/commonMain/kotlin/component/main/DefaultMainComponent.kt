@@ -117,6 +117,7 @@ class DefaultMainComponent(
     override fun onGroupChatsTabClicked() = navigation.bringToFront(Group)
     override fun onAddTabClicked() = navigation.bringToFront(Add)
     override fun showSettings() { settingsNavigation.activate(SettingsConfig) }
+    override fun dismissSettings() { settingsNavigation.dismiss() }
 
     override fun logout() {
         scope.launch {

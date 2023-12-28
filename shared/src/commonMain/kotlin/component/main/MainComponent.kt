@@ -30,6 +30,7 @@ interface MainComponent {
     fun onGroupChatsTabClicked()
     fun onAddTabClicked()
     fun showSettings()
+    fun dismissSettings()
 
     fun logout()
     
