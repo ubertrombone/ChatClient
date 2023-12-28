@@ -79,7 +79,7 @@ class DefaultMainComponent(
                 onDismissed = settingsNavigation::dismiss
             )
         }
-    override val settingsStack: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
+    override val settingsSlot: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
 
     private fun createChild(
         config: Config,

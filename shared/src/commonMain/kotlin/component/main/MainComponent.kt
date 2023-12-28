@@ -24,7 +24,7 @@ interface MainComponent {
     val isInitLoading: Value<Boolean>
     val initStatus: Value<Status>
     val childStack: Value<ChildStack<*, Child>>
-    val settingsStack: Value<ChildSlot<*, SettingsComponent>>
+    val settingsSlot: Value<ChildSlot<*, SettingsComponent>>
     
     fun onChatsTabClicked()
     fun onGroupChatsTabClicked()
