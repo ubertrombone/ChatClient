@@ -1,6 +1,8 @@
 package ui.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -141,5 +143,5 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
         }
     }
 
-    settingsSlot.child?.instance?.also { SettingsContent(component = it, modifier = Modifier.fillMaxSize()) }
+    settingsSlot.child?.instance?.also { SettingsContent(component = it, modifier = Modifier.fillMaxSize().padding(60.dp)) }
 }
