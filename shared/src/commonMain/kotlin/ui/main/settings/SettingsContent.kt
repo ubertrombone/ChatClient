@@ -1,6 +1,5 @@
 package ui.main.settings
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -8,12 +7,10 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import component.main.settings.SettingsComponent
+import ui.composables.expect.ScrollLazyColumn
 import util.ShapeTokens
 
 @Composable
@@ -25,11 +22,35 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         contentColor = colorScheme.primary,
         tonalElevation = 24.dp,
     ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = "SETTINGS VIEW",
-                fontSize = typography.displayLarge.fontSize
-            )
+        ScrollLazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                Text(text = "SETTINGS VIEW", fontSize = typography.displayLarge.fontSize)
+            }
+
+            item {
+                // TODO: Button to change username.
+                //   When clicked it turns into row that contains text field and check/submit button
+            }
+
+            item {
+                // TODO: Button to change password. 2 options:
+                //  1. Button navs to another screen with: current password, new password, confirm new password fields
+                //  2. This items transforms into the 3 text fields plus a submission button. -- would need to learn
+                //      how to animate the transition
+            }
+
+            item {
+                // TODO: Check box with info about caching chats on the server.
+            }
+
+            item {
+                // TODO: Logout button
+            }
+
+            item {
+                // TODO: Big red delete button
+                // TODO: Will require a popup confirmation
+            }
         }
     }
 }
