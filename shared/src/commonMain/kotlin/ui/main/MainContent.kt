@@ -26,6 +26,7 @@ import ui.main.add.AddContent
 import ui.main.chat.ChatContent
 import ui.main.group.GroupContent
 import ui.main.settings.SettingsContent
+import util.BottomBarSystemNavColor
 import util.Status.Error
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -50,6 +51,7 @@ fun MainContent(component: MainComponent, modifier: Modifier = Modifier) {
             duration = SnackbarDuration.Short
         )
     }
+    BottomBarSystemNavColor(colorScheme.primary)
 
     Scaffold(
         modifier = modifier,
