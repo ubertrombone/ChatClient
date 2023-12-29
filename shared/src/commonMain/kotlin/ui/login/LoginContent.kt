@@ -18,6 +18,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.login.LoginComponent
 import kotlinx.coroutines.delay
 import ui.composables.states.rememberLoginAuthenticationFieldState
+import util.BottomBarSystemNavColor
 import util.Constants
 import util.Constants.INVALID_USERNAME
 import util.Constants.NO_PASSWORD_PROVIDED
@@ -48,6 +49,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
         delay(500)
         component.initLogin()
     }
+    BottomBarSystemNavColor(colorScheme.background)
 
     Scaffold(
         modifier = modifier,
