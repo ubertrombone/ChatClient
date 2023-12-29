@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -63,20 +65,20 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                     )
                 },
                 actions = {
-                    TextButton(
+                    IconButton(
                         modifier = Modifier.padding(end = 24.dp),
                         onClick = { component.pushTo(REGISTER) }
                     ) {
-                        Text(
-                            text = "Register",
-                            fontSize = typography.bodyMedium.fontSize,
-                            fontWeight = typography.bodyMedium.fontWeight
+                        Icon(
+                            imageVector = Icons.Outlined.AccountCircle,
+                            contentDescription = "Register"
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
-                    titleContentColor = colorScheme.primary
+                    titleContentColor = colorScheme.primary,
+                    actionIconContentColor = colorScheme.primary
                 )
             )
         },
