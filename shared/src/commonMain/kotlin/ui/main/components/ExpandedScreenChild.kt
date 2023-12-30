@@ -1,10 +1,7 @@
 package ui.main.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,13 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
-import component.main.MainComponent.Child.*
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import ui.main.settings.SettingsContent
 import util.Status
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ExpandedScreenChild(
     component: MainComponent,
@@ -29,7 +22,6 @@ fun ExpandedScreenChild(
 ) {
     val settingsSlot by component.settingsSlot.subscribeAsState()
     val childStack by component.childStack.subscribeAsState()
-    val activeComponent = childStack.active.instance
     val logoutStatus by component.logoutStatus.subscribeAsState()
 
     LaunchedEffect(logoutStatus) {
@@ -41,17 +33,12 @@ fun ExpandedScreenChild(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Start
     ) {
-        NavigationRail(
-            modifier = Modifier.weight(.1f),
-            containerColor = colorScheme.primary
-        ) {
-            NavRailItem(
-                label = "Chat",
-                icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
-                selected = activeComponent is ChatChild,
-                onClick = component::onChatsTabClicked,
-            )
-        }
+        NavRail(
+            component = component,
+            modifier = Modifier.fillMaxHeight().weight(.1f).background(colorScheme.primary).padding(12.dp)
+        )
+
+        ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxHeight().weight(.9f))
     }
 
     settingsSlot.child?.instance?.also {
