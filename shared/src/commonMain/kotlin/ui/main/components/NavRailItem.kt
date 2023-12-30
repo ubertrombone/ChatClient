@@ -1,9 +1,12 @@
 package ui.main.components
 
-import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun NavRailItem(
@@ -15,7 +18,7 @@ fun NavRailItem(
 ) {
     NavigationRailItem(
         modifier = modifier,
-        label = { Text(text = label, softWrap = true) },
+        label = { Text(text = label, softWrap = true, textAlign = TextAlign.Center) },
         icon = icon,
         selected = selected,
         onClick = onClick,
