@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
+import component.main.MainComponent.Child.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import util.Constants.CHATS
@@ -44,22 +45,31 @@ fun NavRail(
             NavRailItem(
                 label = CHATS,
                 icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
-                selected = activeComponent is MainComponent.Child.ChatChild,
-                onClick = component::onChatsTabClicked,
+                selected = activeComponent is ChatChild && settingsSlot.child == null,
+                onClick = {
+                    component.onChatsTabClicked()
+                    if (settingsSlot.child != null) component.dismissSettings()
+                },
             )
 
             NavRailItem(
                 label = GROUP_CHATS,
                 icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
-                selected = activeComponent is MainComponent.Child.GroupChild,
-                onClick = component::onGroupChatsTabClicked
+                selected = activeComponent is GroupChild && settingsSlot.child == null,
+                onClick = {
+                    component.onGroupChatsTabClicked()
+                    if (settingsSlot.child != null) component.dismissSettings()
+                }
             )
 
             NavRailItem(
                 label = REQUESTS,
                 icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests") },
-                selected = activeComponent is MainComponent.Child.AddChild,
-                onClick = component::onAddTabClicked
+                selected = activeComponent is AddChild && settingsSlot.child == null,
+                onClick = {
+                    component.onAddTabClicked()
+                    if (settingsSlot.child != null) component.dismissSettings()
+                }
             )
 
             NavRailItem(
