@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import component.main.MainComponent.Child.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.NavBarItem
+import ui.main.components.ChildrenBox
 import ui.main.settings.SettingsContent
 import util.BottomBarSystemNavColor
 import util.Status
@@ -38,12 +40,12 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
             duration = SnackbarDuration.Short
         )
     }
-    BottomBarSystemNavColor(MaterialTheme.colorScheme.primary)
+    BottomBarSystemNavColor(colorScheme.primary)
 
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
+            TopAppBar( // TODO: Make this an expect/actual fun? JVM doesn't need a title on every screen
                 title = {
                     Text(
                         text = component.title,
@@ -67,14 +69,14 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    actionIconContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = colorScheme.background,
+                    titleContentColor = colorScheme.primary,
+                    actionIconContentColor = colorScheme.primary
                 )
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
+            NavigationBar(containerColor = colorScheme.primary) {
                 NavBarItem(
                     label = "Chat",
                     icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
@@ -98,7 +100,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = colorScheme.background
     ) {
         ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxSize().padding(it))
     }
