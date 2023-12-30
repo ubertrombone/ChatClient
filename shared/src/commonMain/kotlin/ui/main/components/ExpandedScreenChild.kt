@@ -38,13 +38,11 @@ fun ExpandedScreenChild(
             modifier = Modifier.fillMaxHeight().width(100.dp).background(colorScheme.primary).padding(12.dp)
         )
 
-        ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxHeight().weight(.9f))
-    }
-
-    settingsSlot.child?.instance?.also {
-        SettingsContent(
-            component = it,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp, vertical = 60.dp)
-        )
+        settingsSlot.child?.instance?.also {
+            SettingsContent(
+                component = it,
+                modifier = Modifier.fillMaxHeight().weight(.9f)
+            )
+        } ?: ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxHeight().weight(.9f))
     }
 }
