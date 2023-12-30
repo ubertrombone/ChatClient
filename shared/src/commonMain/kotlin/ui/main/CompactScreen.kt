@@ -22,6 +22,10 @@ import ui.main.components.NavBarItem
 import ui.main.components.ChildrenBox
 import ui.main.settings.SettingsContent
 import util.BottomBarSystemNavColor
+import util.Constants
+import util.Constants.CHATS
+import util.Constants.GROUP_CHATS
+import util.Constants.REQUESTS
 import util.Status
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -78,22 +82,22 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
         bottomBar = {
             NavigationBar(containerColor = colorScheme.primary) {
                 NavBarItem(
-                    label = "Chat",
+                    label = CHATS,
                     icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
                     selected = activeComponent is ChatChild,
                     onClick = component::onChatsTabClicked
                 )
 
                 NavBarItem(
-                    label = "Group Chats",
+                    label = GROUP_CHATS,
                     icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
                     selected = activeComponent is GroupChild,
                     onClick = component::onGroupChatsTabClicked
                 )
 
                 NavBarItem(
-                    label = "Add Friend",
-                    icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Add friend") },
+                    label = REQUESTS,
+                    icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests") },
                     selected = activeComponent is AddChild,
                     onClick = component::onAddTabClicked
                 )

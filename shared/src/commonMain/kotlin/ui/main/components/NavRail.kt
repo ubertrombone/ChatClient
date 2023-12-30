@@ -19,6 +19,10 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import util.Constants
+import util.Constants.CHATS
+import util.Constants.GROUP_CHATS
+import util.Constants.REQUESTS
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -37,22 +41,22 @@ fun NavRail(
     ) {
         NavigationRail(containerColor = colorScheme.primary) {
             NavRailItem(
-                label = "Chat",
+                label = CHATS,
                 icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
                 selected = activeComponent is MainComponent.Child.ChatChild,
                 onClick = component::onChatsTabClicked,
             )
 
             NavRailItem(
-                label = "Group Chats",
+                label = GROUP_CHATS,
                 icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
                 selected = activeComponent is MainComponent.Child.GroupChild,
                 onClick = component::onGroupChatsTabClicked
             )
 
             NavRailItem(
-                label = "Add Friend",
-                icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Add friend") },
+                label = REQUESTS,
+                icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests") },
                 selected = activeComponent is MainComponent.Child.AddChild,
                 onClick = component::onAddTabClicked
             )

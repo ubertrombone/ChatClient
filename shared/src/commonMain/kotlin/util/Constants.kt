@@ -15,4 +15,8 @@ object Constants {
     const val NO_PASSWORD_PROVIDED = "Password field is empty"
     const val PASSWORDS_NOT_MATCH = "Passwords don't match!"
     const val UNKNOWN_ERROR = "An unknown error occurred"
+
+    const val REQUESTS = "Requests"
+    const val GROUP_CHATS = "Groups"
+    const val CHATS = "Chats"
 }
