@@ -1,7 +1,7 @@
-package ui.composables
+package ui.main.components
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -24,11 +24,11 @@ fun RowScope.NavBarItem(
         onClick = onClick,
         alwaysShowLabel = false,
         colors = NavigationBarItemDefaults.colors(
-            unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-            unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
-            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            selectedTextColor = MaterialTheme.colorScheme.primaryContainer,
-            indicatorColor = MaterialTheme.colorScheme.primaryContainer
+            unselectedIconColor = colorScheme.onPrimary,
+            unselectedTextColor = colorScheme.onPrimary,
+            selectedIconColor = colorScheme.onPrimaryContainer,
+            selectedTextColor = colorScheme.primaryContainer,
+            indicatorColor = colorScheme.primaryContainer
         )
     )
 }
