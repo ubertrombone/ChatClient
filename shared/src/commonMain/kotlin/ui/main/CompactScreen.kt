@@ -18,11 +18,10 @@ import component.main.MainComponent
 import component.main.MainComponent.Child.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import ui.main.components.NavBarItem
 import ui.main.components.ChildrenBox
+import ui.main.components.NavBarItem
 import ui.main.settings.SettingsContent
 import util.BottomBarSystemNavColor
-import util.Constants
 import util.Constants.CHATS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS

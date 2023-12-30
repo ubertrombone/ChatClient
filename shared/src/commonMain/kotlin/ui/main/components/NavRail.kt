@@ -19,7 +19,6 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import util.Constants
 import util.Constants.CHATS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS
