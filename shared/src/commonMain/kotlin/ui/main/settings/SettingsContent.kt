@@ -1,7 +1,6 @@
 package ui.main.settings
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
@@ -11,13 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import component.main.settings.SettingsComponent
 import ui.composables.expect.ScrollLazyColumn
-import util.ShapeTokens
 
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(ShapeTokens.roundedCorners),
         color = colorScheme.tertiaryContainer.copy(alpha = .8f),
         contentColor = colorScheme.primary,
         tonalElevation = 24.dp,
