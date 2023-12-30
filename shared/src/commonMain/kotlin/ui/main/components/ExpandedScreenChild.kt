@@ -35,7 +35,7 @@ fun ExpandedScreenChild(
     ) {
         NavRail(
             component = component,
-            modifier = Modifier.fillMaxHeight().weight(.1f).background(colorScheme.primary).padding(12.dp)
+            modifier = Modifier.fillMaxHeight().width(100.dp).background(colorScheme.primary).padding(12.dp)
         )
 
         ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxHeight().weight(.9f))
