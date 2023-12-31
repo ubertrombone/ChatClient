@@ -10,38 +10,32 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import component.main.friends.chat.ChatComponent
 import component.main.friends.chat.DefaultChatComponent
+import component.main.friends.model.FriendsSet
 import db.ChatRepository
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.serializer
 import util.Constants.UNKNOWN_ERROR
 import util.Status
 import util.Status.*
-import util.Username
 
-@OptIn(InternalSerializationApi::class)
 class DefaultFriendsComponent(
     componentContext: ComponentContext,
     override val server: ApplicationApi,
     override val chatRepository: ChatRepository,
     override val cache: Boolean
 ) : FriendsComponent, ComponentContext by componentContext {
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.Main)
 
-    @Suppress("UNCHECKED_CAST")
-    private val _friends: MutableValue<ImmutableSet<FriendInfo>> = MutableValue(
-        initialValue = stateKeeper.consume(
+    private val _friends: MutableValue<FriendsSet> = MutableValue(
+        stateKeeper.consume(
             key = FRIENDS_LIST_STATE,
-            strategy = ImmutableSet::class.serializer()
-        ) as? ImmutableSet<FriendInfo> ?: persistentSetOf()
+            strategy = FriendsSet.serializer()
+        ) ?: FriendsSet()
     )
-    override val friends: Value<ImmutableSet<FriendInfo>> = _friends
+    override val friends: Value<FriendsSet> = _friends
 
     private val _isLoading = MutableValue(true)
     override val isLoading: Value<Boolean> = _isLoading
@@ -55,17 +49,18 @@ class DefaultFriendsComponent(
             source = chatNavigation,
             serializer = ChatConfig.serializer(),
             handleBackButton = true
-        ) { _, childComponentContext ->
+        ) { config, childComponentContext ->
             DefaultChatComponent(
                 componentContext = childComponentContext,
                 server = server,
                 chatRepository = chatRepository,
-                cache = cache
+                cache = cache,
+                friend = config.user
             )
         }
     override val chatSlot: Value<ChildSlot<*, ChatComponent>> = _chatSlot
 
-    override fun showChat(username: Username) { chatNavigation.activate(ChatConfig(username)) }
+    override fun showChat(user: FriendInfo) { chatNavigation.activate(ChatConfig(user)) }
     override fun dismissChat() { chatNavigation.dismiss() }
 
     override fun getFriends() {
@@ -74,8 +69,9 @@ class DefaultFriendsComponent(
                 isLoading = _isLoading,
                 operation = { server.getFriends() },
                 onSuccess = { friends ->
+                    println("FRIENDS $friends")
                     friends?.let {
-                        _friends.update { it }
+                        _friends.update { FriendsSet(friends = friends.toImmutableSet()) }
                         _status.update { Success }
                     } ?: Error(UNKNOWN_ERROR)
                 },
@@ -85,14 +81,11 @@ class DefaultFriendsComponent(
     }
 
     init {
-        stateKeeper.register(
-            key = FRIENDS_LIST_STATE,
-            strategy = ImmutableSet::class.serializer()
-        ) { _friends.value }
+        stateKeeper.register(key = FRIENDS_LIST_STATE, strategy = FriendsSet.serializer()) { _friends.value }
     }
 
     @Serializable
-    private data class ChatConfig(val username: Username)
+    private data class ChatConfig(val user: FriendInfo)
 
     private companion object {
         const val FRIENDS_LIST_STATE = "FRIENDS_LIST_STATE"
