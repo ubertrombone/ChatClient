@@ -1,7 +1,7 @@
 package ui.main.friends
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,46 +34,50 @@ fun CompactFriendsContent(component: FriendsComponent, modifier: Modifier = Modi
         component.getFriends()
     }
 
-    if (isLoading) CircularProgressIndicator(
-        modifier = modifier.padding(48.dp),
-        color = colorScheme.primary,
-        trackColor = colorScheme.surfaceVariant
-    ) else {
-        if (status is Error) Box(modifier = modifier, contentAlignment = Alignment.Center) {
+    when {
+        isLoading -> CircularProgressIndicator(
+            modifier = Modifier.size(120.dp),
+            color = colorScheme.primary,
+            trackColor = colorScheme.surfaceVariant
+        )
+
+        status is Error -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Text(
                 text = (status as Error).message,
                 fontSize = typography.bodyLarge.fontSize,
                 color = Color.DarkGray
             )
-        } else {
-            if (friends.friends.isEmpty()) Box(modifier = modifier, contentAlignment = Alignment.Center) {
-                Text(
-                    text = "You do not currently have any friends",
-                    fontSize = typography.bodyLarge.fontSize,
-                    color = Color.DarkGray
-                )
-            } else FriendsList(
+        }
+
+        friends.friends.isEmpty() -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            Text(
+                text = "You do not currently have any friends",
+                fontSize = typography.bodyLarge.fontSize,
+                color = Color.DarkGray
+            )
+        }
+
+        else -> {
+            chatSlot.child?.instance?.let {
+                Box(modifier = modifier) {
+                    Text(
+                        text = it.friend.username.name,
+                        fontSize = typography.displayLarge.fontSize,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+
+                    IconButton(
+                        onClick = component::dismissChat,
+                        modifier = Modifier.align(Alignment.TopStart)
+                    ) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Go back")
+                    }
+                }
+            } ?: FriendsList(
                 list = friends.friends,
                 modifier = modifier,
                 friendSelected = component::showChat
             )
-        }
-    }
-
-    chatSlot.child?.instance?.let {
-        Box(modifier = modifier) {
-            Text(
-                text = it.friend.username.name,
-                fontSize = typography.displayLarge.fontSize,
-                modifier = Modifier.align(Alignment.Center)
-            )
-
-            IconButton(
-                onClick = component::dismissChat,
-                modifier = Modifier.align(Alignment.TopStart)
-            ) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Go back")
-            }
         }
     }
 }
