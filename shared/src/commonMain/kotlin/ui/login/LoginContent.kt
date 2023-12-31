@@ -46,7 +46,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
         initialInput = if (rememberMe) component.settings.password.get() else ""
     )
 
-    LaunchedEffect(initStatus) {
+    LaunchedEffect(Unit) {
         // Prevents loading bar from looking like a screen flicker
         delay(500)
         component.initLogin()
