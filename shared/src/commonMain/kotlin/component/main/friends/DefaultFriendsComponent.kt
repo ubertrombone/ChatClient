@@ -69,7 +69,6 @@ class DefaultFriendsComponent(
                 isLoading = _isLoading,
                 operation = { server.getFriends() },
                 onSuccess = { friends ->
-                    println("FRIENDS $friends")
                     friends?.let {
                         _friends.update { FriendsSet(friends = friends.toImmutableSet()) }
                         _status.update { Success }
