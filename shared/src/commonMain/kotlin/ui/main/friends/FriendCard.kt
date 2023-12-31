@@ -38,11 +38,11 @@ fun FriendCard(
         colors = CardDefaults.cardColors(containerColor = colorScheme.background, contentColor = colorScheme.primary)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 4.dp),
-            verticalAlignment = Alignment.Top,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(verticalArrangement = Arrangement.SpaceBetween) {
                 Text(text = friendInfo.username.name, fontSize = typography.bodyLarge.fontSize)
                 if (!friendInfo.isOnline) Text(
                     text = friendInfo.lastOnline!!.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toString(),

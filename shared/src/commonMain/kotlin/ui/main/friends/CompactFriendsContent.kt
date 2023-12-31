@@ -1,6 +1,7 @@
 package ui.main.friends
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,6 +30,7 @@ fun CompactFriendsContent(component: FriendsComponent, modifier: Modifier = Modi
     val friends by component.friends.subscribeAsState()
     val chatSlot by component.chatSlot.subscribeAsState()
 
+    // TODO: Needs to be periodically refreshing
     LaunchedEffect(Unit) {
         delay(500)
         component.getFriends()
@@ -75,7 +77,7 @@ fun CompactFriendsContent(component: FriendsComponent, modifier: Modifier = Modi
                 }
             } ?: FriendsList(
                 list = friends.friends,
-                modifier = modifier,
+                modifier = modifier.padding(horizontal = 24.dp, vertical = 12.dp),
                 friendSelected = component::showChat
             )
         }
