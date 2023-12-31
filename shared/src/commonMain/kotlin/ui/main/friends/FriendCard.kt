@@ -1,4 +1,4 @@
-package ui.main.components
+package ui.main.friends
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
@@ -30,11 +30,11 @@ import kotlinx.datetime.toLocalDateTime
 fun FriendCard(
     friendInfo: FriendInfo,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (FriendInfo) -> Unit
 ) {
     Card(
         modifier = modifier,
-        onClick = onClick,
+        onClick = { onClick(friendInfo) },
         colors = CardDefaults.cardColors(containerColor = colorScheme.background, contentColor = colorScheme.primary)
     ) {
         Row(
