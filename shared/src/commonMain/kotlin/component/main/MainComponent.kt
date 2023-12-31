@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import component.main.add.AddComponent
-import component.main.chat.ChatComponent
+import component.main.friends.FriendsComponent
 import component.main.group.GroupComponent
 import component.main.settings.SettingsComponent
 import db.ChatRepository
@@ -26,7 +26,7 @@ interface MainComponent {
     val childStack: Value<ChildStack<*, Child>>
     val settingsSlot: Value<ChildSlot<*, SettingsComponent>>
     
-    fun onChatsTabClicked()
+    fun onFriendsTabClicked()
     fun onGroupChatsTabClicked()
     fun onAddTabClicked()
     fun showSettings()
@@ -35,7 +35,7 @@ interface MainComponent {
     fun logout()
     
     sealed class Child {
-        class ChatChild(val component: ChatComponent) : Child()
+        class FriendsChild(val component: FriendsComponent) : Child()
         class GroupChild(val component: GroupComponent) : Child()
         class AddChild(val component: AddComponent) : Child()
     }

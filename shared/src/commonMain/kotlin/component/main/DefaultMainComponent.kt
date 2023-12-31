@@ -16,8 +16,8 @@ import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
 import component.main.add.AddComponent
 import component.main.add.DefaultAddComponent
-import component.main.chat.ChatComponent
-import component.main.chat.DefaultChatComponent
+import component.main.friends.FriendsComponent
+import component.main.friends.DefaultFriendsComponent
 import component.main.group.DefaultGroupComponent
 import component.main.group.GroupComponent
 import component.main.settings.DefaultSettingsComponent
@@ -59,7 +59,7 @@ class DefaultMainComponent(
     private val _childStack = childStack(
         source = navigation,
         serializer = Config.serializer(),
-        initialConfiguration = Chat,
+        initialConfiguration = Friends,
         handleBackButton = false,
         childFactory = ::createChild
     )
@@ -85,13 +85,13 @@ class DefaultMainComponent(
         config: Config,
         componentContext: ComponentContext
     ): Child = when (config) {
-        Chat -> ChatChild(chat(componentContext))
+        Friends -> FriendsChild(friends(componentContext))
         Group -> GroupChild(group(componentContext))
         Add -> AddChild(addComponent(componentContext))
     }
 
-    private fun chat(componentContext: ComponentContext): ChatComponent =
-        DefaultChatComponent(
+    private fun friends(componentContext: ComponentContext): FriendsComponent =
+        DefaultFriendsComponent(
             componentContext = componentContext,
             server = server,
             chatRepository = chatRepository,
@@ -113,7 +113,7 @@ class DefaultMainComponent(
             chatRepository = chatRepository
         )
 
-    override fun onChatsTabClicked() = navigation.bringToFront(Chat)
+    override fun onFriendsTabClicked() = navigation.bringToFront(Friends)
     override fun onGroupChatsTabClicked() = navigation.bringToFront(Group)
     override fun onAddTabClicked() = navigation.bringToFront(Add)
     override fun showSettings() { settingsNavigation.activate(SettingsConfig) }
@@ -139,7 +139,7 @@ class DefaultMainComponent(
 
     @Serializable
     private sealed class Config {
-        @Serializable data object Chat : Config()
+        @Serializable data object Friends : Config()
         @Serializable data object Group : Config()
         @Serializable data object Add : Config()
     }

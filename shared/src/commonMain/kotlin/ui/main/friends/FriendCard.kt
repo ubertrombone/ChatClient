@@ -1,4 +1,4 @@
-package ui.main.chat
+package ui.main.friends
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode

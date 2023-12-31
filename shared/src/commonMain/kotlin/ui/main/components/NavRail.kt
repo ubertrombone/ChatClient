@@ -24,7 +24,7 @@ import component.main.MainComponent
 import component.main.MainComponent.Child.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import util.Constants.CHATS
+import util.Constants.FRIENDS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS
 
@@ -43,11 +43,11 @@ fun NavRail(
     Box(modifier = modifier) {
         NavigationRail(modifier = Modifier.align(Alignment.TopCenter), containerColor = colorScheme.primary) {
             NavRailItem(
-                label = CHATS,
+                label = FRIENDS,
                 icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
-                selected = activeComponent is ChatChild && settingsSlot.child == null,
+                selected = activeComponent is FriendsChild && settingsSlot.child == null,
                 onClick = {
-                    component.onChatsTabClicked()
+                    component.onFriendsTabClicked()
                     if (settingsSlot.child != null) component.dismissSettings()
                 },
             )

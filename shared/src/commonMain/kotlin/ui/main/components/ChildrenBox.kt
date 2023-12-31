@@ -10,7 +10,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import component.main.MainComponent
 import component.main.MainComponent.Child.*
 import ui.main.add.AddContent
-import ui.main.chat.ChatContent
+import ui.main.friends.FriendsContent
 import ui.main.group.GroupContent
 
 @Composable
@@ -19,7 +19,7 @@ fun ChildrenBox(childStack: ChildStack<*, MainComponent.Child>, modifier: Modifi
         Children(stack = childStack) {
             when (val child = it.instance) {
                 is AddChild -> AddContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is ChatChild -> ChatContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is FriendsChild -> FriendsContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is GroupChild -> GroupContent(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }

@@ -18,5 +18,5 @@ object Constants {
 
     const val REQUESTS = "Requests"
     const val GROUP_CHATS = "Groups"
-    const val CHATS = "Chats"
+    const val FRIENDS = "Friends"
 }

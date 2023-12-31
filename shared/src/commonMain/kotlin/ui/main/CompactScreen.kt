@@ -22,7 +22,7 @@ import ui.main.components.ChildrenBox
 import ui.main.components.NavBarItem
 import ui.main.settings.SettingsContent
 import util.BottomBarSystemNavColor
-import util.Constants.CHATS
+import util.Constants.FRIENDS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS
 import util.Status
@@ -81,10 +81,10 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
         bottomBar = {
             NavigationBar(containerColor = colorScheme.primary) {
                 NavBarItem(
-                    label = CHATS,
+                    label = FRIENDS,
                     icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
-                    selected = activeComponent is ChatChild,
-                    onClick = component::onChatsTabClicked
+                    selected = activeComponent is FriendsChild,
+                    onClick = component::onFriendsTabClicked
                 )
 
                 NavBarItem(
