@@ -86,7 +86,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
     ) {
         Box(modifier = Modifier.fillMaxSize().padding(it)) {
             if (isInitLoading) LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).align(Alignment.Center),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp).align(Alignment.Center),
                 color = colorScheme.primary,
                 trackColor = colorScheme.surfaceVariant
             ) else {
