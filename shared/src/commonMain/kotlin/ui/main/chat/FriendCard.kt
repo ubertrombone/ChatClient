@@ -1,6 +1,9 @@
 package ui.main.chat
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -15,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import api.model.FriendInfo
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FriendCard(
     friendInfo: FriendInfo,
@@ -30,16 +35,10 @@ fun FriendCard(
     Card(
         modifier = modifier,
         onClick = onClick,
-        enabled = friendInfo.isOnline,
-        colors = CardDefaults.cardColors(
-            containerColor = colorScheme.background,
-            contentColor = colorScheme.primary,
-            disabledContainerColor = colorScheme.background,
-            disabledContentColor = colorScheme.primary
-        )
+        colors = CardDefaults.cardColors(containerColor = colorScheme.background, contentColor = colorScheme.primary)
     ) {
         Row(
-            modifier = Modifier.padding(start = 4.dp, end = 4.dp, top = 4.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 4.dp),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -60,6 +59,16 @@ fun FriendCard(
             )
         }
 
-        // TODO: 4. If not null, user's status. Should be ellipsized to not cover "last online" when visible, and should marquis when card is hovered
+        friendInfo.status?.let {
+            Text(
+                text = it,
+                fontSize = typography.bodyMedium.fontSize,
+                softWrap = false,
+                maxLines = 1,
+                textAlign = TextAlign.Start,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
+            )
+        }
     }
 }
