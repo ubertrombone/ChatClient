@@ -41,7 +41,7 @@ fun FriendCard(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -55,6 +55,7 @@ fun FriendCard(
 
             Spacer(
                 modifier = Modifier
+                    .padding(top = 4.dp)
                     .size(12.dp)
                     .clip(CircleShape)
                     .background(if (friendInfo.isOnline) Color.Green else Color.Gray)
