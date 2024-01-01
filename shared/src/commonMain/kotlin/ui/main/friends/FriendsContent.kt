@@ -12,7 +12,6 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass.Companio
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Expanded
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.FriendsComponent
-import kotlinx.coroutines.delay
 import util.Status
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -30,12 +28,6 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
     val status by component.status.subscribeAsState()
     val isLoading by component.isLoading.subscribeAsState()
     val friends by component.friends.subscribeAsState()
-
-    // TODO: Needs to be periodically refreshing
-    LaunchedEffect(Unit) {
-        delay(500)
-        component.getFriends()
-    }
 
     when {
         isLoading && friends.friends.isEmpty() -> CircularProgressIndicator(
