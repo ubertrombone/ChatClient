@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,6 +36,7 @@ fun FriendCard(
     Card(
         modifier = modifier,
         onClick = { onClick(friendInfo) },
+        shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = colorScheme.background, contentColor = colorScheme.primary)
     ) {
         Row(
@@ -59,16 +61,14 @@ fun FriendCard(
             )
         }
 
-        friendInfo.status?.let {
-            Text(
-                text = it,
-                fontSize = typography.bodyMedium.fontSize,
-                softWrap = false,
-                maxLines = 1,
-                textAlign = TextAlign.Start,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
-            )
-        }
+        Text(
+            text = friendInfo.status ?: "",
+            fontSize = typography.bodyMedium.fontSize,
+            softWrap = false,
+            maxLines = 1,
+            textAlign = TextAlign.Start,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
+        )
     }
 }

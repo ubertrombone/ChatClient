@@ -1,10 +1,9 @@
 package ui.main.friends
 
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import api.model.FriendInfo
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
@@ -19,7 +18,7 @@ fun FriendsList(
     ScrollLazyColumn(modifier = modifier) {
         items(items = list.toImmutableList()) {
             FriendCard(
-                modifier = Modifier.width(400.dp),
+                modifier = Modifier.fillMaxSize(),
                 friendInfo = it,
                 onClick = friendSelected
             )
