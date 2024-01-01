@@ -9,15 +9,12 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import kotlinx.coroutines.*
 import settings.SettingsRepository
+import util.*
 import util.Constants.PASSWORDS_NOT_MATCH
 import util.Constants.UNKNOWN_ERROR
-import util.MainPhases
 import util.MainPhases.MAIN
-import util.Status
 import util.Status.Error
 import util.Status.Success
-import util.toPassword
-import util.toUsername
 
 class DefaultRegisterComponent(
     componentContext: ComponentContext,
@@ -56,29 +53,27 @@ class DefaultRegisterComponent(
         }
     }
 
-    override suspend fun validateUsername(username: String): Boolean = withContext(scope.coroutineContext) {
-        try {
-            username.toUsername()
+    private suspend fun validateUsername(username: String): Boolean = withContext(scope.coroutineContext) {
+        username.toUsernameOrNull()?.let {
             _usernameStatus.update { Success }
             true
-        } catch (e: IllegalArgumentException) {
-            _usernameStatus.update { Error(e.message ?: UNKNOWN_ERROR) }
+        } ?: run {
+            _usernameStatus.update { Error(UNKNOWN_ERROR) }
             false
         }
     }
 
-    override suspend fun validatePassword(password: String, confirmation: String): Boolean = withContext(scope.coroutineContext) {
+    private suspend fun validatePassword(password: String, confirmation: String): Boolean = withContext(scope.coroutineContext) {
         if (password != confirmation) {
             _passwordStatus.update { Error(PASSWORDS_NOT_MATCH) }
             return@withContext false
         }
 
-        try {
-            password.toPassword()
+        password.toPasswordOrNull()?.let {
             _passwordStatus.update { Success }
             true
-        } catch (e: IllegalArgumentException) {
-            _passwordStatus.update { Error(e.message ?: UNKNOWN_ERROR) }
+        } ?: run {
+            _passwordStatus.update { Error(UNKNOWN_ERROR) }
             false
         }
     }

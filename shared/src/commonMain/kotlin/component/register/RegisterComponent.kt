@@ -21,8 +21,6 @@ interface RegisterComponent {
 
     fun updateRegistration(status: Status)
     fun update(rememberMe: Boolean)
-    suspend fun validateUsername(username: String): Boolean
-    suspend fun validatePassword(password: String, confirmation: String): Boolean
     suspend fun register(account: AccountRequest)
     fun validateCredentials(username: String, password: String, confirmation: String)
 }
