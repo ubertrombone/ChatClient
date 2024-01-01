@@ -1,6 +1,9 @@
 package ui.main.friends
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -21,10 +24,10 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Center
     ) {
         FriendsList(
-            modifier = Modifier.fillMaxHeight().weight(1f).padding(8.dp),
+            modifier = Modifier.fillMaxHeight().weight(1f),
             list = friends.friends,
             friendSelected = component::showChat
         )
@@ -35,7 +38,7 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
             color = colorScheme.scrim
         )
 
-        Box(modifier = Modifier.fillMaxHeight().weight(4f).padding(8.dp)) {
+        Box(modifier = Modifier.fillMaxHeight().weight(4f)) {
             chatSlot.child?.instance?.let {
                 Text(
                     text = it.friend.username.name,
