@@ -33,11 +33,9 @@ class FriendsModelImpl(
 
     override suspend fun friendLooper() = withContext(scope.coroutineContext) {
         while (scope.isActive) {
-            println("SCOPE IS ACTIVE")
             getFriends()
-            delay(30_000)
+            delay(10_000)
         }
-        println("SCOPE IS FINISHED") // TODO: figure out how to dismiss this scope
     }
 
     override suspend fun getFriends() = withContext(scope.coroutineContext) {
