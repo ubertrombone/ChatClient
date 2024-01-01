@@ -38,7 +38,7 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
     }
 
     when {
-        isLoading -> CircularProgressIndicator(
+        isLoading && friends.friends.isEmpty() -> CircularProgressIndicator(
             modifier = Modifier.size(120.dp),
             color = colorScheme.primary,
             trackColor = colorScheme.surfaceVariant
