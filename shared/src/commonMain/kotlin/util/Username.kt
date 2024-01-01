@@ -19,3 +19,4 @@ value class Username(val name: String) {
 }
 
 fun String.toUsername() = Username(this)
+fun String.toUsernameOrNull() = runCatching { toUsername() }.getOrNull()
