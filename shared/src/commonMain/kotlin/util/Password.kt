@@ -11,15 +11,16 @@ import kotlin.jvm.JvmInline
 
 @Serializable
 @JvmInline
-value class Password(val pass: String) {
+value class Password(private val pass: String) {
     init {
         val invalidChars = listOf(' ', '\\', '`', '#')
         require(pass.contains(Regex("^(?=.*[0-9])"))) { PASSWORD_REQUIRES_CHARS }
         require(pass.contains(Regex("^(?=.*[a-zA-Z])"))) { PASSWORD_REQUIRES_CHARS }
         require(pass.none { invalidChars.contains(it) }) { INVALID_CHARS_PASSWORD }
-        require(pass.length >= PASSWORD_REQUIREMENT_MIN) { PASSWORD_SHORT }
-        require(pass.length <= REQUIREMENT_MAX) { PASSWORD_LONG }
+        require(pass.length >= PASSWORD_REQUIREMENT_MIN) { "$PASSWORD_SHORT Length is: ${pass.length}" }
+        require(pass.length <= REQUIREMENT_MAX) { "$PASSWORD_LONG Length is: ${pass.length}" }
     }
 }
 
 fun String.toPassword() = Password(this)
+fun String.toPasswordOrNull() = runCatching { toPassword() }.getOrNull()
