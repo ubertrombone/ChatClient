@@ -27,7 +27,7 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
         horizontalArrangement = Arrangement.Center
     ) {
         FriendsList(
-            modifier = Modifier.fillMaxHeight().weight(1f),
+            modifier = Modifier.fillMaxHeight().weight(2f),
             list = friends.friends,
             friendSelected = component::showChat
         )
@@ -38,7 +38,7 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
             color = colorScheme.scrim
         )
 
-        Box(modifier = Modifier.fillMaxHeight().weight(4f)) {
+        Box(modifier = Modifier.fillMaxHeight().weight(3f)) {
             chatSlot.child?.instance?.let {
                 Text(
                     text = it.friend.username.name,
