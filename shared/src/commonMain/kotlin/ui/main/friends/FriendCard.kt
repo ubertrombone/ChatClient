@@ -23,8 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import api.model.FriendInfo
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import util.ago
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -46,11 +45,13 @@ fun FriendCard(
         ) {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
                 Text(text = friendInfo.username.name, fontSize = typography.bodyLarge.fontSize)
-                if (!friendInfo.isOnline) Text(
-                    text = friendInfo.lastOnline!!.toLocalDateTime(timeZone = TimeZone.currentSystemDefault()).toString(),
-                    fontSize = typography.bodyMedium.fontSize,
-                    fontWeight = FontWeight.Thin
-                )
+                if (!friendInfo.isOnline) {
+                    Text(
+                        text = friendInfo.lastOnline!!.ago(),
+                        fontSize = typography.bodyMedium.fontSize,
+                        fontWeight = FontWeight.Thin
+                    )
+                }
             }
 
             Spacer(
