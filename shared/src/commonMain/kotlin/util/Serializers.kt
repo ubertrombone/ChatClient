@@ -24,11 +24,9 @@ class ImmutableSetSerializer<T>(private val dataSerializer: KSerializer<T>) : KS
     }
     override val descriptor: SerialDescriptor = PersistentSetDescriptor()
 
-    override fun serialize(encoder: Encoder, value: ImmutableSet<T>) {
-        return SetSerializer(dataSerializer).serialize(encoder, value.toSet())
-    }
+    override fun serialize(encoder: Encoder, value: ImmutableSet<T>) =
+        SetSerializer(dataSerializer).serialize(encoder, value.toSet())
 
-    override fun deserialize(decoder: Decoder): ImmutableSet<T> {
-        return SetSerializer(dataSerializer).deserialize(decoder).toPersistentSet()
-    }
+    override fun deserialize(decoder: Decoder): ImmutableSet<T> =
+        SetSerializer(dataSerializer).deserialize(decoder).toPersistentSet()
 }
