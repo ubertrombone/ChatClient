@@ -21,5 +21,4 @@ interface FriendsComponent {
 
     fun showChat(user: FriendInfo)
     fun dismissChat()
-    fun getFriends()
 }

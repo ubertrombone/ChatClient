@@ -1,25 +1,18 @@
 package component.main.friends
 
 import api.ApplicationApi
-import api.callWrapper
 import api.model.FriendInfo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import component.main.friends.chat.ChatComponent
 import component.main.friends.chat.DefaultChatComponent
 import component.main.friends.model.FriendsSet
 import db.ChatRepository
-import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import util.Constants.UNKNOWN_ERROR
 import util.Status
-import util.Status.*
+import util.Status.Loading
 
 class DefaultFriendsComponent(
     componentContext: ComponentContext,
@@ -27,21 +20,17 @@ class DefaultFriendsComponent(
     override val chatRepository: ChatRepository,
     override val cache: Boolean
 ) : FriendsComponent, ComponentContext by componentContext {
-    private val scope = CoroutineScope(Dispatchers.Main)
-
-    private val _friends: MutableValue<FriendsSet> = MutableValue(
-        stateKeeper.consume(
-            key = FRIENDS_LIST_STATE,
-            strategy = FriendsSet.serializer()
-        ) ?: FriendsSet()
-    )
-    override val friends: Value<FriendsSet> = _friends
-
-    private val _isLoading = MutableValue(true)
-    override val isLoading: Value<Boolean> = _isLoading
-
-    private val _status: MutableValue<Status> = MutableValue(Loading)
-    override val status: Value<Status> = _status
+    private val _friends = instanceKeeper.getOrCreate(FRIENDS_LIST_STATE) {
+        FriendsModelImpl(
+            initialState = stateKeeper.consume(FRIENDS_LIST_STATE, strategy = FriendsSet.serializer()) ?: FriendsSet(),
+            initialLoadingState = true,
+            initialStatus = Loading,
+            server = server
+        )
+    }
+    override val friends: Value<FriendsSet> = _friends.friendsListState
+    override val isLoading: Value<Boolean> = _friends.friendsListLoading
+    override val status: Value<Status> = _friends.friendsListStatus
 
     private val chatNavigation = SlotNavigation<ChatConfig>()
     private val _chatSlot =
@@ -63,24 +52,11 @@ class DefaultFriendsComponent(
     override fun showChat(user: FriendInfo) { chatNavigation.activate(ChatConfig(user)) }
     override fun dismissChat() { chatNavigation.dismiss() }
 
-    override fun getFriends() {
-        scope.launch {
-            callWrapper(
-                isLoading = _isLoading,
-                operation = { server.getFriends() },
-                onSuccess = { friends ->
-                    friends?.let {
-                        _friends.update { FriendsSet(friends = friends.toImmutableSet()) }
-                        _status.update { Success }
-                    } ?: Error(UNKNOWN_ERROR)
-                },
-                onError = { Error(it) }
-            )
-        }
-    }
-
     init {
-        stateKeeper.register(key = FRIENDS_LIST_STATE, strategy = FriendsSet.serializer()) { _friends.value }
+        stateKeeper.register(
+            key = FRIENDS_LIST_STATE,
+            strategy = FriendsSet.serializer()
+        ) { _friends.friendsListState.value }
     }
 
     @Serializable
