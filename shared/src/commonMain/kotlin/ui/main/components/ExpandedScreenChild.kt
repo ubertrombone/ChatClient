@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
+import io.ktor.client.statement.*
 import ui.main.settings.SettingsContent
 import util.Status.Error
 
@@ -25,7 +26,9 @@ fun ExpandedScreenChild(
     val logoutStatus by component.logoutStatus.subscribeAsState()
 
     LaunchedEffect(logoutStatus) {
-        if (logoutStatus is Error<*>) snackCallback((logoutStatus as Error<*>).body.toString())
+        runCatching { logoutStatus as Error<*> }.getOrNull()?.let {
+            snackCallback((it.body as HttpResponse).status.description)
+        }
     }
 
     Row(
