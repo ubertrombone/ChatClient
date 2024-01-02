@@ -16,8 +16,8 @@ import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
 import component.main.add.AddComponent
 import component.main.add.DefaultAddComponent
-import component.main.friends.FriendsComponent
 import component.main.friends.DefaultFriendsComponent
+import component.main.friends.FriendsComponent
 import component.main.group.DefaultGroupComponent
 import component.main.group.GroupComponent
 import component.main.settings.DefaultSettingsComponent
@@ -29,6 +29,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
+import util.Constants.UNAUTHORIZED
 import util.Constants.UNKNOWN_ERROR
 import util.Status
 import util.Status.*
@@ -125,7 +126,10 @@ class DefaultMainComponent(
                 isLoading = _isLogoutLoading,
                 operation = { server.logout() },
                 onSuccess = {
-                    if (it is Error) _logoutStatus.update { _ -> it }
+                    if (it is Error) {
+                        _logoutStatus.update { _ -> it }
+                        if (it.message == UNAUTHORIZED) onLogoutClicked()
+                    }
                     if (it == Success) {
                         _logoutStatus.update { _ -> it }
                         settings.token.remove()
