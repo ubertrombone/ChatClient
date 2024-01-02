@@ -70,7 +70,7 @@ class DefaultRegisterComponent(
             isLoading = _isLoading,
             operation = { server.register(account) },
             onSuccess = {
-                if (it is Error) _registrationStatus.update { _ -> it }
+                if (it is Error<*>) _registrationStatus.update { _ -> it }
                 if (it == Success) pushTo(MAIN)
             },
             onError = { _registrationStatus.update { _ -> Error(it) } }

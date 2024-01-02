@@ -23,13 +23,13 @@ import component.main.group.GroupComponent
 import component.main.settings.DefaultSettingsComponent
 import component.main.settings.SettingsComponent
 import db.ChatRepository
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
-import util.Constants.UNAUTHORIZED
 import util.Constants.UNKNOWN_ERROR
 import util.Status
 import util.Status.*
@@ -126,9 +126,9 @@ class DefaultMainComponent(
                 isLoading = _isLogoutLoading,
                 operation = { server.logout() },
                 onSuccess = {
-                    if (it is Error) {
+                    if (it is Error<*>) {
                         _logoutStatus.update { _ -> it }
-                        if (it.message == UNAUTHORIZED) onLogoutClicked()
+                        if (it.body.toString() == Unauthorized.description) onLogoutClicked()
                     }
                     if (it == Success) {
                         _logoutStatus.update { _ -> it }

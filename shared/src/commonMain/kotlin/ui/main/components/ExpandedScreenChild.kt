@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import ui.main.settings.SettingsContent
-import util.Status
+import util.Status.Error
 
 @Composable
 fun ExpandedScreenChild(
@@ -25,7 +25,7 @@ fun ExpandedScreenChild(
     val logoutStatus by component.logoutStatus.subscribeAsState()
 
     LaunchedEffect(logoutStatus) {
-        if (logoutStatus is Status.Error) snackCallback((logoutStatus as Status.Error).message)
+        if (logoutStatus is Error<*>) snackCallback((logoutStatus as Error<*>).body.toString())
     }
 
     Row(

@@ -25,7 +25,7 @@ import util.BottomBarSystemNavColor
 import util.Constants.FRIENDS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS
-import util.Status
+import util.Status.Error
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
@@ -37,8 +37,8 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(logoutStatus) {
-        if (logoutStatus is Status.Error) snackbarHostState.showSnackbar(
-            message = (logoutStatus as Status.Error).message,
+        if (logoutStatus is Error<*>) snackbarHostState.showSnackbar(
+            message = (logoutStatus as Error<*>).body.toString(),
             actionLabel = "Dismiss",
             duration = SnackbarDuration.Short
         )

@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.FriendsComponent
-import util.Status
+import util.Status.Error
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -36,9 +36,9 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
             trackColor = colorScheme.surfaceVariant
         )
 
-        status is Status.Error -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        status is Error<*> -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Text(
-                text = (status as Status.Error).message,
+                text = (status as Error<*>).body.toString(),
                 fontSize = typography.bodyLarge.fontSize,
                 color = Color.DarkGray
             )

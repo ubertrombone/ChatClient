@@ -91,8 +91,8 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
                 trackColor = colorScheme.surfaceVariant
             ) else {
                 when (initStatus) {
-                    is Error -> Text(
-                        text = (initStatus as Error).message,
+                    is Error<*> -> Text(
+                        text = (initStatus as Error<*>).body.toString(),
                         fontSize = typography.bodyLarge.fontSize,
                         modifier = Modifier.align(Alignment.Center)
                     )

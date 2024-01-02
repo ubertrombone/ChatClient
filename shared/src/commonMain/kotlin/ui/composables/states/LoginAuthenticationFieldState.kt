@@ -22,11 +22,11 @@ class LoginAuthenticationFieldState(input: String = "", isValid: Boolean = true)
     override val isValid: Value<Boolean> = _isValid
 
     fun validateInput(response: Status, type: Types) {
-        if (response is Error) {
+        if (response is Error<*>) {
             _isValid.update {
                 when {
-                    type == USERNAME && response.message == NO_PASSWORD_PROVIDED -> true
-                    type == PASSWORD && response.message == INVALID_USERNAME -> true
+                    type == USERNAME && response.body.toString() == NO_PASSWORD_PROVIDED -> true
+                    type == PASSWORD && response.body.toString() == INVALID_USERNAME -> true
                     else -> false
                 }
             }
