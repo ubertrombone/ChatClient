@@ -54,13 +54,7 @@ class DefaultRegisterComponent(
     }
 
     private suspend fun validateUsername(username: String): Boolean = withContext(scope.coroutineContext) {
-        username.toUsernameOrNull()?.let {
-            _usernameStatus.update { Success }
-            true
-        } ?: run {
-            _usernameStatus.update { Error(UNKNOWN_ERROR) }
-            false
-        }
+        username.usernameToStatus().also { _usernameStatus.update { _ -> it } } == Success
     }
 
     private suspend fun validatePassword(password: String, confirmation: String): Boolean = withContext(scope.coroutineContext) {
