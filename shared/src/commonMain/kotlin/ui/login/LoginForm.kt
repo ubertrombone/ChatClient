@@ -8,10 +8,11 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.ktor.client.statement.*
 import ui.composables.PasswordField
 import ui.composables.RememberMeCheckbox
 import ui.composables.UsernameField
@@ -36,8 +37,14 @@ fun LoginForm(
     onCheckChange: (Boolean) -> Unit,
     onButtonClick: () -> Unit
 ) {
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
     usernameState.validateInput(loginStatus, type = USERNAME)
     passwordState.validateInput(loginStatus, type = PASSWORD)
+
+    LaunchedEffect(loginStatus) {
+        errorMessage = runCatching { (loginStatus as Error<*>).body as HttpResponse }.getOrNull()?.bodyAsText()
+    }
 
     ScrollLazyColumn(
         modifier = modifier,
@@ -46,18 +53,20 @@ fun LoginForm(
     ) {
         item {
             Text(
-                text = when {
-                    loginStatus == Success -> ""
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> ""
-                    loginStatus.body.toString() == INVALID_USERNAME -> ""
-                    else -> loginStatus.body.toString()
-                },
-                color = when {
-                    loginStatus == Success -> colorScheme.background
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> colorScheme.background
-                    loginStatus.body.toString() == INVALID_USERNAME -> colorScheme.background
-                    else -> colorScheme.error
-                },
+                text = errorMessage?.let {
+                    when (it) {
+                        NO_PASSWORD_PROVIDED -> ""
+                        INVALID_USERNAME -> ""
+                        else -> it
+                    }
+                } ?: "",
+                color = errorMessage?.let {
+                    when (it) {
+                        NO_PASSWORD_PROVIDED -> colorScheme.background
+                        INVALID_USERNAME -> colorScheme.background
+                        else -> colorScheme.error
+                    }
+                } ?: colorScheme.background,
                 fontSize = typography.bodyLarge.fontSize,
                 fontWeight = typography.bodyLarge.fontWeight
             )
@@ -70,11 +79,7 @@ fun LoginForm(
                 state = usernameState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = when {
-                    loginStatus == Success -> "Username"
-                    (loginStatus as Error<*>).body.toString() == INVALID_USERNAME -> loginStatus.body.toString()
-                    else -> "Username"
-                }
+                label = errorMessage?.takeIf { it == INVALID_USERNAME } ?: "Username"
             )
 
             Spacer(Modifier.height(24.dp))
@@ -85,11 +90,7 @@ fun LoginForm(
                 state = passwordState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = when {
-                    loginStatus == Success -> "Password"
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> loginStatus.body.toString()
-                    else -> "Password"
-                },
+                label = errorMessage?.takeIf { it == NO_PASSWORD_PROVIDED } ?: "Password",
                 hasTrailingIcon = false
             )
 
