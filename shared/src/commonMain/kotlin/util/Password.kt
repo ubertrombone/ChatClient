@@ -7,6 +7,9 @@ import util.Constants.PASSWORD_REQUIREMENT_MIN
 import util.Constants.PASSWORD_REQUIRES_CHARS
 import util.Constants.PASSWORD_SHORT
 import util.Constants.REQUIREMENT_MAX
+import util.Constants.UNKNOWN_ERROR
+import util.Status.Error
+import util.Status.Success
 import kotlin.jvm.JvmInline
 
 @Serializable
@@ -24,3 +27,5 @@ value class Password(private val pass: String) {
 
 fun String.toPassword() = Password(this)
 fun String.toPasswordOrNull() = runCatching { toPassword() }.getOrNull()
+fun String.passwordToStatus(): Status =
+    runCatching { toPassword().let { Success } }.getOrElse { Error(it.message ?: UNKNOWN_ERROR) }

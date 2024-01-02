@@ -11,7 +11,6 @@ import kotlinx.coroutines.*
 import settings.SettingsRepository
 import util.*
 import util.Constants.PASSWORDS_NOT_MATCH
-import util.Constants.UNKNOWN_ERROR
 import util.MainPhases.MAIN
 import util.Status.Error
 import util.Status.Success
@@ -63,13 +62,7 @@ class DefaultRegisterComponent(
             return@withContext false
         }
 
-        password.toPasswordOrNull()?.let {
-            _passwordStatus.update { Success }
-            true
-        } ?: run {
-            _passwordStatus.update { Error(UNKNOWN_ERROR) }
-            false
-        }
+        password.passwordToStatus().also { _passwordStatus.update { _ -> it } } == Success
     }
 
     override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
