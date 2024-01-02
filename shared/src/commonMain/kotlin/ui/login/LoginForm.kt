@@ -8,11 +8,10 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.ktor.client.statement.*
 import ui.composables.PasswordField
 import ui.composables.RememberMeCheckbox
 import ui.composables.UsernameField
@@ -37,36 +36,29 @@ fun LoginForm(
     onCheckChange: (Boolean) -> Unit,
     onButtonClick: () -> Unit
 ) {
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
     usernameState.validateInput(loginStatus, type = USERNAME)
     passwordState.validateInput(loginStatus, type = PASSWORD)
-
-    LaunchedEffect(loginStatus) {
-        errorMessage = runCatching { (loginStatus as Error<*>).body as HttpResponse }.getOrNull()?.bodyAsText()
-    }
 
     ScrollLazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // TODO: Something broke with the response from incorrect credentials; need to look into what I broke
         item {
             Text(
-                text = errorMessage?.let {
-                    when (it) {
-                        NO_PASSWORD_PROVIDED -> ""
-                        INVALID_USERNAME -> ""
-                        else -> it
-                    }
-                } ?: "",
-                color = errorMessage?.let {
-                    when (it) {
-                        NO_PASSWORD_PROVIDED -> colorScheme.background
-                        INVALID_USERNAME -> colorScheme.background
-                        else -> colorScheme.error
-                    }
-                } ?: colorScheme.background,
+                text = when {
+                    loginStatus == Success -> ""
+                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> ""
+                    loginStatus.body.toString() == INVALID_USERNAME -> ""
+                    else -> loginStatus.body.toString()
+                },
+                color = when {
+                    loginStatus == Success -> colorScheme.background
+                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> colorScheme.background
+                    loginStatus.body.toString() == INVALID_USERNAME -> colorScheme.background
+                    else -> colorScheme.error
+                },
                 fontSize = typography.bodyLarge.fontSize,
                 fontWeight = typography.bodyLarge.fontWeight
             )
@@ -79,7 +71,11 @@ fun LoginForm(
                 state = usernameState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = errorMessage?.takeIf { it == INVALID_USERNAME } ?: "Username"
+                label = when {
+                    loginStatus == Success -> "Username"
+                    (loginStatus as Error<*>).body.toString() == INVALID_USERNAME -> loginStatus.body.toString()
+                    else -> "Username"
+                }
             )
 
             Spacer(Modifier.height(24.dp))
@@ -90,7 +86,11 @@ fun LoginForm(
                 state = passwordState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = errorMessage?.takeIf { it == NO_PASSWORD_PROVIDED } ?: "Password",
+                label = when {
+                    loginStatus == Success -> "Password"
+                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> loginStatus.body.toString()
+                    else -> "Password"
+                },
                 hasTrailingIcon = false
             )
 
