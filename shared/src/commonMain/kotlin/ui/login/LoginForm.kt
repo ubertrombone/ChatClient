@@ -44,7 +44,6 @@ fun LoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TODO: Something broke with the response from incorrect credentials; need to look into what I broke
         item {
             Text(
                 text = when {
