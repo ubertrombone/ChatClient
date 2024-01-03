@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import component.main.MainComponent.Child.*
+import io.ktor.client.statement.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.main.components.ChildrenBox
@@ -38,7 +39,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
 
     LaunchedEffect(logoutStatus) {
         if (logoutStatus is Error) snackbarHostState.showSnackbar(
-            message = (logoutStatus as Error).body.toString(),
+            message = ((logoutStatus as Error).body as HttpResponse).status.description,
             actionLabel = "Dismiss",
             duration = SnackbarDuration.Short
         )
