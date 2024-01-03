@@ -96,7 +96,8 @@ class DefaultMainComponent(
             componentContext = componentContext,
             server = server,
             chatRepository = chatRepository,
-            cache = settings.cache.get().toBooleanStrict()
+            cache = settings.cache.get().toBooleanStrict(),
+            logout = onLogoutClicked
         )
 
     private fun group(componentContext: ComponentContext): GroupComponent =

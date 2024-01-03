@@ -18,7 +18,8 @@ class DefaultFriendsComponent(
     componentContext: ComponentContext,
     override val server: ApplicationApi,
     override val chatRepository: ChatRepository,
-    override val cache: Boolean
+    override val cache: Boolean,
+    override val logout: () -> Unit
 ) : FriendsComponent, ComponentContext by componentContext {
     private val _friends = instanceKeeper.getOrCreate(FRIENDS_LIST_STATE) {
         FriendsModelImpl(

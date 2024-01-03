@@ -12,6 +12,7 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass.Companio
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Expanded
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.FriendsComponent
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import util.Status.Error
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -28,6 +30,12 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
     val status by component.status.subscribeAsState()
     val isLoading by component.isLoading.subscribeAsState()
     val friends by component.friends.subscribeAsState()
+
+    LaunchedEffect(status) {
+        status.takeIf { status is Error }?.let {
+            if ((status as Error).body.toString() == Unauthorized.description) component.logout()
+        }
+    }
 
     when {
         isLoading && friends.friends.isEmpty() -> CircularProgressIndicator(
