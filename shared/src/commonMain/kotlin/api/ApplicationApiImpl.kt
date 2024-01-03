@@ -50,9 +50,8 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
-    override suspend fun login() = withContext(scope.coroutineContext) {
-        getHelper("/login") { authenticatedResponseHelper() }
-    }
+    override suspend fun login() =
+        withContext(scope.coroutineContext) { getHelper("/login") { authenticatedResponseHelper() } }
 
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/authenticate", body = credentials) {
@@ -65,9 +64,8 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
-    override suspend fun logout() = withContext(scope.coroutineContext) {
-        getHelper("/logout") { authenticatedResponseHelper() }
-    }
+    override suspend fun logout() =
+        withContext(scope.coroutineContext) { getHelper("/logout") { authenticatedResponseHelper() } }
 
     @Authenticated
     override suspend fun getFriends() = withContext(scope.coroutineContext) {
@@ -110,9 +108,8 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
-    override suspend fun block(user: Username) = withContext(scope.coroutineContext) {
-        postHelper(route = "/block", body = user) { authenticatedResponseHelper() }
-    }
+    override suspend fun block(user: Username) =
+        withContext(scope.coroutineContext) { postHelper(route = "/block", body = user) { authenticatedResponseHelper() } }
 
     @Authenticated
     override suspend fun unblock(user: Username) = withContext(scope.coroutineContext) {
