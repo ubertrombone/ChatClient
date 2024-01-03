@@ -48,13 +48,13 @@ fun LoginForm(
             Text(
                 text = when {
                     loginStatus == Success -> ""
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> ""
+                    (loginStatus as Error).body.toString() == NO_PASSWORD_PROVIDED -> ""
                     loginStatus.body.toString() == INVALID_USERNAME -> ""
                     else -> loginStatus.body.toString()
                 },
                 color = when {
                     loginStatus == Success -> colorScheme.background
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> colorScheme.background
+                    (loginStatus as Error).body.toString() == NO_PASSWORD_PROVIDED -> colorScheme.background
                     loginStatus.body.toString() == INVALID_USERNAME -> colorScheme.background
                     else -> colorScheme.error
                 },
@@ -72,7 +72,7 @@ fun LoginForm(
                 modifier = Modifier.width(300.dp),
                 label = when {
                     loginStatus == Success -> "Username"
-                    (loginStatus as Error<*>).body.toString() == INVALID_USERNAME -> loginStatus.body.toString()
+                    (loginStatus as Error).body.toString() == INVALID_USERNAME -> loginStatus.body.toString()
                     else -> "Username"
                 }
             )
@@ -87,7 +87,7 @@ fun LoginForm(
                 modifier = Modifier.width(300.dp),
                 label = when {
                     loginStatus == Success -> "Password"
-                    (loginStatus as Error<*>).body.toString() == NO_PASSWORD_PROVIDED -> loginStatus.body.toString()
+                    (loginStatus as Error).body.toString() == NO_PASSWORD_PROVIDED -> loginStatus.body.toString()
                     else -> "Password"
                 },
                 hasTrailingIcon = false

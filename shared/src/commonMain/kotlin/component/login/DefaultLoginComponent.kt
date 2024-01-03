@@ -65,7 +65,7 @@ class DefaultLoginComponent(
                 isLoading = _isInitLoading,
                 operation = server::login,
                 onSuccess = {
-                    if (it is Error<*>) updateInit(status = Success)
+                    if (it is Error) updateInit(status = Success)
                     if (it == Success) pushTo(MAIN)
                 },
                 onError = { updateInit(status = Error(it)) }
@@ -79,7 +79,7 @@ class DefaultLoginComponent(
                 isLoading = _isLoading,
                 operation = { server.authenticate(credentials) },
                 onSuccess = {
-                    if (it is Error<*>) updateLogin(status = it)
+                    if (it is Error) updateLogin(status = it)
                     if (it == Success) {
                         if (rememberMe.value) {
                             settings.username.set(credentials.username.name)

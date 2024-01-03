@@ -37,8 +37,8 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(logoutStatus) {
-        if (logoutStatus is Error<*>) snackbarHostState.showSnackbar(
-            message = (logoutStatus as Error<*>).body.toString(),
+        if (logoutStatus is Error) snackbarHostState.showSnackbar(
+            message = (logoutStatus as Error).body.toString(),
             actionLabel = "Dismiss",
             duration = SnackbarDuration.Short
         )

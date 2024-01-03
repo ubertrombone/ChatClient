@@ -41,7 +41,7 @@ fun RegisterForm(
     confirmPasswordState.updateIsValid(
         when {
             passwordStatus == Success -> registerStatus == Success
-            (passwordStatus as Error<*>).body.toString() == PASSWORDS_NOT_MATCH -> false
+            (passwordStatus as Error).body.toString() == PASSWORDS_NOT_MATCH -> false
             else -> true
         }
     )
@@ -53,8 +53,8 @@ fun RegisterForm(
     ) {
         item {
             Text(
-                text = if (registerStatus is Error<*>) registerStatus.body.toString() else "",
-                color = if (registerStatus is Error<*>) colorScheme.error else colorScheme.background,
+                text = if (registerStatus is Error) registerStatus.body.toString() else "",
+                color = if (registerStatus is Error) colorScheme.error else colorScheme.background,
                 fontSize = typography.bodyLarge.fontSize,
                 fontWeight = typography.bodyLarge.fontWeight
             )
@@ -67,7 +67,7 @@ fun RegisterForm(
                 state = usernameState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = if (usernameStatus is Error<*>) usernameStatus.body.toString() else "Username"
+                label = if (usernameStatus is Error) usernameStatus.body.toString() else "Username"
             )
 
             Spacer(Modifier.height(24.dp))
@@ -78,7 +78,7 @@ fun RegisterForm(
                 state = passwordState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = if (passwordStatus is Error<*>) passwordStatus.body.toString() else "Password"
+                label = if (passwordStatus is Error) passwordStatus.body.toString() else "Password"
             )
 
             Spacer(Modifier.height(24.dp))
@@ -91,7 +91,7 @@ fun RegisterForm(
                 modifier = Modifier.width(300.dp),
                 label = when {
                     passwordStatus == Success -> "Confirm Password"
-                    (passwordStatus as Error<*>).body.toString() == PASSWORDS_NOT_MATCH -> PASSWORDS_NOT_MATCH
+                    (passwordStatus as Error).body.toString() == PASSWORDS_NOT_MATCH -> PASSWORDS_NOT_MATCH
                     else -> "Confirm Password"
                 }
             )

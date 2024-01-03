@@ -126,7 +126,7 @@ class DefaultMainComponent(
                 isLoading = _isLogoutLoading,
                 operation = { server.logout() },
                 onSuccess = {
-                    if (it is Error<*>) {
+                    if (it is Error) {
                         _logoutStatus.update { _ -> it }
                         runCatching { it.body as? HttpResponse }.getOrNull()?.let { onLogoutClicked() }
                     }

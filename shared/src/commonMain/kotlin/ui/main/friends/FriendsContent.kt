@@ -36,9 +36,9 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
             trackColor = colorScheme.surfaceVariant
         )
 
-        status is Error<*> -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        status is Error -> Box(modifier = modifier, contentAlignment = Alignment.Center) {
             Text(
-                text = (status as Error<*>).body.toString(),
+                text = (status as Error).body.toString(),
                 fontSize = typography.bodyLarge.fontSize,
                 color = Color.DarkGray
             )

@@ -26,7 +26,7 @@ fun ExpandedScreenChild(
     val logoutStatus by component.logoutStatus.subscribeAsState()
 
     LaunchedEffect(logoutStatus) {
-        runCatching { logoutStatus as Error<*> }.getOrNull()?.let {
+        runCatching { logoutStatus as Error }.getOrNull()?.let {
             snackCallback((it.body as HttpResponse).status.description)
         }
     }
