@@ -110,9 +110,6 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     }
 
     settingsSlot.child?.instance?.also {
-        SettingsContent(
-            component = it,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp, vertical = 60.dp)
-        )
+        SettingsContent(component = it, modifier = Modifier.fillMaxSize())
     }
 }
