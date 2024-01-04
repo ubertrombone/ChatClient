@@ -77,7 +77,11 @@ class DefaultMainComponent(
                 componentContext = childComponentContext,
                 server = server,
                 settings = settings,
-                onDismissed = settingsNavigation::dismiss
+                onDismissed = settingsNavigation::dismiss,
+                logout = {
+                    settingsNavigation.dismiss()
+                    onLogoutClicked()
+                }
             )
         }
     override val settingsSlot: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
