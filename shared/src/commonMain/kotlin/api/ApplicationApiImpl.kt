@@ -142,6 +142,13 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
+    override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
+        postHelper(route = "/settings/cache", body = cache) {
+            authenticatedResponseHelper().also { if (it == Success) settings.cache.set(cache) }
+        }
+    }
+
+    @Authenticated
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/updatepwd", body = password) { authenticatedResponseHelper() }
     }
@@ -149,13 +156,6 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     @Authenticated
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/updateuser", body = username) { authenticatedResponseHelper() }
-    }
-
-    @Authenticated
-    override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/cache", body = cache) {
-            authenticatedResponseHelper().also { if (it == Success) settings.cache.set(cache) }
-        }
     }
 
     @Authenticated
