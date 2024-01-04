@@ -5,6 +5,7 @@ import kotlinx.datetime.Instant
 
 fun Instant.ago() =
     Clock.System.now().minus(this).toComponents { days, hours, minutes, seconds, _ ->
+        println(days)
         when {
             days > 0 -> return@toComponents "$days ${"day".pluralizeTime(days.toInt())} ago"
             hours > 0 -> return@toComponents "$hours ${"hour".pluralizeTime(hours)} ago"
@@ -13,4 +14,4 @@ fun Instant.ago() =
         }
     }
 
-private fun String.pluralizeTime(count: Int) = if (count > 1) "${this}s" else this
+private fun String.pluralizeTime(count: Int) = takeIf { count <= 1 } ?: "${this}s"
