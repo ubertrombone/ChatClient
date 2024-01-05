@@ -44,7 +44,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                             .size(40.dp)
                             .padding(5.dp)
                             .clip(CircleShape)
-                            .clickable { component.onDismissed }
+                            .clickable { component.onDismissed() }
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -54,14 +54,18 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             )
         },
         containerColor = colorScheme.background
-    ) {
-        ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(it)) {
+    ) { padding ->
+        ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
+            item {
+                // TODO: Status
+            }
+
             item {
                 SettingCard(
                     label = "Change Username",
                     selected = selectedSetting == USERNAME,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = if (selectedSetting == USERNAME) null else USERNAME }
+                    onSelected = { selectedSetting = USERNAME.takeUnless { selectedSetting == it } }
                 ) {
                     item {
                         Text(text = "CHANGE\nUSERNAME", fontSize = typography.displayLarge.fontSize)
