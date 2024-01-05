@@ -150,12 +150,16 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     @Authenticated
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/updatepwd", body = password) { authenticatedResponseHelper() }
+        postHelper(route = "/settings/updatepwd", body = password) {
+            authenticatedResponseHelper().also { if (status == OK) settings.password.set(password.newPassword) }
+        }
     }
 
     @Authenticated
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/updateuser", body = username) { authenticatedResponseHelper() }
+        postHelper(route = "/settings/updateuser", body = username) {
+            authenticatedResponseHelper().also { if (status == OK) settings.username.set(username.newUsername.name) }
+        }
     }
 
     @Authenticated
