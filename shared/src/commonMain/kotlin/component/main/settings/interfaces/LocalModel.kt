@@ -1,4 +1,4 @@
-package component.main.settings.`interface`
+package component.main.settings.interfaces
 
 import com.arkivanov.decompose.value.MutableValue
 import kotlinx.coroutines.CoroutineScope

@@ -6,7 +6,7 @@ import api.model.StatusRequest
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import component.main.settings.`interface`.LocalModel
+import component.main.settings.interfaces.LocalModel
 import kotlinx.coroutines.*
 import settings.SettingsRepository
 import util.Status
@@ -40,10 +40,7 @@ class StatusModelImpl(
         callWrapper(
             isLoading = loadingState,
             operation = { server.update(StatusRequest(value as String)) },
-            onSuccess = {
-                if (it == Status.Success) status.update { Status.Success }
-                if (it is Error) status.update { _ -> it }
-            },
+            onSuccess = { status.update { _ -> it } },
             onError = { status.update { _ -> Error(it) } }
         )
     }

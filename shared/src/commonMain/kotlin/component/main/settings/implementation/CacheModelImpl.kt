@@ -5,7 +5,7 @@ import api.callWrapper
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import component.main.settings.`interface`.LocalModel
+import component.main.settings.interfaces.LocalModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 import settings.SettingsRepository
 import util.Status
 import util.Status.Error
-import util.Status.Success
 import kotlin.coroutines.CoroutineContext
 
 class CacheModelImpl(
@@ -43,10 +42,7 @@ class CacheModelImpl(
         callWrapper(
             isLoading = loadingState,
             operation = { server.update(cache = value as Boolean) },
-            onSuccess = {
-                if (it == Success) status.update { Success }
-                if (it is Error) status.update { _ -> it }
-            },
+            onSuccess = { status.update { _ -> it } },
             onError = { status.update { _ -> Error(it) } }
         )
     }
