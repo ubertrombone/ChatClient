@@ -155,10 +155,12 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         }
     }
 
+    // TODO: Something didn't work here
     @Authenticated
     override suspend fun update(username: UpdateUsernameRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/updateuser", body = username) {
             authenticatedResponseHelper().also { if (status == OK) settings.username.set(username.newUsername.name) }
+            // TODO: Redo this so that server responds with a new token and client replaces current token
         }
     }
 
