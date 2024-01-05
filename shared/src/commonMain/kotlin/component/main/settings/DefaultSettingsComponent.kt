@@ -1,17 +1,16 @@
 package component.main.settings
 
 import api.ApplicationApi
-import api.callWrapper
+import api.model.UpdatePasswordRequest
+import api.model.UpdateUsernameRequest
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import component.main.settings.implementation.*
+import kotlinx.coroutines.withContext
 import settings.SettingsRepository
+import util.Status
+import kotlin.coroutines.CoroutineContext
 
 class DefaultSettingsComponent(
     componentContext: ComponentContext,
@@ -20,52 +19,36 @@ class DefaultSettingsComponent(
     override val onDismissed: () -> Unit,
     override val logout: () -> Unit
 ) : SettingsComponent, ComponentContext by componentContext {
-    val scope = CoroutineScope(Dispatchers.IO)
-
-    private val _status = MutableStateFlow<String?>(null)
-    override val status: StateFlow<String?> = _status
-
-    private val _statusLoading = MutableValue(true)
-    override val statusLoading: Value<Boolean> = _statusLoading
-
-    private val _cache = MutableStateFlow(false)
-    override val cache: StateFlow<Boolean> = _cache
-
-    private val _cacheLoading = MutableValue(false)
-    override val cacheLoading: Value<Boolean> = _cacheLoading
-
-    override suspend fun getStatus() {
-        callWrapper(
-            isLoading = _statusLoading,
-            operation = { server.getStatus() },
-            onSuccess = { status ->
-                _status.update { status }
-            },
-            onError = {}
-        )
+    private val _statusUpdateStates = instanceKeeper.getOrCreate { StatusModelImpl(settings = settings, server = server) }
+    override val statusLoading: Value<Boolean> = _statusUpdateStates.loadingState
+    override val updateStatusStatus: Value<Status> = _statusUpdateStates.status
+    override suspend fun getStatus(context: CoroutineContext) = _statusUpdateStates.get(context)
+    override suspend fun updateStatus(status: String, context: CoroutineContext) = withContext(context) {
+        settings.status.set(status)
+        _statusUpdateStates.update(status, context)
     }
 
-    override suspend fun updateStatus() {
-        TODO("Not yet implemented")
-    }
+    private val _cacheUpdateStates = instanceKeeper.getOrCreate { CacheModelImpl(settings, server) }
+    override val cacheLoading: Value<Boolean> = _cacheUpdateStates.loadingState
+    override val updateCacheStatus: Value<Status> = _cacheUpdateStates.status
+    override suspend fun getCache(context: CoroutineContext) = _cacheUpdateStates.get(context)
+    override suspend fun updateCache(cache: Boolean, context: CoroutineContext) = _cacheUpdateStates.update(cache, context)
 
-    override suspend fun getCache() {
-        TODO("Not yet implemented")
-    }
+    private val _updateUsernameStates = instanceKeeper.getOrCreate { UsernameModelImpl(server) }
+    override val usernameLoading: Value<Boolean> = _updateUsernameStates.loadingState
+    override val usernameStatus: Value<Status> = _updateUsernameStates.status
+    override suspend fun updateUsername(update: UpdateUsernameRequest, context: CoroutineContext) =
+        _updateUsernameStates.apiCall(update, context)
 
-    override suspend fun updateCache() {
-        TODO("Not yet implemented")
-    }
+    private val _updatePasswordStates = instanceKeeper.getOrCreate { PasswordModelImpl(server) }
+    override val passwordLoading: Value<Boolean> = _updatePasswordStates.loadingState
+    override val passwordStatus: Value<Status> = _updatePasswordStates.status
+    override suspend fun updatePassword(update: UpdatePasswordRequest, context: CoroutineContext) =
+        _updatePasswordStates.apiCall(update, context)
 
-    override suspend fun updateUsername() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updatePassword() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteAccount() {
-        TODO("Not yet implemented")
-    }
+    private val _deleteAccountStates = instanceKeeper.getOrCreate { DeleteModelImpl(server) }
+    override val deleteAccountLoading: Value<Boolean> = _deleteAccountStates.loadingState
+    override val deleteAccountStatus: Value<Status> = _deleteAccountStates.status
+    override suspend fun deleteAccount(delete: Boolean, context: CoroutineContext) =
+        _deleteAccountStates.apiCall(delete, context)
 }
