@@ -13,17 +13,16 @@ import kotlinx.coroutines.withContext
 import settings.SettingsRepository
 import util.Status
 import util.Status.Error
+import util.Status.Loading
 import kotlin.coroutines.CoroutineContext
 
 class CacheModelImpl(
-    initialLoading: Boolean,
-    initialStatus: Status,
     private val settings: SettingsRepository,
     private val server: ApplicationApi
 ) : LocalModel, InstanceKeeper.Instance {
     override val scope = CoroutineScope(Dispatchers.Main)
-    override val loadingState = MutableValue(initialLoading)
-    override val status = MutableValue(initialStatus)
+    override val loadingState = MutableValue(false)
+    override val status: MutableValue<Status> = MutableValue(Loading)
 
     override suspend fun get(context: CoroutineContext) = withContext(context) {
         callWrapper(
