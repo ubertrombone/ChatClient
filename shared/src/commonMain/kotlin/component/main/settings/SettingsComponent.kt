@@ -26,6 +26,8 @@ interface SettingsComponent {
 
     val usernameLoading: Value<Boolean>
     val usernameStatus: Value<Status>
+    fun updateUsernameStatus(status: Status)
+    fun getUsernameAsResponse(): String?
     suspend fun updateUsername(update: UpdateUsernameRequest, context: CoroutineContext) // requires internet, so should only update this value if response is OK
 
     val passwordLoading: Value<Boolean>

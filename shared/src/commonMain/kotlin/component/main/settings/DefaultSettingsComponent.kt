@@ -7,9 +7,13 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import component.main.settings.implementation.*
+import io.ktor.client.statement.*
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import kotlinx.coroutines.withContext
 import settings.SettingsRepository
+import util.Constants.USERNAME_EXISTS
 import util.Status
+import util.Status.Error
 import kotlin.coroutines.CoroutineContext
 
 class DefaultSettingsComponent(
@@ -37,6 +41,18 @@ class DefaultSettingsComponent(
     private val _updateUsernameStates = instanceKeeper.getOrCreate { UsernameModelImpl(server) }
     override val usernameLoading: Value<Boolean> = _updateUsernameStates.loadingState
     override val usernameStatus: Value<Status> = _updateUsernameStates.status
+    override fun updateUsernameStatus(status: Status) { _updateUsernameStates.updateStatus(status) }
+    override fun getUsernameAsResponse(): String? = with(_updateUsernameStates.status.value) {
+        takeIf { it is Error }?.let {
+            when {
+                (it as Error).body is HttpResponse ->
+                    if ((it.body as HttpResponse).status == BadRequest) USERNAME_EXISTS else null
+                it.body is String -> it.body
+                else -> null
+            }
+        }
+    }
+
     override suspend fun updateUsername(update: UpdateUsernameRequest, context: CoroutineContext) =
         _updateUsernameStates.apiCall(update, context)
 
