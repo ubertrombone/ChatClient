@@ -15,7 +15,8 @@ object Constants {
     const val NO_PASSWORD_PROVIDED = "Password field is empty"
     const val PASSWORDS_NOT_MATCH = "Passwords don't match!"
     const val UNKNOWN_ERROR = "An unknown error occurred"
-    const val UNAUTHORIZED = "Token is not valid or has expired"
+    const val MAX_STATUS_LENGTH = 256
+    const val STATUS_TOO_LONG = "Status can't be more than $MAX_STATUS_LENGTH characters!"
 
     const val REQUESTS = "Requests"
     const val GROUP_CHATS = "Groups"
