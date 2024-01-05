@@ -18,6 +18,7 @@ object Constants {
     const val UNKNOWN_ERROR = "An unknown error occurred"
     const val MAX_STATUS_LENGTH = 256
     const val STATUS_TOO_LONG = "Status can't be more than $MAX_STATUS_LENGTH characters!"
+    const val USERNAME_EXISTS = "Username already exists!"
 
     const val REQUESTS = "Requests"
     const val GROUP_CHATS = "Groups"
