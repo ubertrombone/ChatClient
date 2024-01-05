@@ -8,6 +8,7 @@ class SettingsRepository(private val settings: Settings) {
     val password = SettingConfig(settings, "PASSWORD", "")
     val rememberMe = SettingConfig(settings, "REMEMBER_ME", false)
     val cache = SettingConfig(settings, "CACHE", false)
+    val status = SettingConfig(settings, "STATUS", "")
 
     fun clear() = settings.clear()
 }
