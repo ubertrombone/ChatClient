@@ -17,6 +17,8 @@ class PasswordModelImpl(private val server: ApplicationApi) : ApiModel, Instance
     override val loadingState = MutableValue(false)
     override val status: MutableValue<Status> = MutableValue(Loading)
 
+    override fun updateStatus(value: Status) = status.update { value }
+
     override suspend fun <T> apiCall(value: T, context: CoroutineContext) = withContext(context) {
         callWrapper(
             isLoading = loadingState,

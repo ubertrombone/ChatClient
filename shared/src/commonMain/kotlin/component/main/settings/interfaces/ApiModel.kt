@@ -8,5 +8,6 @@ interface ApiModel {
     val loadingState: MutableValue<Boolean>
     val status: MutableValue<Status>
 
+    fun updateStatus(value: Status)
     suspend fun <T> apiCall(value: T, context: CoroutineContext)
 }

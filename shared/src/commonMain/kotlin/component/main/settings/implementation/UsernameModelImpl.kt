@@ -17,11 +17,15 @@ class UsernameModelImpl(private val server: ApplicationApi) : ApiModel, Instance
     override val loadingState = MutableValue(false)
     override val status: MutableValue<Status> = MutableValue(Loading)
 
+    override fun updateStatus(value: Status) { status.update { value } }
+
     override suspend fun <T> apiCall(value: T, context: CoroutineContext) = withContext(context) {
         callWrapper(
             isLoading = loadingState,
             operation = { server.update(value as UpdateUsernameRequest) },
-            onSuccess = { status.update { _ -> it } },
+            onSuccess = {
+                status.update { _ -> it }
+            },
             onError = { status.update { _ -> Error(it) } }
         )
     }
