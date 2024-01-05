@@ -22,6 +22,8 @@ import util.Status.Error
 import util.Status.Success
 import util.Username
 
+// TODO: Consider statuses that are because of no internet or server issues; how to handle that to avoid
+//  data getting out of sync?
 class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKeeper.Instance, ApplicationApi {
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -143,9 +145,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     @Authenticated
     override suspend fun update(cache: Boolean) = withContext(scope.coroutineContext) {
-        postHelper(route = "/settings/cache", body = cache) {
-            authenticatedResponseHelper().also { if (it == Success) settings.cache.set(cache) }
-        }
+        postHelper(route = "/settings/cache", body = cache) { authenticatedResponseHelper() }
     }
 
     @Authenticated
