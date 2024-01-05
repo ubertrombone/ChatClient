@@ -1,5 +1,6 @@
 package ui.main.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +37,7 @@ fun SettingCard(
             angle.animateTo(
                 targetValue = if (selected) 180f else 0f,
                 animationSpec = tween(
-                    durationMillis = 500,
+                    durationMillis = 1000,
                     easing = LinearOutSlowInEasing
                 )
             )
@@ -80,6 +81,6 @@ fun SettingCard(
             )
         }
 
-        if (selected) ScrollLazyColumn(modifier = Modifier.fillMaxWidth(), items = content)
+        AnimatedVisibility(visible = selected) { ScrollLazyColumn(modifier = Modifier.fillMaxWidth(), items = content) }
     }
 }
