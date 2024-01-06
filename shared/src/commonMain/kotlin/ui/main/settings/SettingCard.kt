@@ -1,7 +1,9 @@
 package ui.main.settings
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +23,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ui.composables.expect.ScrollLazyColumn
+import util.tweenSpec
 
 @Composable
 fun SettingCard(
@@ -31,15 +34,17 @@ fun SettingCard(
     content: LazyListScope.() -> Unit
 ) {
     val angle = remember { Animatable(0f) }
+    val height = remember { Animatable(100.dp.value) }
 
     LaunchedEffect(selected) {
         launch {
             angle.animateTo(
                 targetValue = if (selected) 180f else 0f,
-                animationSpec = tween(
-                    durationMillis = 1000,
-                    easing = LinearOutSlowInEasing
-                )
+                animationSpec = tweenSpec()
+            )
+            height.animateTo(
+                targetValue = if (selected) 400.dp.value else 100.dp.value,
+                animationSpec = tweenSpec()
             )
         }
     }
@@ -47,15 +52,7 @@ fun SettingCard(
     Column(
         modifier = modifier
             .background(colorScheme.background)
-            .height(
-                animateDpAsState(
-                    targetValue = if (selected) 400.dp else 100.dp,
-                    animationSpec = TweenSpec(
-                        durationMillis = 500,
-                        easing = LinearOutSlowInEasing
-                    )
-                ).value
-            ),
+            .height(height.value.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -81,6 +78,12 @@ fun SettingCard(
             )
         }
 
-        AnimatedVisibility(visible = selected) { ScrollLazyColumn(modifier = Modifier.fillMaxWidth(), items = content) }
+        AnimatedVisibility(
+            visible = selected,
+            enter = expandVertically(animationSpec = tweenSpec()) + fadeIn(animationSpec = tweenSpec()),
+            modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
+        ) {
+            ScrollLazyColumn(modifier = Modifier.fillMaxWidth(), items = content)
+        }
     }
 }
