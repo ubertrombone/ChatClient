@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ui.composables.expect.ScrollLazyColumn
 import util.tweenSpec
 
 @Composable
@@ -31,50 +29,44 @@ fun SettingCard(
     selected: Boolean,
     modifier: Modifier = Modifier,
     onSelected: () -> Unit,
-    content: LazyListScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     val angle = remember { Animatable(0f) }
-    val height = remember { Animatable(100.dp.value) }
 
     LaunchedEffect(selected) {
         launch {
             angle.animateTo(
-                targetValue = if (selected) 180f else 0f,
-                animationSpec = tweenSpec()
-            )
-            height.animateTo(
-                targetValue = if (selected) 400.dp.value else 100.dp.value,
+                targetValue = if (selected) -180f else 0f,
                 animationSpec = tweenSpec()
             )
         }
     }
 
     Column(
-        modifier = modifier
-            .background(colorScheme.background)
-            .height(height.value.dp),
+        modifier = modifier.background(colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier
+                .background(colorScheme.primaryContainer)
                 .fillMaxWidth()
                 .clickable { onSelected() }
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = label,
-                fontSize = typography.bodyMedium.fontSize,
+                fontSize = typography.headlineLarge.fontSize,
                 softWrap = false,
-                color = colorScheme.primary
+                color = colorScheme.onPrimaryContainer
             )
 
             Icon(
-                modifier = Modifier.rotate(angle.value),
+                modifier = Modifier.size(40.dp).rotate(angle.value),
                 imageVector = Default.KeyboardArrowDown,
                 contentDescription = "Select $label setting",
-                tint = colorScheme.primary
+                tint = colorScheme.onPrimaryContainer
             )
         }
 
@@ -83,7 +75,12 @@ fun SettingCard(
             enter = expandVertically(animationSpec = tweenSpec()) + fadeIn(animationSpec = tweenSpec()),
             modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
         ) {
-            ScrollLazyColumn(modifier = Modifier.fillMaxWidth(), items = content)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = content
+            )
         }
     }
 }

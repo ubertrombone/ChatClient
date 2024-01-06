@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import api.model.UpdateUsernameRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -37,6 +38,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         modifier = modifier,
         topBar = {
             CenterAlignedTopAppBar(
+                modifier = Modifier.padding(bottom = 12.dp),
                 title = { Text(
                     text = "Settings",
                     fontSize = typography.displayMedium.fontSize,
@@ -70,26 +72,41 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             }
 
             item {
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
+            }
+
+            item {
+
                 SettingCard(
                     label = "Change Username",
                     selected = selectedSetting == USERNAME,
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { selectedSetting = USERNAME.takeUnless { selectedSetting == it } }
                 ) {
-                    item {
-                        UpdateUsername(
-                            modifier = Modifier.fillMaxWidth(),
-                            usernameState = username,
-                            currentUsername = component.settings.username.get(),
-                            label = label
-                        ) {
-                            component.updateUsernameStatus(username.validateInput())
-                            if (usernameValid)
-                                component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), it)
-                            label = component.getUsernameAsResponse()
-                        }
+                    UpdateUsername(
+                        modifier = Modifier.fillMaxWidth(),
+                        usernameState = username,
+                        currentUsername = component.settings.username.get(),
+                        label = label
+                    ) {
+                        component.updateUsernameStatus(username.validateInput())
+                        if (usernameValid)
+                            component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), it)
+                        label = component.getUsernameAsResponse()
                     }
                 }
+            }
+
+            item {
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
             }
 
             item {
