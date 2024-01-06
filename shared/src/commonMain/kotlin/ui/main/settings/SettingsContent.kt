@@ -31,7 +31,6 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
     val usernameValid by username.isValid.subscribeAsState()
     val usernameInput by username.input.subscribeAsState()
-//    val coroutineScope = rememberCoroutineScope()
     var label by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
@@ -70,8 +69,6 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 // TODO: Status validation should be done on client side
             }
 
-            // TODO: Test if changing username works
-            // TODO: Move icon out of text field
             item {
                 SettingCard(
                     label = "Change Username",
@@ -81,12 +78,13 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 ) {
                     item {
                         UpdateUsername(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             usernameState = username,
+                            currentUsername = component.settings.username.get(),
                             label = label
                         ) {
                             component.updateUsernameStatus(username.validateInput())
-                            if (usernameValid && usernameInput != component.settings.username.get())
+                            if (usernameValid)
                                 component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), it)
                             label = component.getUsernameAsResponse()
                         }
