@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -20,24 +18,20 @@ import androidx.compose.ui.unit.dp
 import api.model.UpdateUsernameRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
-import kotlinx.coroutines.launch
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
 import util.SettingsOptions.USERNAME
-import util.textFieldColors
 import util.toUsername
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
-    val usernameStatus by component.usernameStatus.subscribeAsState()
-
     var selectedSetting by remember { mutableStateOf<SettingsOptions?>(null) }
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
     val usernameValid by username.isValid.subscribeAsState()
     val usernameInput by username.input.subscribeAsState()
-    val coroutineScope = rememberCoroutineScope()
+//    val coroutineScope = rememberCoroutineScope()
     var label by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
@@ -79,7 +73,6 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             // TODO: Test if changing username works
             // TODO: Move icon out of text field
             item {
-                // TODO: Animation is very slow
                 SettingCard(
                     label = "Change Username",
                     selected = selectedSetting == USERNAME,
@@ -87,38 +80,16 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     onSelected = { selectedSetting = USERNAME.takeUnless { selectedSetting == it } }
                 ) {
                     item {
-                        TextField(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                            value = usernameInput,
-                            onValueChange = username::updateInput,
-                            label = {
-                                Text(
-                                    text = label ?: "",
-                                    fontSize = typography.labelMedium.fontSize
-                                )
-                            },
-                            placeholder = { Text(text = "Update Username") },
-                            leadingIcon = { Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Username") },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Filled.CheckCircle,
-                                    contentDescription = "Submit",
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .clickable {
-                                        coroutineScope.launch {
-                                            component.updateUsernameStatus(username.validateInput())
-                                            if (usernameValid && usernameInput != component.settings.username.get())
-                                                component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), coroutineContext)
-                                            label = component.getUsernameAsResponse()
-                                        }
-                                    }
-                                )
-                            },
-                            isError = !usernameValid || label != null,
-                            singleLine = true,
-                            colors = textFieldColors()
-                        )
+                        UpdateUsername(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                            usernameState = username,
+                            label = label
+                        ) {
+                            component.updateUsernameStatus(username.validateInput())
+                            if (usernameValid && usernameInput != component.settings.username.get())
+                                component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), it)
+                            label = component.getUsernameAsResponse()
+                        }
                     }
                 }
             }
