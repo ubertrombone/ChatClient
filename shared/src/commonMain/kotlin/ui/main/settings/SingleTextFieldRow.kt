@@ -3,18 +3,16 @@ package ui.main.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import util.textFieldColors
 
 @Composable
 fun SingleTextFieldRow(
@@ -33,16 +31,14 @@ fun SingleTextFieldRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        TextField(
+        SettingsTextField(
             modifier = Modifier.weight(9f),
-            value = input,
-            onValueChange = onInputChange,
-            label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
+            input = input,
+            onInputChange = onInputChange,
+            label = label,
             leadingIcon = leadingIcon,
             isError = isError,
-            singleLine = true,
-            colors = textFieldColors(),
-            keyboardOptions = KeyboardOptions(autoCorrect = autoCorrect, imeAction = ImeAction.Done)
+            autoCorrect = autoCorrect
         )
 
         IconButton(
