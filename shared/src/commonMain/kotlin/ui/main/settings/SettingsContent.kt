@@ -16,23 +16,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import api.model.UpdateUsernameRequest
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import ui.composables.expect.ScrollLazyColumn
+import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
+import util.SettingsOptions.STATUS
 import util.SettingsOptions.USERNAME
-import util.toUsername
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
     var selectedSetting by remember { mutableStateOf<SettingsOptions?>(null) }
+    val status = rememberStatusAuthenticationFieldState(component.settings.status.get())
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
-    val usernameValid by username.isValid.subscribeAsState()
-    val usernameInput by username.input.subscribeAsState()
-    var label by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) { component.getStatus(this.coroutineContext) }
 
     Scaffold(
         modifier = modifier,
@@ -67,8 +66,27 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     ) { padding ->
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             item {
-                // TODO: Status
-                // TODO: Status validation should be done on client side
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
+            }
+
+            item {
+                SettingCard(
+                    label = "Update Status",
+                    selected = selectedSetting == STATUS,
+                    modifier = Modifier.fillMaxWidth(),
+                    onSelected = { selectedSetting = STATUS.takeUnless { selectedSetting == it } }
+                ) {
+                    UpdateStatus(
+                        modifier = Modifier.fillMaxWidth(),
+                        component = component,
+                        statusState = status,
+                        currentStatus = component.settings.status.get()
+                    ) { selectedSetting = null }
+                }
             }
 
             item {
@@ -80,7 +98,6 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             }
 
             item {
-
                 SettingCard(
                     label = "Change Username",
                     selected = selectedSetting == USERNAME,
@@ -89,15 +106,10 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 ) {
                     UpdateUsername(
                         modifier = Modifier.fillMaxWidth(),
+                        component = component,
                         usernameState = username,
-                        currentUsername = component.settings.username.get(),
-                        label = label
-                    ) {
-                        component.updateUsernameStatus(username.validateInput())
-                        if (usernameValid)
-                            component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), it)
-                        label = component.getUsernameAsResponse()
-                    }
+                        currentUsername = component.settings.username.get()
+                    )
                 }
             }
 
