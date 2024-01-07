@@ -14,6 +14,7 @@ import util.Status
 import util.Status.Error
 import util.Status.Success
 import util.passwordToStatus
+import kotlin.coroutines.CoroutineContext
 
 class PasswordAuthenticationFieldState(
     oldPassword: String = "",
@@ -44,33 +45,31 @@ class PasswordAuthenticationFieldState(
     fun updateNewInput(with: String) = _newPasswordInput.update { with }
     fun updateConfirmInput(with: String) = _confirmPasswordInput.update { with }
 
-    fun validateInputs(password: String) {
-        scope.launch {
-            val oldPasswordIsValid = async {
-                _oldPasswordIsValid.update {
-                    if (_oldPasswordInput.value == password) Success else Error(PASSWORD_INCORRECT)
-                }
+    suspend fun validateInputs(password: String, context: CoroutineContext) = withContext(context) {
+        val oldPasswordIsValid = async {
+            _oldPasswordIsValid.update {
+                if (_oldPasswordInput.value == password) Success else Error(PASSWORD_INCORRECT)
             }
-
-            val newPasswordSameAsOld = async {
-                with(_newPasswordInput.value == password) {
-                    _newPasswordIsValid.update { if (this) Success else Error(PASSWORD_MUST_BE_NEW) }
-                }
-            }
-
-            val newPasswordIsPassword = async {
-                _newPasswordIsValid.update { _newPasswordInput.value.passwordToStatus() }
-            }
-
-            val newAndConfirmMatch = async {
-                with(_newPasswordInput.value == _confirmPasswordInput.value) {
-                    _newPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
-                    _confirmPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
-                }
-            }
-
-            awaitAll(oldPasswordIsValid, newPasswordSameAsOld, newPasswordIsPassword, newAndConfirmMatch)
         }
+
+        val newPasswordSameAsOld = async {
+            with(_newPasswordInput.value == password) {
+                _newPasswordIsValid.update { if (this) Success else Error(PASSWORD_MUST_BE_NEW) }
+            }
+        }
+
+        val newPasswordIsPassword = async {
+            _newPasswordIsValid.update { _newPasswordInput.value.passwordToStatus() }
+        }
+
+        val newAndConfirmMatch = async {
+            with(_newPasswordInput.value == _confirmPasswordInput.value) {
+                _newPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
+                _confirmPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
+            }
+        }
+
+        awaitAll(oldPasswordIsValid, newPasswordSameAsOld, newPasswordIsPassword, newAndConfirmMatch)
     }
 
     companion object {
