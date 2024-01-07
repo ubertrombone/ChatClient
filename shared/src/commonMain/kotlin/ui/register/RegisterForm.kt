@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import ui.composables.PasswordField
 import ui.composables.RememberMeCheckbox
@@ -78,7 +79,8 @@ fun RegisterForm(
                 state = passwordState,
                 enabled = !isLoading,
                 modifier = Modifier.width(300.dp),
-                label = if (passwordStatus is Error) passwordStatus.body.toString() else "Password"
+                label = if (passwordStatus is Error) passwordStatus.body.toString() else "Password",
+                imeAction = ImeAction.Next
             )
 
             Spacer(Modifier.height(24.dp))

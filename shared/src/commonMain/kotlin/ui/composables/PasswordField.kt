@@ -2,6 +2,7 @@ package ui.composables
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
@@ -12,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -28,7 +31,8 @@ fun PasswordField(
     enabled: Boolean,
     modifier: Modifier = Modifier,
     label: String = "Password",
-    hasTrailingIcon: Boolean = true
+    hasTrailingIcon: Boolean = true,
+    imeAction: ImeAction = ImeAction.Done
 ) {
     val input by state.input.subscribeAsState()
     val isValid by state.isValid.subscribeAsState()
@@ -57,6 +61,7 @@ fun PasswordField(
         singleLine = true,
         isError = !isValid,
         enabled = enabled,
-        modifier = modifier
+        modifier = modifier,
+        keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Password, imeAction = imeAction)
     )
 }

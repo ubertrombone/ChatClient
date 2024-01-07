@@ -1,6 +1,7 @@
 package ui.composables
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Icon
@@ -10,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ui.composables.states.AuthenticationFieldState
 import util.ShapeTokens
@@ -35,6 +37,7 @@ fun UsernameField(
         singleLine = true,
         isError = !isValid,
         enabled = enabled,
-        modifier = modifier
+        modifier = modifier,
+        keyboardOptions = KeyboardOptions(autoCorrect = false, imeAction = ImeAction.Next)
     )
 }

@@ -34,6 +34,7 @@ fun UpdateStatus(
         label = label ?: "Update status",
         input = statusInput,
         isError = !isValid || label != null,
+        autoCorrect = true,
         enabled = currentStatus != statusInput,
         leadingIcon = { Icon(painter = painterResource("sentiment_satisfied.xml"), contentDescription = "Status") },
         onInputChange = statusState::updateInput
