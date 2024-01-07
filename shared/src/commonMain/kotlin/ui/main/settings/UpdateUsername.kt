@@ -33,34 +33,4 @@ fun UpdateUsername(
         leadingIcon = { Icon(imageVector = Outlined.AccountCircle, contentDescription = "Username") },
         onInputChange = usernameState::updateInput
     ) { scope.launch { onClick(this.coroutineContext) } }
-
-//    Row(
-//        modifier = modifier,
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceBetween
-//    ) {
-//        TextField(
-//            modifier = Modifier.weight(9f),
-//            value = usernameInput,
-//            onValueChange = usernameState::updateInput,
-//            label = { Text(text = label ?: "Update username", fontSize = typography.labelMedium.fontSize) },
-//            leadingIcon = { Icon(imageVector = Outlined.AccountCircle, contentDescription = "Username") },
-//            isError = !usernameValid || label != null,
-//            singleLine = true,
-//            colors = textFieldColors()
-//        )
-//
-//        IconButton(
-//            modifier = Modifier.size(40.dp),
-//            onClick = { scope.launch { onClick(this.coroutineContext) } },
-//            enabled = currentUsername != usernameInput,
-//            colors = IconButtonDefaults.iconButtonColors(
-//                containerColor = colorScheme.background,
-//                contentColor = if (!usernameValid || label != null) colorScheme.error else colorScheme.primary,
-//                disabledContentColor = colorScheme.onBackground
-//            )
-//        ) {
-//            Icon(imageVector = Filled.CheckCircle, contentDescription = "Submit")
-//        }
-//    }
 }
