@@ -16,7 +16,6 @@ import util.Constants.STATUS_TOO_LONG
 fun UpdateStatus(
     component: SettingsComponent,
     statusState: StatusAuthenticationFieldState,
-    currentStatus: String?,
     modifier: Modifier = Modifier,
     onSuccess: () -> Unit
 ) {
@@ -35,7 +34,7 @@ fun UpdateStatus(
         input = statusInput,
         isError = !isValid || label != null,
         autoCorrect = true,
-        enabled = currentStatus != statusInput,
+        enabled = component.settings.status.get() != statusInput,
         leadingIcon = { Icon(painter = painterResource("sentiment_satisfied.xml"), contentDescription = "Status") },
         onInputChange = statusState::updateInput
     ) {

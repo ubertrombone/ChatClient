@@ -16,7 +16,6 @@ import util.toUsername
 fun UpdateUsername(
     component: SettingsComponent,
     usernameState: UsernameAuthenticationFieldState,
-    currentUsername: String,
     modifier: Modifier = Modifier,
     onSuccess: () -> Unit
 ) {
@@ -30,7 +29,7 @@ fun UpdateUsername(
         label = label ?: "Update username",
         input = usernameInput,
         isError = !usernameValid || label != null,
-        enabled = currentUsername.lowercase() != usernameInput.lowercase(),
+        enabled = component.settings.username.get().lowercase() != usernameInput.lowercase(),
         leadingIcon = { Icon(imageVector = Outlined.AccountCircle, contentDescription = "Username") },
         onInputChange = usernameState::updateInput
     ) {
