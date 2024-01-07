@@ -42,7 +42,7 @@ fun PasswordField(
         value = input,
         onValueChange = state::updateInput,
         label = { Text(text = label, fontSize = typography.labelMedium.fontSize) },
-        leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Username") },
+        leadingIcon = { Icon(imageVector = Outlined.Lock, contentDescription = "Password") },
         trailingIcon = {
             if (hasTrailingIcon) IconToggleButton(
                 checked = visibility,
