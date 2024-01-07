@@ -109,7 +109,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         component = component,
                         usernameState = username,
                         currentUsername = component.settings.username.get()
-                    )
+                    ) { selectedSetting = null }
                 }
             }
 
