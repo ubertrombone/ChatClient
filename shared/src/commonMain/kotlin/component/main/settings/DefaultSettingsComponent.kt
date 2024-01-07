@@ -52,7 +52,6 @@ class DefaultSettingsComponent(
             }
         }
     }
-
     override suspend fun updateUsername(update: UpdateUsernameRequest, context: CoroutineContext) =
         _updateUsernameStates.apiCall(update, context)
 
