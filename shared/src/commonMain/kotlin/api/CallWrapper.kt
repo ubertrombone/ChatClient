@@ -16,7 +16,7 @@ suspend fun <T> callWrapper(
         onSuccess(result)
     } catch (e: Exception) {
         val error = e.message ?: "An unknown error has occurred."
-        Napier.e(message = error, throwable = e)
+        Napier.e(message = error)
         onError?.invoke(error)
     } finally {
         isLoading.update { false }
