@@ -16,7 +16,7 @@ class SettingsRepository(private val settings: Settings) {
 
 class SettingConfig<T>(
     private val settings: Settings,
-    val key: String,
+    private val key: String,
     private val defaultValue: T
 ) {
     private fun getValue(settings: Settings, key: String, defaultValue: T): String = when (defaultValue) {
@@ -36,7 +36,6 @@ class SettingConfig<T>(
     }
 
     fun remove() = settings.remove(key)
-    fun exists(): Boolean = settings.hasKey(key)
 
     fun get(): String = getValue(settings, key, defaultValue)
     fun set(value: T) = try {
