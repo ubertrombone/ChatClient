@@ -17,7 +17,8 @@ fun UpdateUsername(
     component: SettingsComponent,
     usernameState: UsernameAuthenticationFieldState,
     currentUsername: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSuccess: () -> Unit
 ) {
     var label by remember { mutableStateOf<String?>(null) }
     val usernameInput by usernameState.input.subscribeAsState()
@@ -39,5 +40,6 @@ fun UpdateUsername(
                 component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), coroutineContext)
             label = component.getUsernameAsResponse()
         }
+        onSuccess()
     }
 }
