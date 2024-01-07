@@ -6,7 +6,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import util.Constants.PASSWORDS_NOT_MATCH
 import util.Constants.PASSWORD_INCORRECT
 import util.Constants.PASSWORD_MUST_BE_NEW
@@ -21,8 +23,6 @@ class PasswordAuthenticationFieldState(
     newPassword: String = "",
     confirmPassword: String = ""
 ) {
-    private val scope = CoroutineScope(Dispatchers.Default)
-
     private val _oldPasswordInput = MutableValue(oldPassword)
     val oldPasswordInput: Value<String> = _oldPasswordInput
 
