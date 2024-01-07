@@ -37,7 +37,7 @@ class DefaultRegisterComponent(
     private val _passwordStatus: MutableValue<Status> = MutableValue(Success)
     override val passwordStatus: Value<Status> = _passwordStatus
 
-    private val _rememberMe = MutableValue(false)
+    private val _rememberMe = MutableValue(settings.rememberMe.get().toBooleanStrict())
     override val rememberMe: Value<Boolean> = _rememberMe
 
     override fun updateRegistration(status: Status) {
@@ -83,12 +83,15 @@ class DefaultRegisterComponent(
             val passwordValidator = async { validatePassword(password, confirmation) }
 
             val awaitValidation = awaitAll(userValidator, passwordValidator)
-            if (awaitValidation.all { it }) register(
-                account = AccountRequest(
-                    username = username.toUsername(),
-                    password = password
+            if (awaitValidation.all { it }) {
+                settings.rememberMe.set(_rememberMe.value)
+                register(
+                    account = AccountRequest(
+                        username = username.toUsername(),
+                        password = password
+                    )
                 )
-            )
+            }
         }
     }
 }
