@@ -66,7 +66,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
                     }
 
                     IconButton(
-                        modifier = Modifier.padding(24.dp),
+                        modifier = Modifier.padding(end = 12.dp),
                         onClick = if (settingsSlot.child == null) component::showSettings else component::dismissSettings
                     ) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
