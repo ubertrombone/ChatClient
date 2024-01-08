@@ -11,6 +11,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass.Companion.Compact
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Expanded
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,9 +33,10 @@ import util.SettingsOptions.*
 import util.Status
 import util.Status.Success
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
+    val windowSizeClass = calculateWindowSizeClass()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var selectedSetting by remember { mutableStateOf<SettingsOptions?>(null) }
@@ -56,17 +61,18 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     fontWeight = typography.displayMedium.fontWeight
                 ) },
                 navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Close Settings",
-                        tint = colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 12.dp, top = 12.dp)
-                            .size(40.dp)
-                            .padding(5.dp)
-                            .clip(CircleShape)
-                            .clickable { component.onDismissed() }
-                    )
+                    if (windowSizeClass.widthSizeClass != Expanded || windowSizeClass.heightSizeClass == Compact)
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Close Settings",
+                            tint = colorScheme.primary,
+                            modifier = Modifier
+                                .padding(start = 12.dp, top = 12.dp)
+                                .size(40.dp)
+                                .padding(5.dp)
+                                .clip(CircleShape)
+                                .clickable { component.onDismissed() }
+                        )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
