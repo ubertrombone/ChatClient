@@ -23,6 +23,7 @@ fun UpdateUsername(
 ) {
     val usernameStatus by component.usernameStatus.subscribeAsState()
     var label by remember { mutableStateOf<String?>(null) }
+    var currentUsername by remember { mutableStateOf(component.settings.username.get()) }
     val usernameInput by usernameState.input.subscribeAsState()
     val usernameValid by usernameState.isValid.subscribeAsState()
     val scope = rememberCoroutineScope()
@@ -34,7 +35,7 @@ fun UpdateUsername(
         label = label ?: "Update username",
         input = usernameInput,
         isError = !usernameValid || label != null,
-        enabled = component.settings.username.get().lowercase() != usernameInput.lowercase(),
+        enabled = currentUsername.lowercase() != usernameInput.lowercase(),
         leadingIcon = { Icon(imageVector = Outlined.AccountCircle, contentDescription = "Username") },
         onInputChange = usernameState::updateInput
     ) {
@@ -45,7 +46,10 @@ fun UpdateUsername(
             if (usernameValid)
                 component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), coroutineContext)
             // Only if the api call is successful use the onSuccess callback to show a success snackbar message
-            if (usernameStatus == Success) onSuccess(usernameStatus)
+            if (usernameStatus == Success) {
+                currentUsername = usernameInput
+                onSuccess(usernameStatus)
+            }
         }
     }
 }
