@@ -39,7 +39,6 @@ fun UpdateUsername(
         onInputChange = usernameState::updateInput
     ) {
         scope.launch {
-            // TODO: Idk why this works...
             // This function checks that the input entered is a valid username
             component.updateUsernameStatus(usernameState.validateInput())
             // If the input is a valid username, call the API
