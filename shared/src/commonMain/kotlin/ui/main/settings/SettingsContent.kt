@@ -17,19 +17,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import component.main.settings.SettingsComponent
+import kotlinx.coroutines.launch
 import ui.composables.expect.ScrollLazyColumn
+import ui.composables.states.rememberPasswordAuthenticationFieldState
 import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
-import util.SettingsOptions.STATUS
-import util.SettingsOptions.USERNAME
+import util.SettingsOptions.*
+import util.Status.Success
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     var selectedSetting by remember { mutableStateOf<SettingsOptions?>(null) }
     val status = rememberStatusAuthenticationFieldState(component.settings.status.get())
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
+    val password = rememberPasswordAuthenticationFieldState()
 
     LaunchedEffect(Unit) { component.getStatus(this.coroutineContext) }
 
@@ -62,6 +67,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 )
             )
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = colorScheme.background
     ) { padding ->
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
@@ -83,8 +89,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     UpdateStatus(
                         modifier = Modifier.fillMaxWidth(),
                         component = component,
-                        statusState = status,
-                        currentStatus = component.settings.status.get()
+                        statusState = status
                     ) { selectedSetting = null }
                 }
             }
@@ -107,8 +112,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     UpdateUsername(
                         modifier = Modifier.fillMaxWidth(),
                         component = component,
-                        usernameState = username,
-                        currentUsername = component.settings.username.get()
+                        usernameState = username
                     ) { selectedSetting = null }
                 }
             }
@@ -122,14 +126,57 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             }
 
             item {
-                // TODO: Button to change password. 2 options:
-                //  1. Button navs to another screen with: current password, new password, confirm new password fields
-                //  2. This items transforms into the 3 text fields plus a submission button. -- would need to learn
-                //      how to animate the transition
+                SettingCard(
+                    label = "Change Password",
+                    selected = selectedSetting == PASSWORD,
+                    modifier = Modifier.fillMaxWidth(),
+                    onSelected = { selectedSetting = PASSWORD.takeUnless { selectedSetting == it } }
+                ) {
+                    UpdatePassword(
+                        modifier = Modifier.fillMaxWidth(),
+                        component = component,
+                        states = password
+                    ) {
+                        if (it == Success) {
+                            password.clear()
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "Successfully updated password!",
+                                    withDismissAction = true,
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             item {
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
+            }
+
+            item {
+                SettingCard(
+                    label = "Cache Messages",
+                    selected = selectedSetting == CACHE,
+                    modifier = Modifier.fillMaxWidth(),
+                    onSelected = { selectedSetting = CACHE.takeUnless { selectedSetting == it } }
+                ) {
+
+                }
                 // TODO: Check box with info about caching chats on the server.
+            }
+
+            item {
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = Color.Gray
+                )
             }
 
             item {
