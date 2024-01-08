@@ -90,7 +90,15 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         modifier = Modifier.fillMaxWidth(),
                         component = component,
                         statusState = status
-                    ) { selectedSetting = null }
+                    ) {
+                        if (it == Success) scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Successfully updated status!",
+                                withDismissAction = true,
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
                 }
             }
 
