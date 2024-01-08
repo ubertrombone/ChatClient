@@ -24,10 +24,12 @@ import api.model.UpdatePasswordRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.states.PasswordAuthenticationFieldState
+import util.Status
 import util.Status.Error
 import util.Status.Success
 
@@ -37,22 +39,23 @@ fun UpdatePassword(
     component: SettingsComponent,
     states: PasswordAuthenticationFieldState,
     modifier: Modifier = Modifier,
-    onSuccess: () -> Unit
+    onSuccess: (Status) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val apiStatus by component.passwordStatus.subscribeAsState()
 
     val oldPassword by states.oldPasswordInput.subscribeAsState()
     val oldPasswordIsValid by states.oldPasswordIsValid.subscribeAsState()
-    val oldPasswordLabel by remember { mutableStateOf<String?>(null) }
+    var oldPasswordLabel by remember { mutableStateOf<String?>(null) }
 
     val newPassword by states.newPasswordInput.subscribeAsState()
     val newPasswordIsValid by states.newPasswordIsValid.subscribeAsState()
-    val newPasswordLabel by remember { mutableStateOf<String?>(null) }
+    var newPasswordLabel by remember { mutableStateOf<String?>(null) }
     var newPasswordVisibility by remember { mutableStateOf(false) }
 
     val confirmPassword by states.confirmPasswordInput.subscribeAsState()
     val confirmPasswordIsValid by states.confirmPasswordIsValid.subscribeAsState()
-    val confirmPasswordLabel by remember { mutableStateOf<String?>(null) }
+    var confirmPasswordLabel by remember { mutableStateOf<String?>(null) }
     var confirmPasswordVisibility by remember { mutableStateOf(false) }
 
     val enabled by derivedStateOf {
@@ -61,6 +64,18 @@ fun UpdatePassword(
             newPasswordIsValid,
             confirmPasswordIsValid
         ).all { it == Success }
+    }
+
+    LaunchedEffect(oldPasswordIsValid) {
+        oldPasswordLabel = runCatching { (oldPasswordIsValid as Error).body.toString() }.getOrNull()
+    }
+
+    LaunchedEffect(newPasswordIsValid) {
+        newPasswordLabel = runCatching { (newPasswordIsValid as Error).body.toString() }.getOrNull()
+    }
+
+    LaunchedEffect(confirmPasswordIsValid) {
+        confirmPasswordLabel = runCatching { (confirmPasswordIsValid as Error).body.toString() }.getOrNull()
     }
 
     Row(
@@ -137,18 +152,21 @@ fun UpdatePassword(
             onClick = {
                 scope.launch {
                     states.validateInputs(component.settings.password.get(), this.coroutineContext)
-                    // TODO: Figure out how to make onSuccess work
-                    if (enabled) component.updatePassword(
-                        update = UpdatePasswordRequest(
-                            oldPassword = oldPassword,
-                            newPassword = newPassword,
-                            newPasswordConfirm = confirmPassword
-                        ),
-                        context = this.coroutineContext
-                    )
+                    if (enabled) {
+                        async {
+                            component.updatePassword(
+                                update = UpdatePasswordRequest(
+                                    oldPassword = oldPassword,
+                                    newPassword = newPassword,
+                                    newPasswordConfirm = confirmPassword
+                                ),
+                                context = this@launch.coroutineContext
+                            )
+                        }.await()
+                        onSuccess(apiStatus)
+                    }
                 }
             },
-            enabled = enabled,
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = colorScheme.background,
                 contentColor = if (!enabled) colorScheme.error else colorScheme.primary,
