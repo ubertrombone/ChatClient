@@ -9,11 +9,13 @@ import com.arkivanov.essenty.instancekeeper.getOrCreate
 import component.main.settings.implementation.*
 import io.ktor.client.statement.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import settings.SettingsRepository
 import util.Constants.USERNAME_EXISTS
 import util.Status
 import util.Status.Error
+import util.Status.Success
 import kotlin.coroutines.CoroutineContext
 
 class DefaultSettingsComponent(
@@ -67,6 +69,8 @@ class DefaultSettingsComponent(
     private val _deleteAccountStates = instanceKeeper.getOrCreate { DeleteModelImpl(server) }
     override val deleteAccountLoading: Value<Boolean> = _deleteAccountStates.loadingState
     override val deleteAccountStatus: Value<Status> = _deleteAccountStates.status
-    override suspend fun deleteAccount(delete: Boolean, context: CoroutineContext) =
-        _deleteAccountStates.apiCall(delete, context)
+    override suspend fun deleteAccount(delete: Boolean, context: CoroutineContext) = withContext(context) {
+        async { _deleteAccountStates.apiCall(delete, context) }.await()
+        if (_deleteAccountStates.status.value == Success) settings.clear()
+    }
 }
