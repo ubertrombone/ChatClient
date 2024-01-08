@@ -77,6 +77,12 @@ class PasswordAuthenticationFieldState(
         awaitAll(oldPasswordIsValid, newPasswordIsValid, confirmPasswordIsValid)
     }
 
+    fun clear() {
+        _oldPasswordInput.update { "" }
+        _newPasswordInput.update { "" }
+        _confirmPasswordInput.update { "" }
+    }
+
     companion object {
         val saver = Saver<PasswordAuthenticationFieldState, List<Any>>(
             save = { listOf(it._oldPasswordInput.value, it._newPasswordInput.value, it._confirmPasswordInput.value) },
