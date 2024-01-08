@@ -26,7 +26,7 @@ import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
 import util.SettingsOptions.*
-import util.Status.Error
+import util.Status
 import util.Status.Success
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +86,8 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         },
         containerColor = colorScheme.background
     ) { padding ->
+        // TODO: Consider how to approve the Delete Account button
+        // TODO: Delete Account button needs confirmation dialog
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             item {
                 Divider(
@@ -224,12 +226,13 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
 
             item {
                 OutlinedButton(
+                    modifier = Modifier.padding(top = 100.dp),
                     onClick = {
                         scope.launch {
                             component.deleteAccount(true, this.coroutineContext)
                             snackbarHostState.showSnackbar(
-                                message = if (deleteStatus is Error)
-                                        ((deleteStatus as Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
+                                message = if (deleteStatus is Status.Error)
+                                    ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
                                 withDismissAction = true,
                                 duration = SnackbarDuration.Short
                             )
