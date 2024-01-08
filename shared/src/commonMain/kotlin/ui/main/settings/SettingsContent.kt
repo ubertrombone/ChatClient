@@ -70,7 +70,16 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 )
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = colorScheme.primaryContainer.copy(alpha = .7f),
+                    contentColor = colorScheme.onPrimaryContainer,
+                    dismissActionContentColor = colorScheme.onPrimaryContainer
+                )
+            }
+        },
         containerColor = colorScheme.background
     ) { padding ->
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
