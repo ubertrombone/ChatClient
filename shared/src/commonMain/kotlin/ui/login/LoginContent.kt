@@ -93,7 +93,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
             ) else {
                 when (initStatus) {
                     is Error -> Text(
-                        text = ((initStatus as Error).body as HttpResponse).status.description,
+                        text = runCatching { ((initStatus as Error).body as HttpResponse).status.description }.getOrDefault("Server unresponsive"),
                         fontSize = typography.bodyLarge.fontSize,
                         modifier = Modifier.align(Alignment.Center)
                     )
