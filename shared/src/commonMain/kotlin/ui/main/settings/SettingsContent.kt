@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
+import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.states.rememberPasswordAuthenticationFieldState
@@ -24,6 +26,7 @@ import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
 import util.SettingsOptions.*
+import util.Status.Error
 import util.Status.Success
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +38,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     val status = rememberStatusAuthenticationFieldState(component.settings.status.get())
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
     val password = rememberPasswordAuthenticationFieldState()
+    val deleteStatus by component.deleteAccountStatus.subscribeAsState()
 
     LaunchedEffect(Unit) {
         component.getStatus(this.coroutineContext)
@@ -219,8 +223,29 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             }
 
             item {
-                // TODO: Big red delete button
-                // TODO: Will require a popup confirmation
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            component.deleteAccount(true, this.coroutineContext)
+                            snackbarHostState.showSnackbar(
+                                message = if (deleteStatus is Error)
+                                        ((deleteStatus as Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
+                                withDismissAction = true,
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = colorScheme.onErrorContainer,
+                        contentColor = colorScheme.onError
+                    )
+                ) {
+                    Text(
+                        text = "Delete Account",
+                        fontSize = typography.bodyLarge.fontSize,
+                        fontWeight = typography.bodyLarge.fontWeight
+                    )
+                }
             }
         }
     }
