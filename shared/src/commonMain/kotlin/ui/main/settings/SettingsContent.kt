@@ -113,7 +113,15 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         modifier = Modifier.fillMaxWidth(),
                         component = component,
                         usernameState = username
-                    ) { selectedSetting = null }
+                    ) {
+                        if (it == Success) scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Successfully updated username!",
+                                withDismissAction = true,
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
                 }
             }
 
