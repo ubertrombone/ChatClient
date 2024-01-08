@@ -36,7 +36,10 @@ class DefaultSettingsComponent(
     override val cacheLoading: Value<Boolean> = _cacheUpdateStates.loadingState
     override val updateCacheStatus: Value<Status> = _cacheUpdateStates.status
     override suspend fun getCache(context: CoroutineContext) = _cacheUpdateStates.get(context)
-    override suspend fun updateCache(cache: Boolean, context: CoroutineContext) = _cacheUpdateStates.update(cache, context)
+    override suspend fun updateCache(cache: Boolean, context: CoroutineContext) {
+        settings.cache.set(cache)
+        _cacheUpdateStates.update(cache, context)
+    }
 
     private val _updateUsernameStates = instanceKeeper.getOrCreate { UsernameModelImpl(server, settings) }
     override val usernameLoading: Value<Boolean> = _updateUsernameStates.loadingState
