@@ -192,7 +192,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     ) {
                         scope.launch {
                             snackbarHostState.showSnackbar(
-                                message = "Updated Cache: $it",
+                                message = "Updated Cache: ${it.toString().replaceFirstChar { it.uppercase() }}",
                                 withDismissAction = true,
                                 duration = SnackbarDuration.Short
                             )
