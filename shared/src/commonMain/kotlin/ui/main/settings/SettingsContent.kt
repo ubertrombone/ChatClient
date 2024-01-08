@@ -36,7 +36,10 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
     val password = rememberPasswordAuthenticationFieldState()
 
-    LaunchedEffect(Unit) { component.getStatus(this.coroutineContext) }
+    LaunchedEffect(Unit) {
+        component.getStatus(this.coroutineContext)
+        component.getCache(this.coroutineContext)
+    }
 
     Scaffold(
         modifier = modifier,
@@ -182,9 +185,20 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { selectedSetting = CACHE.takeUnless { selectedSetting == it } }
                 ) {
-
+                    UpdateCache(
+                        initCache = component.settings.cache.get().toBooleanStrict(),
+                        component = component,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Updated Cache: $it",
+                                withDismissAction = true,
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
                 }
-                // TODO: Check box with info about caching chats on the server.
             }
 
             item {
