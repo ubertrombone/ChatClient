@@ -14,7 +14,7 @@ object Constants {
     const val INVALID_USERNAME = "Invalid Username"
     const val NO_PASSWORD_PROVIDED = "Password field is empty"
     const val PASSWORDS_NOT_MATCH = "Passwords don't match!"
-    const val PASSWORD_INCORRECT = "Old password is incorrect!"
+    const val PASSWORD_INCORRECT = "Password is incorrect!"
     const val PASSWORD_MUST_BE_NEW = "New password cannot be the same as old password"
     const val UNKNOWN_ERROR = "An unknown error occurred"
     const val MAX_STATUS_LENGTH = 256
