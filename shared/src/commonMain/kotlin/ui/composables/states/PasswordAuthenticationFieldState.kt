@@ -9,6 +9,7 @@ import com.arkivanov.decompose.value.update
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import util.Constants.NO_PASSWORD_PROVIDED
 import util.Constants.PASSWORDS_NOT_MATCH
 import util.Constants.PASSWORD_INCORRECT
 import util.Constants.PASSWORD_MUST_BE_NEW
@@ -52,24 +53,28 @@ class PasswordAuthenticationFieldState(
             }
         }
 
-        val newPasswordSameAsOld = async {
-            with(_newPasswordInput.value == password) {
-                _newPasswordIsValid.update { if (this) Success else Error(PASSWORD_MUST_BE_NEW) }
+        val newPasswordIsValid = async {
+            _newPasswordIsValid.update {
+                when {
+                    _newPasswordInput.value == password -> Error(PASSWORD_MUST_BE_NEW)
+                    _newPasswordInput.value.isBlank() -> Error(NO_PASSWORD_PROVIDED)
+                    _newPasswordInput.value != _confirmPasswordInput.value -> Error(PASSWORDS_NOT_MATCH)
+                    else -> _newPasswordInput.value.passwordToStatus()
+                }
             }
         }
 
-        val newPasswordIsPassword = async {
-            _newPasswordIsValid.update { _newPasswordInput.value.passwordToStatus() }
-        }
-
-        val newAndConfirmMatch = async {
-            with(_newPasswordInput.value == _confirmPasswordInput.value) {
-                _newPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
-                _confirmPasswordIsValid.update { if (this) Success else Error(PASSWORDS_NOT_MATCH) }
+        val confirmPasswordIsValid = async {
+            _confirmPasswordIsValid.update {
+                when {
+                    _confirmPasswordInput.value.isBlank() -> Error(NO_PASSWORD_PROVIDED)
+                    _confirmPasswordInput.value != _newPasswordInput.value -> Error(PASSWORDS_NOT_MATCH)
+                    else -> Success
+                }
             }
         }
 
-        awaitAll(oldPasswordIsValid, newPasswordSameAsOld, newPasswordIsPassword, newAndConfirmMatch)
+        awaitAll(oldPasswordIsValid, newPasswordIsValid, confirmPasswordIsValid)
     }
 
     companion object {
