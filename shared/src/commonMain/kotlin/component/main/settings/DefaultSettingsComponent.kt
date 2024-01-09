@@ -35,7 +35,14 @@ class DefaultSettingsComponent(
         serializer = DeleteAccountWarningConfig.serializer(),
         handleBackButton = true
     ) { _, childComponentContext ->
-        DefaultDeleteAccountComponent(childComponentContext)
+        DefaultDeleteAccountComponent(
+            childComponentContext,
+            deleteAccount = {
+                deleteAccount(true, it)
+                dismissDeleteAccountWarning()
+            },
+            dismiss = ::dismissDeleteAccountWarning
+        )
     }
     override val deleteDialogSlot: Value<ChildSlot<*, DeleteAccountComponent>> = _deleteDialogSlot
     override fun showDeleteAccountWarning() = deleteAccountNavigation.activate(DeleteAccountWarningConfig)
