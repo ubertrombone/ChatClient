@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import api.model.FriendInfo
@@ -19,8 +19,14 @@ fun FriendsList(
     modifier: Modifier = Modifier,
     friendSelected: (FriendInfo) -> Unit
 ) {
+    var sortedList by remember { mutableStateOf(list.toImmutableList()) }
+
+    LaunchedEffect(list) {
+        sortedList = list.sortedWith(compareBy({ it.isOnline }, { it.lastOnline })).reversed().toImmutableList()
+    }
+
     ScrollLazyColumn(modifier = modifier) {
-        itemsIndexed(items = list.toImmutableList()) { index, item ->
+        itemsIndexed(items = sortedList) { index, item ->
             Column(
                 modifier = Modifier,
                 verticalArrangement = Arrangement.Top,
