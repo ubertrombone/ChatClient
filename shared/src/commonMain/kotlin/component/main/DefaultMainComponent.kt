@@ -116,7 +116,7 @@ class DefaultMainComponent(
             componentContext = componentContext,
             server = server,
             settings = settings,
-            chatRepository = chatRepository
+            logout = onLogoutClicked
         )
 
     override fun onFriendsTabClicked() = navigation.bringToFront(Friends)
