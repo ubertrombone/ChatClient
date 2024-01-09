@@ -30,7 +30,12 @@ class DefaultAddComponent(
         serializer = BlockConfig.serializer(),
         handleBackButton = true
     ) { _, childComponentContext ->
-        DefaultBlockComponent(childComponentContext)
+        DefaultBlockComponent(
+            childComponentContext,
+            server = server,
+            dismiss = ::dismissBlock,
+            logout = logout
+        )
     }
     override val blockSlot: Value<ChildSlot<*, BlockComponent>> = _blockSlot
     override fun showBlock() = blockNavigation.activate(BlockConfig)
