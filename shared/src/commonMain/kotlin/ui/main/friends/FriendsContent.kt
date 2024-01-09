@@ -62,7 +62,7 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
 
         else ->
             if (windowSizeClass.widthSizeClass == Expanded && windowSizeClass.heightSizeClass != Compact)
-                ExpandedFriendsContent(component, modifier.padding(top = 12.dp, start = 12.dp))
+                ExpandedFriendsContent(component, modifier.padding(top = 12.dp))
             else CompactFriendsContent(component, modifier)
     }
 }

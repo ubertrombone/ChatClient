@@ -38,7 +38,7 @@ fun CompactFriendsContent(component: FriendsComponent, modifier: Modifier = Modi
         }
     } ?: FriendsList(
         list = friends.friends,
-        modifier = modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+        modifier = modifier.padding(vertical = 12.dp),
         friendSelected = component::showChat
     )
 }
