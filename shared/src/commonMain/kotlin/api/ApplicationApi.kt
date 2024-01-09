@@ -10,6 +10,8 @@ interface ApplicationApi {
     suspend fun authenticate(credentials: AuthenticationRequest): Status
     suspend fun logout(): Status
 
+    suspend fun queryUsers(query: String): Set<Username>?
+
     suspend fun getFriends(): Set<FriendInfo>?
     suspend fun add(friend: Username): Status
     suspend fun remove(friend: Username): Status

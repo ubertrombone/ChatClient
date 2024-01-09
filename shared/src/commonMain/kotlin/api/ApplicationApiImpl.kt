@@ -70,6 +70,11 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         withContext(scope.coroutineContext) { getHelper("/logout") { authenticatedResponseHelper() } }
 
     @Authenticated
+    override suspend fun queryUsers(query: String): Set<Username>? = withContext(scope.coroutineContext) {
+        postHelper<String, Set<Username>?>(route = "/users", body = query) { nullableAuthenticatedResponseHelper<Set<Username>>() }
+    }
+
+    @Authenticated
     override suspend fun getFriends() = withContext(scope.coroutineContext) {
         getHelper("/friends") { nullableAuthenticatedResponseHelper<Set<FriendInfo>>() }
     }
@@ -170,6 +175,18 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         body: T,
         crossinline operation: suspend HttpResponse.() -> Status
     ): Status = withContext(scope.coroutineContext) {
+        client.post(route) {
+            contentType(Json)
+            setBody(body)
+            bearerAuth(settings.token.get())
+        }.let { operation(it) }
+    }
+
+    private suspend inline fun <reified T, R> postHelper(
+        route: String,
+        body: T,
+        crossinline operation: suspend HttpResponse.() -> R
+    ): R = withContext(scope.coroutineContext) {
         client.post(route) {
             contentType(Json)
             setBody(body)
