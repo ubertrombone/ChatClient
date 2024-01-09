@@ -1,22 +1,16 @@
 package ui.register
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.register.RegisterComponent
+import ui.composables.NavBackButton
 import ui.composables.states.rememberRegisterAuthenticationFieldState
 import util.MainPhases.LOGIN
 
@@ -44,19 +38,7 @@ fun RegisterContent(component: RegisterComponent, modifier: Modifier = Modifier)
                         fontWeight = typography.displayLarge.fontWeight,
                     )
                 },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.ArrowBack,
-                        contentDescription = "Return to Login",
-                        tint = colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 12.dp, top = 12.dp)
-                            .size(40.dp)
-                            .padding(5.dp)
-                            .clip(CircleShape)
-                            .clickable { component.pushTo(LOGIN) }
-                    )
-                },
+                navigationIcon = { NavBackButton { component.pushTo(LOGIN) } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
                     titleContentColor = colorScheme.primary

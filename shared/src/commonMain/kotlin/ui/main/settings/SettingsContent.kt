@@ -1,13 +1,8 @@
 package ui.main.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -18,7 +13,6 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,6 +20,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
+import ui.composables.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.states.rememberPasswordAuthenticationFieldState
 import ui.composables.states.rememberStatusAuthenticationFieldState
@@ -64,17 +59,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 ) },
                 navigationIcon = {
                     if (windowSizeClass.widthSizeClass != Expanded || windowSizeClass.heightSizeClass == Compact)
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Close Settings",
-                            tint = colorScheme.primary,
-                            modifier = Modifier
-                                .padding(start = 12.dp, top = 12.dp)
-                                .size(40.dp)
-                                .padding(5.dp)
-                                .clip(CircleShape)
-                                .clickable { component.onDismissed() }
-                        )
+                        NavBackButton { component.onDismissed() }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,
