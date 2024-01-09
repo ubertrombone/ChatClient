@@ -28,12 +28,13 @@ import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.SettingsOptions
 import util.SettingsOptions.*
-import util.Status
+import util.Status.Error
 import util.Status.Success
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
+    val warningSlot by component.deleteDialogSlot.subscribeAsState()
     val windowSizeClass = calculateWindowSizeClass()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -46,6 +47,12 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     LaunchedEffect(Unit) {
         component.getStatus(this.coroutineContext)
         component.getCache(this.coroutineContext)
+    }
+
+    LaunchedEffect(deleteStatus) {
+        if (deleteStatus is Error)
+            snackbarHostState.snackbarHelper(message = ((deleteStatus as Error).body as HttpResponse).bodyAsText())
+        if (deleteStatus == Success) snackbarHostState.snackbarHelper(message = "Account Deleted!")
     }
 
     Scaffold(
@@ -80,7 +87,6 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         },
         containerColor = colorScheme.background
     ) { padding ->
-        // TODO: Delete Account button needs confirmation dialog
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             item { DividerHelper() }
 
@@ -180,33 +186,17 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { selectedSetting = DELETE.takeUnless { selectedSetting == it } }
                 ) {
-                    OutlinedButton(
+                    DeleteAccount(
                         modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp),
-                        onClick = {
-                            scope.launch {
-                                component.deleteAccount(true, this.coroutineContext)
-                                snackbarHostState.snackbarHelper(
-                                    message = if (deleteStatus is Status.Error)
-                                        ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!"
-                                )
-                            }
-                        },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = colorScheme.onErrorContainer,
-                            contentColor = colorScheme.onError
-                        )
-                    ) {
-                        Text(
-                            text = "Delete Account",
-                            fontSize = typography.bodyLarge.fontSize,
-                            fontWeight = typography.bodyLarge.fontWeight
-                        )
-                    }
+                        onClick = component::showDeleteAccountWarning
+                    )
                 }
             }
 
             item { DividerHelper() }
         }
+
+        warningSlot.child?.instance?.also { WarningContent(component = it) }
     }
 }
 
