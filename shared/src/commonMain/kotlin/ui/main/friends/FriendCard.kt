@@ -70,7 +70,9 @@ fun FriendCard(
             maxLines = 1,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 4.dp)
+                .basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
         )
     }
 }
