@@ -6,13 +6,11 @@ import com.arkivanov.decompose.value.Value
 import component.main.add.block.BlockComponent
 import component.main.add.model.Friends
 import component.main.add.requests.RequestComponent
-import settings.SettingsRepository
 import util.Status
 import util.Username
 
 interface AddComponent {
     val server: ApplicationApi
-    val settings: SettingsRepository
     val logout: () -> Unit
 
     val blockSlot: Value<ChildSlot<*, BlockComponent>>

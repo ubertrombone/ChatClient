@@ -115,7 +115,6 @@ class DefaultMainComponent(
         DefaultAddComponent(
             componentContext = componentContext,
             server = server,
-            settings = settings,
             logout = onLogoutClicked
         )
 

@@ -18,10 +18,10 @@ import util.Status.Loading
 import util.Status.Success
 import util.Username
 
+// TODO: Test logout callbacks
 class DefaultAddComponent(
     componentContext: ComponentContext,
     override val server: ApplicationApi,
-    override val settings: SettingsRepository,
     override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
 
