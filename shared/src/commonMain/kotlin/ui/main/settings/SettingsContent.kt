@@ -25,6 +25,7 @@ import ui.composables.snackbarHelper
 import ui.composables.states.rememberPasswordAuthenticationFieldState
 import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
+import util.BottomBarSystemNavColor
 import util.SettingsOptions
 import util.SettingsOptions.*
 import util.Status.Error
@@ -53,6 +54,8 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             snackbarHostState.snackbarHelper(message = ((deleteStatus as Error).body as HttpResponse).bodyAsText())
         if (deleteStatus == Success) snackbarHostState.snackbarHelper(message = "Account Deleted!")
     }
+
+    BottomBarSystemNavColor(colorScheme.background)
 
     Scaffold(
         modifier = modifier,

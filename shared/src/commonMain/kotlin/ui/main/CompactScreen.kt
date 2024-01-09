@@ -111,5 +111,5 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
 
     settingsSlot.child?.instance?.also {
         SettingsContent(component = it, modifier = Modifier.fillMaxSize())
-    }
+    } ?: BottomBarSystemNavColor(colorScheme.primary)
 }
