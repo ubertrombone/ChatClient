@@ -16,9 +16,11 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass.Companio
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Expanded
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
@@ -92,16 +94,9 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         },
         containerColor = colorScheme.background
     ) { padding ->
-        // TODO: Consider how to approve the Delete Account button
         // TODO: Delete Account button needs confirmation dialog
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-            item {
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
+            item { DividerHelper() }
 
             item {
                 SettingCard(
@@ -126,13 +121,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item {
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
+            item { DividerHelper() }
 
             item {
                 SettingCard(
@@ -157,13 +146,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item {
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
+            item { DividerHelper() }
 
             item {
                 SettingCard(
@@ -191,13 +174,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item {
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
+            item { DividerHelper() }
 
             item {
                 SettingCard(
@@ -222,40 +199,56 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item {
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
-            }
+            item { DividerHelper() }
 
             item {
-                OutlinedButton(
-                    modifier = Modifier.padding(top = 100.dp),
-                    onClick = {
-                        scope.launch {
-                            component.deleteAccount(true, this.coroutineContext)
-                            snackbarHostState.showSnackbar(
-                                message = if (deleteStatus is Status.Error)
-                                    ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
-                                withDismissAction = true,
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = colorScheme.onErrorContainer,
-                        contentColor = colorScheme.onError
-                    )
+                SettingCard(
+                    label = "Delete Account",
+                    selected = selectedSetting == DELETE,
+                    modifier = Modifier.fillMaxWidth(),
+                    onSelected = { selectedSetting = DELETE.takeUnless { selectedSetting == it } }
                 ) {
-                    Text(
-                        text = "Delete Account",
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
-                    )
+                    OutlinedButton(
+                        modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp),
+                        onClick = {
+                            scope.launch {
+                                component.deleteAccount(true, this.coroutineContext)
+                                snackbarHostState.showSnackbar(
+                                    message = if (deleteStatus is Status.Error)
+                                        ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
+                                    withDismissAction = true,
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = colorScheme.onErrorContainer,
+                            contentColor = colorScheme.onError
+                        )
+                    ) {
+                        Text(
+                            text = "Delete Account",
+                            fontSize = typography.bodyLarge.fontSize,
+                            fontWeight = typography.bodyLarge.fontWeight
+                        )
+                    }
                 }
             }
+
+            item { DividerHelper() }
         }
     }
+}
+
+@Composable
+fun DividerHelper(
+    modifier: Modifier = Modifier,
+    thickness: Dp = 1.dp,
+    color: Color = Color.Gray
+) {
+    Divider(
+        modifier = modifier,
+        thickness = thickness,
+        color = color
+    )
 }
