@@ -29,6 +29,7 @@ import component.root.DefaultRootComponent
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import settings.SettingsRepository
+import util.ShapeTokens
 import java.awt.Dimension
 import java.io.File
 import java.io.ObjectInputStream
@@ -113,7 +114,7 @@ private fun SaveStateDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(
-            text = "Plots for Compose Sample",
+            text = "Chat Client App",
             style = typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = colorScheme.primary
@@ -144,7 +145,7 @@ private fun SaveStateDialog(
         },
         backgroundColor = colorScheme.primaryContainer,
         contentColor = colorScheme.primary,
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(ShapeTokens.roundedCorners)
     )
 }
 
