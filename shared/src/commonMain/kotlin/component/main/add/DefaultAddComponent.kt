@@ -95,6 +95,8 @@ class DefaultAddComponent(
 
     override fun removeFriend(username: Username) = _actionState.removeFriend(username)
 
+    override fun blockFriend(username: Username) = _actionState.blockFriend(username)
+
     init {
         stateKeeper.register(key = FRIENDS_KEY, strategy = Friends.serializer()) { _getFriendsState.result.value }
         stateKeeper.register(key = FRIENDS_LOAD_KEY, strategy = Boolean.serializer()) { _getFriendsState.loadingState.value }

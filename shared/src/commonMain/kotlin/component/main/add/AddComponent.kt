@@ -35,6 +35,7 @@ interface AddComponent {
     fun getFriends()
     fun searchUsers(query: String)
     fun sendFriendRequest(to: Username)
-    fun addFriend(username: Username) // to be called if friend request already exists
+    fun addFriend(username: Username)
     fun removeFriend(username: Username)
+    fun blockFriend(username: Username)
 }
