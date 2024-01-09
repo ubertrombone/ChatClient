@@ -12,7 +12,6 @@ import component.main.add.requests.DefaultRequestComponent
 import component.main.add.requests.RequestComponent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import settings.SettingsRepository
 import util.Status
 import util.Status.Loading
 import util.Status.Success
