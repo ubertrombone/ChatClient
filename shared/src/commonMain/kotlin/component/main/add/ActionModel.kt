@@ -5,6 +5,7 @@ import api.callWrapper
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -16,7 +17,8 @@ import util.Username
 class ActionModel(
     initialLoadingState: Boolean,
     initialStatus: Status,
-    private val server: ApplicationApi
+    private val server: ApplicationApi,
+    private val authCallback: () -> Unit
 ): InstanceKeeper.Instance {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -29,7 +31,10 @@ class ActionModel(
                 isLoading = loadingState,
                 operation = { server.sendFriendRequest(to) },
                 onSuccess = { status.update { it } },
-                onError = { status.update { _ -> Error(it) } }
+                onError = {
+                    status.update { _ -> Error(it) }
+                    if (it == Unauthorized.description) authCallback()
+                }
             )
         }
     }
@@ -40,7 +45,10 @@ class ActionModel(
                 isLoading = loadingState,
                 operation = { server.add(username) },
                 onSuccess = { status.update { it } },
-                onError = { status.update { _ -> Error(it) } }
+                onError = {
+                    status.update { _ -> Error(it) }
+                    if (it == Unauthorized.description) authCallback()
+                }
             )
         }
     }
@@ -51,7 +59,10 @@ class ActionModel(
                 isLoading = loadingState,
                 operation = { server.remove(username) },
                 onSuccess = { status.update { it } },
-                onError = { status.update { _ -> Error(it) } }
+                onError = {
+                    status.update { _ -> Error(it) }
+                    if (it == Unauthorized.description) authCallback()
+                }
             )
         }
     }

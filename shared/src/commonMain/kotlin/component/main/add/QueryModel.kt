@@ -6,6 +6,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import component.main.add.model.Friends
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,8 @@ class QueryModel(
     initialLoadingState: Boolean,
     initialStatus: Status,
     initialState: Friends,
-    private val server: ApplicationApi
+    private val server: ApplicationApi,
+    val authCallback: () -> Unit
 ) : InstanceKeeper.Instance {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -39,7 +41,10 @@ class QueryModel(
                         status.update { Success }
                     } ?: status.update { Error(UNKNOWN_ERROR) }
                 },
-                onError = { status.update { _ -> Error(it) } }
+                onError = {
+                    status.update { _ -> Error(it) }
+                    if (it == Unauthorized.description) authCallback()
+                }
             )
         }
     }

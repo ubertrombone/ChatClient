@@ -10,7 +10,6 @@ import component.main.add.block.DefaultBlockComponent
 import component.main.add.model.Friends
 import component.main.add.requests.DefaultRequestComponent
 import component.main.add.requests.RequestComponent
-import db.ChatRepository
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import settings.SettingsRepository
@@ -21,9 +20,9 @@ import util.Username
 
 class DefaultAddComponent(
     componentContext: ComponentContext,
-    override val chatRepository: ChatRepository,
     override val server: ApplicationApi,
-    override val settings: SettingsRepository
+    override val settings: SettingsRepository,
+    override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
 
     private val blockNavigation = SlotNavigation<BlockConfig>()
@@ -55,7 +54,8 @@ class DefaultAddComponent(
             initialLoadingState = stateKeeper.consume(key = FRIENDS_LOAD_KEY, strategy = Boolean.serializer()) ?: true,
             initialState = stateKeeper.consume(key = FRIENDS_KEY, strategy = Friends.serializer()) ?: Friends(),
             initialStatus = stateKeeper.consume(key = FRIENDS_STATUS_KEY, strategy = Status.serializer()) ?: Loading,
-            server = server
+            server = server,
+            authCallback = logout
         )
     }
     override val friendsLoadingState: Value<Boolean> = _getFriendsState.loadingState
@@ -67,7 +67,8 @@ class DefaultAddComponent(
             initialLoadingState = stateKeeper.consume(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) ?: false,
             initialStatus = stateKeeper.consume(key = QUERY_STATUS_KEY, strategy = Status.serializer()) ?: Success,
             initialState = stateKeeper.consume(key = QUERY_KEY, strategy = Friends.serializer()) ?: Friends(),
-            server = server
+            server = server,
+            authCallback = logout
         )
     }
     override val queryLoadingState: Value<Boolean> = _queryState.loadingState
@@ -78,7 +79,8 @@ class DefaultAddComponent(
         ActionModel(
             initialLoadingState = false,
             initialStatus = Success,
-            server = server
+            server = server,
+            authCallback = logout
         )
     }
     override val actionLoadingState: Value<Boolean> = _actionState.loadingState
