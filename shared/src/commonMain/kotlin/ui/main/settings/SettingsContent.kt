@@ -13,13 +13,12 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
+import ui.composables.Divider
 import ui.composables.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.snackbarHelper
@@ -88,7 +87,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
         containerColor = colorScheme.background
     ) { padding ->
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-            item { DividerHelper() }
+            item { Divider() }
 
             item {
                 SettingCard(
@@ -109,7 +108,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item { DividerHelper() }
+            item { Divider() }
 
             item {
                 SettingCard(
@@ -130,7 +129,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item { DividerHelper() }
+            item { Divider() }
 
             item {
                 SettingCard(
@@ -154,7 +153,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item { DividerHelper() }
+            item { Divider() }
 
             item {
                 SettingCard(
@@ -177,7 +176,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item { DividerHelper() }
+            item { Divider() }
 
             item {
                 SettingCard(
@@ -193,22 +192,9 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 }
             }
 
-            item { DividerHelper() }
+            item { Divider() }
         }
 
         warningSlot.child?.instance?.also { WarningContent(component = it) }
     }
-}
-
-@Composable
-fun DividerHelper(
-    modifier: Modifier = Modifier,
-    thickness: Dp = 1.dp,
-    color: Color = Color.Gray
-) {
-    Divider(
-        modifier = modifier,
-        thickness = thickness,
-        color = color
-    )
 }
