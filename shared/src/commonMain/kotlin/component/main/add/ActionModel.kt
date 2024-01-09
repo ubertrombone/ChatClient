@@ -5,11 +5,13 @@ import api.callWrapper
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import io.ktor.client.statement.*
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import util.Constants.REQUEST_ALREADY_RECEIVED
 import util.Status
 import util.Status.Error
 import util.Username
@@ -30,7 +32,14 @@ class ActionModel(
             callWrapper(
                 isLoading = loadingState,
                 operation = { server.sendFriendRequest(to) },
-                onSuccess = { status.update { it } },
+                onSuccess = {
+                    if (it is Error) {
+                        scope.launch {
+                            if ((it.body as HttpResponse).bodyAsText() == REQUEST_ALREADY_RECEIVED)
+                                addFriend(to)
+                        }
+                    } else status.update { _ -> it }
+                },
                 onError = {
                     status.update { _ -> Error(it) }
                     if (it == Unauthorized.description) authCallback()
