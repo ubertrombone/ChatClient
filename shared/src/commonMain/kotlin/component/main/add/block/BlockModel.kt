@@ -24,20 +24,6 @@ class BlockModel(
     val loadingState = MutableValue(initialLoadingState)
     val status = MutableValue(initialStatus)
 
-    fun blockApi(username: Username) {
-        scope.launch {
-            callWrapper(
-                isLoading = loadingState,
-                operation = { server.block(username) },
-                onSuccess = { status.update { _ -> it } },
-                onError = {
-                    status.update { _ -> Error(it) }
-                    if (it == Unauthorized.description) authCallback()
-                }
-            )
-        }
-    }
-
     fun unblock(username: Username) {
         scope.launch {
             callWrapper(
