@@ -3,7 +3,9 @@ package component.main.settings
 import api.ApplicationApi
 import api.model.UpdatePasswordRequest
 import api.model.UpdateUsernameRequest
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
+import component.main.settings.warning.DeleteAccountComponent
 import settings.SettingsRepository
 import util.Status
 import kotlin.coroutines.CoroutineContext
@@ -13,6 +15,11 @@ interface SettingsComponent {
     val server: ApplicationApi
     val onDismissed: () -> Unit
     val logout: () -> Unit
+
+    val deleteDialogSlot: Value<ChildSlot<*, DeleteAccountComponent>>
+
+    fun showDeleteAccountWarning()
+    fun dismissDeleteAccountWarning()
 
     val statusLoading: Value<Boolean>
     val updateStatusStatus: Value<Status>
