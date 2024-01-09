@@ -19,6 +19,7 @@ import component.main.MainComponent.Child.*
 import io.ktor.client.statement.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.composables.snackbarHelper
 import ui.main.components.ChildrenBox
 import ui.main.components.NavBarItem
 import ui.main.settings.SettingsContent
@@ -38,10 +39,9 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(logoutStatus) {
-        if (logoutStatus is Error) snackbarHostState.showSnackbar(
+        if (logoutStatus is Error) snackbarHostState.snackbarHelper(
             message = ((logoutStatus as Error).body as HttpResponse).status.description,
-            actionLabel = "Dismiss",
-            duration = SnackbarDuration.Short
+            actionLabel = "Dismiss"
         )
     }
     BottomBarSystemNavColor(colorScheme.primary)

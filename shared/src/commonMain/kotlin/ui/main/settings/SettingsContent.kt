@@ -22,6 +22,7 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
 import ui.composables.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
+import ui.composables.snackbarHelper
 import ui.composables.states.rememberPasswordAuthenticationFieldState
 import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
@@ -96,11 +97,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         statusState = status
                     ) {
                         if (it == Success) scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "Successfully updated status!",
-                                withDismissAction = true,
-                                duration = SnackbarDuration.Short
-                            )
+                            snackbarHostState.snackbarHelper(message = "Successfully updated status!")
                         }
                     }
                 }
@@ -121,11 +118,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         usernameState = username
                     ) {
                         if (it == Success) scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "Successfully updated username!",
-                                withDismissAction = true,
-                                duration = SnackbarDuration.Short
-                            )
+                            snackbarHostState.snackbarHelper(message = "Successfully updated username!")
                         }
                     }
                 }
@@ -148,11 +141,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         if (it == Success) {
                             password.clear()
                             scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    message = "Successfully updated password!",
-                                    withDismissAction = true,
-                                    duration = SnackbarDuration.Short
-                                )
+                                snackbarHostState.snackbarHelper(message = "Successfully updated password!")
                             }
                         }
                     }
@@ -174,10 +163,8 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "Updated Cache: ${it.toString().replaceFirstChar { it.uppercase() }}",
-                                withDismissAction = true,
-                                duration = SnackbarDuration.Short
+                            snackbarHostState.snackbarHelper(
+                                message = "Updated Cache: ${it.toString().replaceFirstChar { it.uppercase() }}"
                             )
                         }
                     }
@@ -198,11 +185,9 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                         onClick = {
                             scope.launch {
                                 component.deleteAccount(true, this.coroutineContext)
-                                snackbarHostState.showSnackbar(
+                                snackbarHostState.snackbarHelper(
                                     message = if (deleteStatus is Status.Error)
-                                        ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!",
-                                    withDismissAction = true,
-                                    duration = SnackbarDuration.Short
+                                        ((deleteStatus as Status.Error).body as HttpResponse).bodyAsText() else "Account Deleted!"
                                 )
                             }
                         },
