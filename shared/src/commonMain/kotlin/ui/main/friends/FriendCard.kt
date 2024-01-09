@@ -1,7 +1,9 @@
 package ui.main.friends
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.MarqueeAnimationMode
+import androidx.compose.foundation.MarqueeAnimationMode.Companion.Immediately
+import androidx.compose.foundation.MarqueeAnimationMode.Companion.WhileFocused
+import androidx.compose.foundation.MarqueeSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
@@ -12,15 +14,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import api.model.FriendInfo
 import util.ago
@@ -32,8 +35,24 @@ fun FriendCard(
     modifier: Modifier = Modifier,
     onClick: (FriendInfo) -> Unit
 ) {
+    var focused by remember { mutableStateOf(false) }
+
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        focused = when (event.type) {
+                            PointerEventType.Enter -> true
+                            PointerEventType.Exit -> false
+                            PointerEventType.Press -> true
+                            PointerEventType.Release -> false
+                            else -> continue
+                        }
+                    }
+                }
+            },
         onClick = { onClick(friendInfo) },
         shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = colorScheme.background, contentColor = colorScheme.primary)
@@ -69,10 +88,16 @@ fun FriendCard(
             softWrap = false,
             maxLines = 1,
             textAlign = TextAlign.Start,
-            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .padding(horizontal = 12.dp, vertical = 4.dp)
-                .basicMarquee(animationMode = MarqueeAnimationMode.WhileFocused)
+                .basicMarquee(
+                    iterations = Int.MAX_VALUE,
+                    initialDelayMillis = 500,
+                    delayMillis = 1000,
+                    animationMode = if (focused) Immediately else WhileFocused,
+                    spacing = MarqueeSpacing(100.dp),
+                    velocity = 60.dp
+                )
         )
     }
 }
