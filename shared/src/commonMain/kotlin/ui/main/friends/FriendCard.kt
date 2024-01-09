@@ -64,13 +64,11 @@ fun FriendCard(
         ) {
             Column(verticalArrangement = Arrangement.SpaceBetween) {
                 Text(text = friendInfo.username.name, fontSize = typography.bodyLarge.fontSize)
-                if (!friendInfo.isOnline) {
-                    Text(
-                        text = friendInfo.lastOnline!!.ago(),
-                        fontSize = typography.bodyMedium.fontSize,
-                        fontWeight = FontWeight.Thin
-                    )
-                }
+                Text(
+                    text = if (!friendInfo.isOnline) friendInfo.lastOnline!!.ago() else " ",
+                    fontSize = typography.bodyMedium.fontSize,
+                    fontWeight = FontWeight.Thin
+                )
             }
 
             Spacer(
@@ -83,7 +81,7 @@ fun FriendCard(
         }
 
         Text(
-            text = friendInfo.status ?: "",
+            text = friendInfo.status ?: " ",
             fontSize = typography.bodyMedium.fontSize,
             softWrap = false,
             maxLines = 1,
