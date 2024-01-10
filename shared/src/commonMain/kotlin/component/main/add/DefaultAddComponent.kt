@@ -27,6 +27,7 @@ class DefaultAddComponent(
     private val _blockSlot = childSlot(
         source = blockNavigation,
         serializer = BlockConfig.serializer(),
+        key = "BLOCK_SLOT",
         handleBackButton = true
     ) { _, childComponentContext ->
         DefaultBlockComponent(
@@ -44,6 +45,7 @@ class DefaultAddComponent(
     private val _requestSlot = childSlot(
         source = requestNavigation,
         serializer = RequestConfig.serializer(),
+        key = "REQUEST_SLOT",
         handleBackButton = true
     ) { _, childComponentContext ->
         DefaultRequestComponent(
