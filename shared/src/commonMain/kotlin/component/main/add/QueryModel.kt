@@ -8,10 +8,7 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import component.main.add.model.Friends
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import util.Constants.UNKNOWN_ERROR
 import util.Status
 import util.Status.Error
@@ -29,10 +26,11 @@ class QueryModel(
     val loadingState = MutableValue(initialLoadingState)
     val status = MutableValue(initialStatus)
     val result = MutableValue(initialState)
+    private var job: Job? = null
 
-    // TODO: When the user is typing, this job should be cancellable
     fun apiCall(query: String) {
-        scope.launch {
+        job?.cancel()
+        job = scope.launch {
             callWrapper(
                 isLoading = loadingState,
                 operation = { server.queryUsers(query) },
