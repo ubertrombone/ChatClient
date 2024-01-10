@@ -18,7 +18,7 @@ class BlockModel(
     initialLoadingState: Boolean,
     initialStatus: Status,
     private val server: ApplicationApi,
-    val authCallback: () -> Unit
+    private val authCallback: () -> Unit
 ) : InstanceKeeper.Instance {
     private val scope = CoroutineScope(Dispatchers.Main)
     val loadingState = MutableValue(initialLoadingState)
