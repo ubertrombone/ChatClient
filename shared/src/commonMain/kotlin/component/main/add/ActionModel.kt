@@ -62,33 +62,5 @@ class ActionModel(
         }
     }
 
-    fun removeFriend(username: Username) {
-        scope.launch {
-            callWrapper(
-                isLoading = loadingState,
-                operation = { server.remove(username) },
-                onSuccess = { status.update { it } },
-                onError = {
-                    status.update { _ -> Error(it) }
-                    if (it == Unauthorized.description) authCallback()
-                }
-            )
-        }
-    }
-
-    fun blockFriend(username: Username) {
-        scope.launch {
-            callWrapper(
-                isLoading = loadingState,
-                operation = { server.block(username) },
-                onSuccess = { status.update { _ -> it } },
-                onError = {
-                    status.update { _ -> Error(it) }
-                    if (it == Unauthorized.description) authCallback()
-                }
-            )
-        }
-    }
-
     override fun onDestroy() = scope.cancel()
 }

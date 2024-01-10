@@ -21,10 +21,6 @@ interface AddComponent {
     fun showRequest()
     fun dismissRequest()
 
-    val friendsLoadingState: Value<Boolean>
-    val friendsStatus: Value<Status>
-    val friends: Value<Friends>
-
     val queryLoadingState: Value<Boolean>
     val queryStatus: Value<Status>
     val query: Value<Friends>
@@ -32,10 +28,7 @@ interface AddComponent {
     val actionLoadingState: Value<Boolean>
     val actionStatus: Value<Status>
 
-    fun getFriends()
     fun searchUsers(query: String)
     fun sendFriendRequest(to: Username)
     fun addFriend(username: Username)
-    fun removeFriend(username: Username)
-    fun blockFriend(username: Username)
 }

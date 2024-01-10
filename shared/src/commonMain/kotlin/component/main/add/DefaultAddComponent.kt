@@ -13,7 +13,6 @@ import component.main.add.requests.RequestComponent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import util.Status
-import util.Status.Loading
 import util.Status.Success
 import util.Username
 
@@ -53,19 +52,6 @@ class DefaultAddComponent(
     override fun showRequest() = requestNavigation.activate(RequestConfig)
     override fun dismissRequest() = requestNavigation.dismiss()
 
-    private val _getFriendsState = instanceKeeper.getOrCreate(FRIENDS_KEY) {
-        GetFriendsModel(
-            initialLoadingState = stateKeeper.consume(key = FRIENDS_LOAD_KEY, strategy = Boolean.serializer()) ?: true,
-            initialState = stateKeeper.consume(key = FRIENDS_KEY, strategy = Friends.serializer()) ?: Friends(),
-            initialStatus = stateKeeper.consume(key = FRIENDS_STATUS_KEY, strategy = Status.serializer()) ?: Loading,
-            server = server,
-            authCallback = logout
-        )
-    }
-    override val friendsLoadingState: Value<Boolean> = _getFriendsState.loadingState
-    override val friendsStatus: Value<Status> = _getFriendsState.status
-    override val friends: Value<Friends> = _getFriendsState.result
-
     private val _queryState = instanceKeeper.getOrCreate(QUERY_KEY) {
         QueryModel(
             initialLoadingState = stateKeeper.consume(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) ?: false,
@@ -90,22 +76,13 @@ class DefaultAddComponent(
     override val actionLoadingState: Value<Boolean> = _actionState.loadingState
     override val actionStatus: Value<Status> = _actionState.status
 
-    override fun getFriends() = _getFriendsState.apiCall()
-
     override fun searchUsers(query: String) = _queryState.apiCall(query)
 
     override fun sendFriendRequest(to: Username) = _actionState.sendFriendRequest(to)
 
     override fun addFriend(username: Username) = _actionState.addFriend(username)
 
-    override fun removeFriend(username: Username) = _actionState.removeFriend(username)
-
-    override fun blockFriend(username: Username) = _actionState.blockFriend(username)
-
     init {
-        stateKeeper.register(key = FRIENDS_KEY, strategy = Friends.serializer()) { _getFriendsState.result.value }
-        stateKeeper.register(key = FRIENDS_LOAD_KEY, strategy = Boolean.serializer()) { _getFriendsState.loadingState.value }
-        stateKeeper.register(key = FRIENDS_STATUS_KEY, strategy = Status.serializer()) { _getFriendsState.status.value }
         stateKeeper.register(key = QUERY_KEY, strategy = Friends.serializer()) { _queryState.result.value }
         stateKeeper.register(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) { _queryState.loadingState.value }
         stateKeeper.register(key = QUERY_STATUS_KEY, strategy = Status.serializer()) { _queryState.status.value }
@@ -117,9 +94,6 @@ class DefaultAddComponent(
     data object RequestConfig
 
     private companion object {
-        const val FRIENDS_KEY = "FRIENDS_KEY"
-        const val FRIENDS_LOAD_KEY = "FRIENDS_LOAD_KEY"
-        const val FRIENDS_STATUS_KEY = "FRIENDS_STATUS_KEY"
         const val QUERY_KEY = "QUERY_KEY"
         const val QUERY_LOAD_KEY = "QUERY_LOAD_KEY"
         const val QUERY_STATUS_KEY = "QUERY_STATUS_KEY"
