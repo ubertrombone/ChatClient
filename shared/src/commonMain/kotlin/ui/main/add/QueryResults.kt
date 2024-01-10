@@ -39,7 +39,7 @@ fun QueryResults(
                 Loading -> {}
                 Success -> {
                     if (results.friends.isEmpty()) Text(
-                        text = "No results found",
+                        text = "No users to show",
                         modifier = Modifier.align(Alignment.Center)
                     )
                     else ScrollLazyColumn(modifier = Modifier.fillMaxWidth()) {
