@@ -31,6 +31,7 @@ class QueryModel(
     fun apiCall(query: String) {
         job?.cancel()
         job = scope.launch {
+            delay(500)
             callWrapper(
                 isLoading = loadingState,
                 operation = { server.queryUsers(query) },
