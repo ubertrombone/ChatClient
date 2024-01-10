@@ -46,7 +46,12 @@ class DefaultAddComponent(
         serializer = RequestConfig.serializer(),
         handleBackButton = true
     ) { _, childComponentContext ->
-        DefaultRequestComponent(childComponentContext)
+        DefaultRequestComponent(
+            childComponentContext,
+            server = server,
+            dismiss = requestNavigation::dismiss,
+            logout = logout
+        )
     }
     override val requestSlot: Value<ChildSlot<*, RequestComponent>> = _requestSlot
     override fun showRequest() = requestNavigation.activate(RequestConfig)
