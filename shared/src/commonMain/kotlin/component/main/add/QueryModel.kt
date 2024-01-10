@@ -22,7 +22,7 @@ class QueryModel(
     initialStatus: Status,
     initialState: Friends,
     private val server: ApplicationApi,
-    val authCallback: () -> Unit
+    private val authCallback: () -> Unit
 ) : InstanceKeeper.Instance {
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -30,14 +30,15 @@ class QueryModel(
     val status = MutableValue(initialStatus)
     val result = MutableValue(initialState)
 
+    // TODO: When the user is typing, this job should be cancellable
     fun apiCall(query: String) {
         scope.launch {
             callWrapper(
                 isLoading = loadingState,
                 operation = { server.queryUsers(query) },
                 onSuccess = { results ->
-                    results?.let {
-                        result.update { Friends(results.toImmutableSet()) }
+                    results?.let { r ->
+                        result.update { Friends(r.toImmutableSet()) }
                         status.update { Success }
                     } ?: status.update { Error(UNKNOWN_ERROR) }
                 },

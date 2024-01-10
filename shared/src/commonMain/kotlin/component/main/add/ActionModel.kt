@@ -53,7 +53,7 @@ class ActionModel(
             callWrapper(
                 isLoading = loadingState,
                 operation = { server.add(username) },
-                onSuccess = { status.update { it } },
+                onSuccess = { status.update { _ -> it } },
                 onError = {
                     status.update { _ -> Error(it) }
                     if (it == Unauthorized.description) authCallback()
