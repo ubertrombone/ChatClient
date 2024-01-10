@@ -26,6 +26,7 @@ fun UpdateStatus(
     var label by remember { mutableStateOf<String?>(null) }
     var currentStatus by remember { mutableStateOf(component.settings.status.get()) }
     val statusInput by statusState.input.collectAsState()
+    val input by remember(statusInput) { mutableStateOf(statusInput) }
     val isValid by derivedStateOf { statusInput.length <= MAX_STATUS_LENGTH }
     val scope = rememberCoroutineScope()
 
@@ -36,17 +37,17 @@ fun UpdateStatus(
     SingleTextFieldRow(
         modifier = modifier,
         label = label ?: "Update status",
-        input = statusInput,
+        input = input,
         isError = !isValid || label != null,
         autoCorrect = true,
-        enabled = currentStatus != statusInput && label == null,
+        enabled = currentStatus != input && label == null,
         leadingIcon = { Icon(painter = painterResource("sentiment_satisfied.xml"), contentDescription = "Status") },
         onInputChange = statusState::updateInput
     ) {
         scope.launch {
-            if (isValid) component.updateStatus(statusInput, coroutineContext)
+            if (isValid) component.updateStatus(input, coroutineContext)
             if (statusStatus == Success) {
-                currentStatus = statusInput
+                currentStatus = input
                 onSuccess(statusStatus)
             }
         }
