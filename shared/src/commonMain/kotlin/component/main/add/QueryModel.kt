@@ -30,6 +30,13 @@ class QueryModel(
 
     fun apiCall(query: String) {
         job?.cancel()
+
+        if (query.isBlank()) {
+            result.update { Friends() }
+            status.update { Success }
+            return
+        }
+
         job = scope.launch {
             delay(500)
             callWrapper(
