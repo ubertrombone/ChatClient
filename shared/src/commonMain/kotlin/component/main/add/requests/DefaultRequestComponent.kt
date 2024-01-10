@@ -46,12 +46,14 @@ class DefaultRequestComponent(
     )
 
     private fun receivedChild(componentContext: ComponentContext) = DefaultReceivedRequestsComponent(
-        componentContext = componentContext
+        componentContext = componentContext,
+        server = server,
+        navToSent = ::onSentRequestsSelected,
+        dismiss = dismiss,
+        logout = logout
     )
 
     override fun onSentRequestsSelected() = navigation.bringToFront(Sent)
-
-    override fun onReceivedRequestsSelected() = navigation.bringToFront(Received)
 
     override fun navBack() = navigation.pop()
 
