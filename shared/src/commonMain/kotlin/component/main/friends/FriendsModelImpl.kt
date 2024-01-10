@@ -43,8 +43,8 @@ class FriendsModelImpl(
             isLoading = friendsListLoading,
             operation = { server.getFriends() },
             onSuccess = { friends ->
-                friends?.let {
-                    friendsListState.update { FriendsSet(friends = friends.toImmutableSet()) }
+                friends?.let { f ->
+                    friendsListState.update { FriendsSet(friends = f.toImmutableSet()) }
                     friendsListStatus.update { Success }
                 } ?: friendsListStatus.update { Error(UNKNOWN_ERROR) }
             },
