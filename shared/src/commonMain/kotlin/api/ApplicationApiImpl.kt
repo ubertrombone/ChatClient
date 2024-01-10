@@ -71,7 +71,9 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
 
     @Authenticated
     override suspend fun queryUsers(query: String): Set<Username>? = withContext(scope.coroutineContext) {
-        postHelper<String, Set<Username>?>(route = "/users", body = query) { nullableAuthenticatedResponseHelper<Set<Username>>() }
+        postReturnHelper<String, Set<Username>?>(route = "/users", body = query) {
+            nullableAuthenticatedResponseHelper<Set<Username>>()
+        }
     }
 
     @Authenticated
@@ -187,7 +189,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         }.let { operation(it) }
     }
 
-    private suspend inline fun <reified T, R> postHelper(
+    private suspend inline fun <reified T, R> postReturnHelper(
         route: String,
         body: T,
         crossinline operation: suspend HttpResponse.() -> R
