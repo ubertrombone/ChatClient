@@ -20,6 +20,7 @@ interface ApplicationApi {
     suspend fun getReceivedFriendRequests(): Set<FriendRequest>?
     suspend fun sendFriendRequest(to: Username): Status
     suspend fun cancelFriendRequest(to: Username): Status
+    suspend fun removeFriendRequest(request: FriendRequest): Status
 
     suspend fun getBlockList(): Set<Username>?
     suspend fun block(user: Username): Status
