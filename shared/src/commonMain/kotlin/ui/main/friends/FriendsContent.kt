@@ -1,7 +1,6 @@
 package ui.main.friends
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -62,7 +61,7 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
 
         else ->
             if (windowSizeClass.widthSizeClass == Expanded && windowSizeClass.heightSizeClass != Compact)
-                ExpandedFriendsContent(component, modifier.padding(top = 12.dp))
+                ExpandedFriendsContent(component, modifier)//.padding(top = 12.dp))
             else CompactFriendsContent(component, modifier)
     }
 }
