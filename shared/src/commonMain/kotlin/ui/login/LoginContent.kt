@@ -21,15 +21,12 @@ import component.login.LoginComponent
 import io.ktor.client.statement.*
 import kotlinx.coroutines.delay
 import ui.composables.states.rememberLoginAuthenticationFieldState
-import util.BottomBarSystemNavColor
-import util.Constants
+import util.*
 import util.Constants.INVALID_USERNAME
 import util.Constants.NO_PASSWORD_PROVIDED
 import util.MainPhases.REGISTER
-import util.Status
 import util.Status.Error
 import util.Status.Success
-import util.toUsername
 
 @Suppress("DuplicatedCode")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +50,7 @@ fun LoginContent(component: LoginComponent, modifier: Modifier = Modifier) {
         component.initLogin()
     }
     BottomBarSystemNavColor(colorScheme.background)
+    SoftInputMode(true)
 
     Scaffold(
         modifier = modifier,

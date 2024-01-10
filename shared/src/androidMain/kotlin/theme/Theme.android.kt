@@ -1,12 +1,14 @@
 package theme
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import util.KeyboardMode
 
 @Composable
 actual fun ChatTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
@@ -21,6 +23,9 @@ actual fun ChatTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
             WindowCompat.getInsetsController(currentWindow, view).isAppearanceLightStatusBars = !darkTheme
             (view.context as Activity).window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(currentWindow, view).isAppearanceLightNavigationBars = !darkTheme
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+                    (view.context as Activity).window.setSoftInputMode(KeyboardMode.ADJUST_RESIZE.mode)
+            else (view.context as Activity).window.setDecorFitsSystemWindows(true)
         }
     }
 

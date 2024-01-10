@@ -7,9 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import component.main.group.GroupComponent
+import util.SoftInputMode
 
 @Composable
 fun GroupContent(component: GroupComponent, modifier: Modifier = Modifier) {
+    SoftInputMode(true)
     Box(modifier, contentAlignment = Alignment.Center) {
         Text(
             text = "GROUP CHAT VIEW",

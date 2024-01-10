@@ -28,6 +28,7 @@ import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.BottomBarSystemNavColor
 import util.SettingsOptions
 import util.SettingsOptions.*
+import util.SoftInputMode
 import util.Status.Error
 import util.Status.Success
 
@@ -56,6 +57,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
     }
 
     BottomBarSystemNavColor(colorScheme.background)
+    SoftInputMode(true)
 
     Scaffold(
         modifier = modifier,
@@ -81,7 +83,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
             SnackbarHost(snackbarHostState) { data ->
                 Snackbar(
                     snackbarData = data,
-                    containerColor = colorScheme.primaryContainer.copy(alpha = .7f),
+                    containerColor = colorScheme.primaryContainer.copy(alpha = .7f), // TODO: Something wrong here in light mode
                     contentColor = colorScheme.onPrimaryContainer,
                     dismissActionContentColor = colorScheme.onPrimaryContainer
                 )

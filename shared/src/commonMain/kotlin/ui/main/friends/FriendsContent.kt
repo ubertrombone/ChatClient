@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.FriendsComponent
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
+import util.SoftInputMode
 import util.Status.Error
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -35,6 +36,8 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
             if ((status as Error).body.toString() == Unauthorized.description) component.logout()
         }
     }
+
+    SoftInputMode(true)
 
     when {
         isLoading && friends.friends.isEmpty() -> CircularProgressIndicator(

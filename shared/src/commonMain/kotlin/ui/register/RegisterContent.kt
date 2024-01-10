@@ -13,6 +13,7 @@ import component.register.RegisterComponent
 import ui.composables.NavBackButton
 import ui.composables.states.rememberRegisterAuthenticationFieldState
 import util.MainPhases.LOGIN
+import util.SoftInputMode
 
 @Suppress("DuplicatedCode")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +27,8 @@ fun RegisterContent(component: RegisterComponent, modifier: Modifier = Modifier)
     val username = rememberRegisterAuthenticationFieldState(input = "")
     val password = rememberRegisterAuthenticationFieldState(input = "")
     val confirmPassword = rememberRegisterAuthenticationFieldState(input = "")
+
+    SoftInputMode(true)
 
     Scaffold(
         modifier = modifier,
