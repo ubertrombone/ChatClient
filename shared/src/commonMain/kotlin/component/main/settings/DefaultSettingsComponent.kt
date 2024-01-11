@@ -1,5 +1,6 @@
 package component.main.settings
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import api.model.UpdatePasswordRequest
 import api.model.UpdateUsernameRequest
@@ -13,10 +14,14 @@ import component.main.settings.warning.DeleteAccountComponent
 import io.ktor.client.statement.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import settings.SettingsRepository
 import util.Constants.USERNAME_EXISTS
+import util.SettingsOptions
 import util.Status
 import util.Status.Error
 import util.Status.Success
@@ -47,6 +52,13 @@ class DefaultSettingsComponent(
     override val deleteDialogSlot: Value<ChildSlot<*, DeleteAccountComponent>> = _deleteDialogSlot
     override fun showDeleteAccountWarning() = deleteAccountNavigation.activate(DeleteAccountWarningConfig)
     override fun dismissDeleteAccountWarning() = deleteAccountNavigation.dismiss()
+
+    override val snackbarHostState = SnackbarHostState()
+
+    private val _settingsOptions: MutableStateFlow<SettingsOptions?> = MutableStateFlow(null)
+    override val settingsOptions: StateFlow<SettingsOptions?> = _settingsOptions
+
+    override fun updateSettingsOptions(option: SettingsOptions?) = _settingsOptions.update { option }
 
     private val _statusUpdateStates = instanceKeeper.getOrCreate { StatusModelImpl(settings = settings, server = server) }
     override val statusLoading: Value<Boolean> = _statusUpdateStates.loadingState

@@ -26,7 +26,6 @@ import ui.composables.states.rememberPasswordAuthenticationFieldState
 import ui.composables.states.rememberStatusAuthenticationFieldState
 import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.BottomBarSystemNavColor
-import util.SettingsOptions
 import util.SettingsOptions.*
 import util.SoftInputMode
 import util.Status.Error
@@ -37,9 +36,11 @@ import util.Status.Success
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
     val warningSlot by component.deleteDialogSlot.subscribeAsState()
     val windowSizeClass = calculateWindowSizeClass()
-    val snackbarHostState = remember { SnackbarHostState() }
+    // TODO: Move remember states out of composition since changing screen size wipes current values
+    val snackbarHostState = component.snackbarHostState // TODO: Check
     val scope = rememberCoroutineScope()
-    var selectedSetting by remember { mutableStateOf<SettingsOptions?>(null) }
+    val selectedSetting by component.settingsOptions.collectAsState()
+//    remember { mutableStateOf<SettingsOptions?>(null) }
     val status = rememberStatusAuthenticationFieldState(component.settings.status.get())
     val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
     val password = rememberPasswordAuthenticationFieldState()
@@ -99,7 +100,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     label = "Update Status",
                     selected = selectedSetting == STATUS,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = STATUS.takeUnless { selectedSetting == it } }
+                    onSelected = { component.updateSettingsOptions(STATUS.takeUnless { selectedSetting == it }) }
                 ) {
                     UpdateStatus(
                         modifier = Modifier.fillMaxWidth(),
@@ -120,7 +121,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     label = "Change Username",
                     selected = selectedSetting == USERNAME,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = USERNAME.takeUnless { selectedSetting == it } }
+                    onSelected = { component.updateSettingsOptions(USERNAME.takeUnless { selectedSetting == it }) }
                 ) {
                     UpdateUsername(
                         modifier = Modifier.fillMaxWidth(),
@@ -141,7 +142,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     label = "Change Password",
                     selected = selectedSetting == PASSWORD,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = PASSWORD.takeUnless { selectedSetting == it } }
+                    onSelected = { component.updateSettingsOptions(PASSWORD.takeUnless { selectedSetting == it }) }
                 ) {
                     UpdatePassword(
                         modifier = Modifier.fillMaxWidth(),
@@ -165,7 +166,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     label = "Cache Messages",
                     selected = selectedSetting == CACHE,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = CACHE.takeUnless { selectedSetting == it } }
+                    onSelected = { component.updateSettingsOptions(CACHE.takeUnless { selectedSetting == it }) }
                 ) {
                     UpdateCache(
                         initCache = component.settings.cache.get().toBooleanStrict(),
@@ -188,7 +189,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     label = "Delete Account",
                     selected = selectedSetting == DELETE,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedSetting = DELETE.takeUnless { selectedSetting == it } }
+                    onSelected = { component.updateSettingsOptions(DELETE.takeUnless { selectedSetting == it }) }
                 ) {
                     DeleteAccount(
                         modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp),

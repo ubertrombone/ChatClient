@@ -1,12 +1,15 @@
 package component.main.settings
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import api.model.UpdatePasswordRequest
 import api.model.UpdateUsernameRequest
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 import component.main.settings.warning.DeleteAccountComponent
+import kotlinx.coroutines.flow.StateFlow
 import settings.SettingsRepository
+import util.SettingsOptions
 import util.Status
 import kotlin.coroutines.CoroutineContext
 
@@ -20,6 +23,12 @@ interface SettingsComponent {
 
     fun showDeleteAccountWarning()
     fun dismissDeleteAccountWarning()
+
+    val snackbarHostState: SnackbarHostState
+
+    val settingsOptions: StateFlow<SettingsOptions?>
+
+    fun updateSettingsOptions(option: SettingsOptions?)
 
     val statusLoading: Value<Boolean>
     val updateStatusStatus: Value<Status>
