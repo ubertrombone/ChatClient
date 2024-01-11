@@ -24,6 +24,7 @@ interface AddComponent {
     val queryLoadingState: Value<Boolean>
     val queryStatus: Value<Status>
     val query: Value<Friends>
+    val queryInput: Value<String>
 
     val actionLoadingState: Value<Boolean>
     val actionStatus: Value<Status>
@@ -31,4 +32,5 @@ interface AddComponent {
     fun searchUsers(query: String)
     fun sendFriendRequest(to: Username)
     fun addFriend(username: Username)
+    fun updateInput(input: String)
 }

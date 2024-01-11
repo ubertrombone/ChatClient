@@ -13,7 +13,6 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import ui.composables.states.rememberStatusAuthenticationFieldState
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -21,7 +20,7 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
     val queryResult by component.query.subscribeAsState()
     val queryLoading by component.queryLoadingState.subscribeAsState()
     val queryStatus by component.queryStatus.subscribeAsState()
-    val queryState = rememberStatusAuthenticationFieldState(input = "")
+    val queryInput by component.queryInput.subscribeAsState()
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
@@ -47,9 +46,12 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
         }
 
         QueryField(
-            state = queryState,
+            queryInput = queryInput,
             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal = 4.dp),
-            onValueChange = component::searchUsers
+            onValueChange = {
+                component.searchUsers(it)
+                component.updateInput(it)
+            }
         )
 
         QueryResults(

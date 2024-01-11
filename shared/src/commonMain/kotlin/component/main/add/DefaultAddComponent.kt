@@ -3,7 +3,9 @@ package component.main.add
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import component.main.add.block.BlockComponent
 import component.main.add.block.DefaultBlockComponent
@@ -71,6 +73,9 @@ class DefaultAddComponent(
     override val queryStatus: Value<Status> = _queryState.status
     override val query: Value<Friends> = _queryState.result
 
+    private val _queryInput = MutableValue("")
+    override val queryInput: Value<String> = _queryInput
+
     private val _actionState = instanceKeeper.getOrCreate {
         ActionModel(
             initialLoadingState = false,
@@ -87,6 +92,8 @@ class DefaultAddComponent(
     override fun sendFriendRequest(to: Username) = _actionState.sendFriendRequest(to)
 
     override fun addFriend(username: Username) = _actionState.addFriend(username)
+
+    override fun updateInput(input: String) = _queryInput.update { input }
 
     init {
         stateKeeper.register(key = QUERY_KEY, strategy = Friends.serializer()) { _queryState.result.value }
