@@ -28,7 +28,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import ui.composables.states.PasswordAuthenticationFieldState
 import util.Status
 import util.Status.Error
 import util.Status.Success
@@ -37,37 +36,39 @@ import util.Status.Success
 @Composable
 fun UpdatePassword(
     component: SettingsComponent,
-    states: PasswordAuthenticationFieldState,
     modifier: Modifier = Modifier,
     onSuccess: (Status) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val apiStatus by component.passwordStatus.subscribeAsState()
 
-    val oldPassword by states.oldPasswordInput.subscribeAsState()
-    val oldPasswordIsValid by states.oldPasswordIsValid.subscribeAsState()
-    var oldPasswordLabel by remember { mutableStateOf<String?>(null) }
+    val currentPassword by component.currentPassword.subscribeAsState()
+    val currentInput by remember(currentPassword) { mutableStateOf(currentPassword) }
+    val currentPasswordIsValid by component.currentPasswordIsValid.subscribeAsState()
+    var currentPasswordLabel by remember { mutableStateOf<String?>(null) }
 
-    val newPassword by states.newPasswordInput.subscribeAsState()
-    val newPasswordIsValid by states.newPasswordIsValid.subscribeAsState()
+    val newPassword by component.newPassword.subscribeAsState()
+    val newInput by remember(newPassword) { mutableStateOf(newPassword) }
+    val newPasswordIsValid by component.newPasswordIsValid.subscribeAsState()
     var newPasswordLabel by remember { mutableStateOf<String?>(null) }
     var newPasswordVisibility by remember { mutableStateOf(false) }
 
-    val confirmPassword by states.confirmPasswordInput.subscribeAsState()
-    val confirmPasswordIsValid by states.confirmPasswordIsValid.subscribeAsState()
+    val confirmPassword by component.confirmPassword.subscribeAsState()
+    val confirmInput by remember(confirmPassword) { mutableStateOf(confirmPassword) }
+    val confirmPasswordIsValid by component.currentPasswordIsValid.subscribeAsState()
     var confirmPasswordLabel by remember { mutableStateOf<String?>(null) }
     var confirmPasswordVisibility by remember { mutableStateOf(false) }
 
     val enabled by derivedStateOf {
         persistentListOf(
-            oldPasswordIsValid,
+            currentPasswordIsValid,
             newPasswordIsValid,
             confirmPasswordIsValid
         ).all { it == Success }
     }
 
-    LaunchedEffect(oldPasswordIsValid) {
-        oldPasswordLabel = runCatching { (oldPasswordIsValid as Error).body.toString() }.getOrNull()
+    LaunchedEffect(currentPasswordIsValid) {
+        currentPasswordLabel = runCatching { (currentPasswordIsValid as Error).body.toString() }.getOrNull()
     }
 
     LaunchedEffect(newPasswordIsValid) {
@@ -89,10 +90,10 @@ fun UpdatePassword(
         ) {
             SettingsTextField(
                 modifier = Modifier.fillMaxWidth(),
-                label = oldPasswordLabel ?: "Current Password",
-                input = oldPassword,
-                onInputChange = states::updateOldInput,
-                isError = oldPasswordIsValid is Error,
+                label = currentPasswordLabel ?: "Current Password",
+                input = currentInput,
+                onInputChange = component::updateCurrentPassword,
+                isError = currentPasswordIsValid is Error,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation(),
@@ -102,8 +103,8 @@ fun UpdatePassword(
             SettingsTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = newPasswordLabel ?: "New Password",
-                input = newPassword,
-                onInputChange = states::updateNewInput,
+                input = newInput,
+                onInputChange = component::updateNewPassword,
                 isError = newPasswordIsValid is Error,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Password,
@@ -126,8 +127,8 @@ fun UpdatePassword(
             SettingsTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = confirmPasswordLabel ?: "Confirm New Password",
-                input = confirmPassword,
-                onInputChange = states::updateConfirmInput,
+                input = confirmInput,
+                onInputChange = component::updateConfirmPassword,
                 isError = confirmPasswordIsValid is Error,
                 keyboardType = KeyboardType.Password,
                 visualTransformation = if (newPasswordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -151,14 +152,14 @@ fun UpdatePassword(
             modifier = Modifier.size(40.dp),
             onClick = {
                 scope.launch {
-                    states.validateInputs(component.settings.password.get(), this.coroutineContext)
+                    component.validateInputs(component.settings.password.get(), this.coroutineContext)
                     if (enabled) {
                         async {
                             component.updatePassword(
                                 update = UpdatePasswordRequest(
-                                    oldPassword = oldPassword,
-                                    newPassword = newPassword,
-                                    newPasswordConfirm = confirmPassword
+                                    oldPassword = currentInput,
+                                    newPassword = newInput,
+                                    newPasswordConfirm = confirmInput
                                 ),
                                 context = this@launch.coroutineContext
                             )

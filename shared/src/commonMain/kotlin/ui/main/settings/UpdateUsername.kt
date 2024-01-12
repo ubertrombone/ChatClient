@@ -9,7 +9,6 @@ import api.model.UpdateUsernameRequest
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import kotlinx.coroutines.launch
-import ui.composables.states.UsernameAuthenticationFieldState
 import util.Status
 import util.Status.Success
 import util.toUsername
@@ -17,15 +16,15 @@ import util.toUsername
 @Composable
 fun UpdateUsername(
     component: SettingsComponent,
-    usernameState: UsernameAuthenticationFieldState,
     modifier: Modifier = Modifier,
     onSuccess: (Status) -> Unit
 ) {
     val usernameStatus by component.usernameStatus.subscribeAsState()
     var label by remember { mutableStateOf<String?>(null) }
     var currentUsername by remember { mutableStateOf(component.settings.username.get()) }
-    val usernameInput by usernameState.input.subscribeAsState()
-    val usernameValid by usernameState.isValid.subscribeAsState()
+    val usernameInput by component.usernameInput.subscribeAsState()
+    val input by remember(usernameInput) { mutableStateOf(usernameInput) }
+    val usernameValid by component.usernameIsValid.subscribeAsState()
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(usernameStatus) { label = component.getUsernameAsResponse() }
@@ -33,21 +32,21 @@ fun UpdateUsername(
     SingleTextFieldRow(
         modifier = modifier,
         label = label ?: "Update username",
-        input = usernameInput,
+        input = input,
         isError = !usernameValid || label != null,
-        enabled = currentUsername.lowercase() != usernameInput.lowercase(),
+        enabled = currentUsername.lowercase() != input.lowercase(),
         leadingIcon = { Icon(imageVector = Outlined.AccountCircle, contentDescription = "Username") },
-        onInputChange = usernameState::updateInput
+        onInputChange = component::updateUsernameInput
     ) {
         scope.launch {
             // This function checks that the input entered is a valid username
-            component.updateUsernameStatus(usernameState.validateInput())
+            component.updateUsernameStatus(component.validateUsernameInput())
             // If the input is a valid username, call the API
             if (usernameValid)
-                component.updateUsername(UpdateUsernameRequest(usernameInput.toUsername()), coroutineContext)
+                component.updateUsername(UpdateUsernameRequest(input.toUsername()), coroutineContext)
             // Only if the api call is successful use the onSuccess callback to show a success snackbar message
             if (usernameStatus == Success) {
-                currentUsername = usernameInput
+                currentUsername = input
                 onSuccess(usernameStatus)
             }
         }

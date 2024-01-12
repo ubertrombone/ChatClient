@@ -22,9 +22,6 @@ import ui.composables.Divider
 import ui.composables.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.snackbarHelper
-import ui.composables.states.rememberPasswordAuthenticationFieldState
-import ui.composables.states.rememberStatusAuthenticationFieldState
-import ui.composables.states.rememberUsernameAuthenticationFieldState
 import util.BottomBarSystemNavColor
 import util.SettingsOptions.*
 import util.SoftInputMode
@@ -36,14 +33,9 @@ import util.Status.Success
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
     val warningSlot by component.deleteDialogSlot.subscribeAsState()
     val windowSizeClass = calculateWindowSizeClass()
-    // TODO: Move remember states out of composition since changing screen size wipes current values
     val snackbarHostState = component.snackbarHostState // TODO: Check
     val scope = rememberCoroutineScope()
     val selectedSetting by component.settingsOptions.collectAsState()
-//    remember { mutableStateOf<SettingsOptions?>(null) }
-    val status = rememberStatusAuthenticationFieldState(component.settings.status.get())
-    val username = rememberUsernameAuthenticationFieldState(component.settings.username.get())
-    val password = rememberPasswordAuthenticationFieldState()
     val deleteStatus by component.deleteAccountStatus.subscribeAsState()
 
     LaunchedEffect(Unit) {
@@ -102,11 +94,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { component.updateSettingsOptions(STATUS.takeUnless { selectedSetting == it }) }
                 ) {
-                    UpdateStatus(
-                        modifier = Modifier.fillMaxWidth(),
-                        component = component,
-                        statusState = status
-                    ) {
+                    UpdateStatus(modifier = Modifier.fillMaxWidth(), component = component) {
                         if (it == Success) scope.launch {
                             snackbarHostState.snackbarHelper(message = "Successfully updated status!")
                         }
@@ -123,11 +111,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { component.updateSettingsOptions(USERNAME.takeUnless { selectedSetting == it }) }
                 ) {
-                    UpdateUsername(
-                        modifier = Modifier.fillMaxWidth(),
-                        component = component,
-                        usernameState = username
-                    ) {
+                    UpdateUsername(modifier = Modifier.fillMaxWidth(), component = component) {
                         if (it == Success) scope.launch {
                             snackbarHostState.snackbarHelper(message = "Successfully updated username!")
                         }
@@ -144,13 +128,9 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { component.updateSettingsOptions(PASSWORD.takeUnless { selectedSetting == it }) }
                 ) {
-                    UpdatePassword(
-                        modifier = Modifier.fillMaxWidth(),
-                        component = component,
-                        states = password
-                    ) {
+                    UpdatePassword(modifier = Modifier.fillMaxWidth(), component = component) {
                         if (it == Success) {
-                            password.clear()
+                            component.clearPasswords()
                             scope.launch {
                                 snackbarHostState.snackbarHelper(message = "Successfully updated password!")
                             }

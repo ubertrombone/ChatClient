@@ -8,7 +8,6 @@ import component.main.settings.SettingsComponent
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import ui.composables.states.StatusAuthenticationFieldState
 import util.Constants.MAX_STATUS_LENGTH
 import util.Constants.STATUS_TOO_LONG
 import util.Status
@@ -18,14 +17,13 @@ import util.Status.Success
 @Composable
 fun UpdateStatus(
     component: SettingsComponent,
-    statusState: StatusAuthenticationFieldState,
     modifier: Modifier = Modifier,
     onSuccess: (Status) -> Unit
 ) {
     val statusStatus by component.updateStatusStatus.subscribeAsState()
     var label by remember { mutableStateOf<String?>(null) }
     var currentStatus by remember { mutableStateOf(component.settings.status.get()) }
-    val statusInput by statusState.input.collectAsState()
+    val statusInput by component.statusInput.subscribeAsState()
     val input by remember(statusInput) { mutableStateOf(statusInput) }
     val isValid by derivedStateOf { statusInput.length <= MAX_STATUS_LENGTH }
     val scope = rememberCoroutineScope()
@@ -42,7 +40,7 @@ fun UpdateStatus(
         autoCorrect = true,
         enabled = currentStatus != input && label == null,
         leadingIcon = { Icon(painter = painterResource("sentiment_satisfied.xml"), contentDescription = "Status") },
-        onInputChange = statusState::updateInput
+        onInputChange = component::updateStatusInput
     ) {
         scope.launch {
             if (isValid) component.updateStatus(input, coroutineContext)
