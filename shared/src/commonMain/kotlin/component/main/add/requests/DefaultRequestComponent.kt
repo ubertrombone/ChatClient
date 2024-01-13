@@ -1,5 +1,6 @@
 package component.main.add.requests
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
@@ -56,6 +57,8 @@ class DefaultRequestComponent(
     override fun onSentRequestsSelected() = navigation.bringToFront(Sent)
 
     override fun navBack() = navigation.pop()
+
+    override val snackbarHostState = SnackbarHostState()
 
     @Serializable
     private sealed class Config {
