@@ -33,8 +33,8 @@ class DefaultRequestComponent(
         config: Config,
         componentContext: ComponentContext
     ) = when (config) {
-        Received -> SentChild(sentChild(componentContext))
-        Sent -> ReceivedChild(receivedChild(componentContext))
+        Sent -> SentChild(sentChild(componentContext))
+        Received -> ReceivedChild(receivedChild(componentContext))
     }
 
     private fun sentChild(componentContext: ComponentContext) = DefaultSentRequestsComponent(
