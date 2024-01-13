@@ -9,7 +9,6 @@ import component.main.add.model.Requests
 import kotlinx.serialization.builtins.serializer
 import util.Status
 import util.Status.Loading
-import util.Status.Success
 
 class DefaultReceivedRequestsComponent(
     componentContext: ComponentContext,
@@ -34,7 +33,7 @@ class DefaultReceivedRequestsComponent(
     private val _acceptRequestStates = instanceKeeper.getOrCreate {
         AcceptModel(
             initialLoadingState = false,
-            initialStatus = Success,
+            initialStatus = Loading,
             server = server,
             authCallback = logout
         )
