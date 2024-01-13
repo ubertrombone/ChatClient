@@ -26,13 +26,16 @@ class DefaultFriendsComponent(
             initialState = stateKeeper.consume(FRIENDS_LIST_STATE, strategy = FriendsSet.serializer()) ?: FriendsSet(),
             initialLoadingState = true,
             initialStatus = Loading,
-            server = server
+            server = server,
+            authCallback = logout
         )
     }
     override val friends: Value<FriendsSet> = _friends.friendsListState
     override val isLoading: Value<Boolean> = _friends.friendsListLoading
     override val status: Value<Status> = _friends.friendsListStatus
 
+    // TODO: Have some kind of profile viewer here where a user will be able to block/remove a friend from their friends
+    // TODO: Also consider making these actions possible within a FriendCard
     private val chatNavigation = SlotNavigation<ChatConfig>()
     private val _chatSlot =
         childSlot(

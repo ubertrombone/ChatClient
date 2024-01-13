@@ -6,6 +6,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import component.main.friends.model.FriendsSet
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.*
 import util.Constants.UNKNOWN_ERROR
@@ -17,7 +18,8 @@ class FriendsModelImpl(
     initialState: FriendsSet,
     initialLoadingState: Boolean,
     initialStatus: Status,
-    private val server: ApplicationApi
+    private val server: ApplicationApi,
+    private val authCallback: () -> Unit
 ) : FriendsModel, InstanceKeeper.Instance {
     override val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     override val friendsListState = MutableValue(initialState)
@@ -48,7 +50,10 @@ class FriendsModelImpl(
                     friendsListStatus.update { Success }
                 } ?: friendsListStatus.update { Error(UNKNOWN_ERROR) }
             },
-            onError = { friendsListStatus.update { _ -> Error(it) } }
+            onError = {
+                friendsListStatus.update { _ -> Error(it) }
+                if (it == Unauthorized.description) authCallback()
+            }
         )
     }
 
