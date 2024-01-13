@@ -31,8 +31,11 @@ fun SentContent(component: SentRequestsComponent, modifier: Modifier = Modifier)
     val requests by component.sentList.subscribeAsState()
     val sentStatus by component.listStatus.subscribeAsState()
     val sentLoading by component.listLoading.subscribeAsState()
+    val cancelStatus by component.actionStatus.subscribeAsState()
 
+    // TODO: Test
     LaunchedEffect(requests) { component.getSentList() }
+    LaunchedEffect(cancelStatus) { if (cancelStatus == Success) component.getSentList() }
 
     Box(modifier = modifier) {
         when {

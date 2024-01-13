@@ -8,7 +8,6 @@ import component.main.add.model.Requests
 import kotlinx.serialization.builtins.serializer
 import util.Status
 import util.Status.Loading
-import util.Status.Success
 import util.Username
 
 class DefaultSentRequestsComponent(
@@ -34,7 +33,7 @@ class DefaultSentRequestsComponent(
     private val _cancelRequestStates = instanceKeeper.getOrCreate {
         CancelModel(
             initialLoadingState = false,
-            initialStatus = Success,
+            initialStatus = Loading,
             server = server,
             authCallback = logout
         )
