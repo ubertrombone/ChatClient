@@ -1,6 +1,9 @@
 package ui.main.add
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -44,18 +47,10 @@ fun QueryResults(
                     )
                     else ScrollLazyColumn(modifier = Modifier.fillMaxWidth()) {
                         items(items = results.friends.toImmutableList()) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                            AddCard(
+                                label = it.name,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = it.name,
-                                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(start = 24.dp)
-                                )
-
                                 IconButton(
                                     modifier = Modifier.padding(end = 24.dp),
                                     onClick = { onClick(it) }
