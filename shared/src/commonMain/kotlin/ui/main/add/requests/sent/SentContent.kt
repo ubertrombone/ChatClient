@@ -53,7 +53,7 @@ fun SentContent(component: SentRequestsComponent, modifier: Modifier = Modifier)
                         modifier = Modifier
                             .padding(start = 12.dp, top = 12.dp)
                             .size(40.dp)
-                            .padding(10.dp)
+                            .padding(5.dp)
                             .clip(CircleShape)
                             .clickable { component.dismiss() }
                     )
