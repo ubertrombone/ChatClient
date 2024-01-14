@@ -13,10 +13,14 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.main.add.requests.RequestsContent
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
+    val requestSlot by component.requestSlot.subscribeAsState()
+    val blockSlot by component.blockSlot.subscribeAsState()
+
     val queryResult by component.query.subscribeAsState()
     val queryLoading by component.queryLoadingState.subscribeAsState()
     val queryStatus by component.queryStatus.subscribeAsState()
@@ -62,4 +66,6 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
             onClick = component::sendFriendRequest
         )
     }
+
+    requestSlot.child?.instance?.also { RequestsContent(component = it, modifier = modifier) }
 }
