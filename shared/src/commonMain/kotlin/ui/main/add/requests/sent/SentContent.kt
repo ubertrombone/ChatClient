@@ -109,7 +109,7 @@ fun SentContent(component: SentRequestsComponent, modifier: Modifier = Modifier)
                     ) else ScrollLazyColumn(modifier = Modifier.fillMaxWidth()) {
                         items(requests.reqs.toImmutableList()) {
                             AddCard(
-                                label = "Sent to ${it.toUsername}",
+                                label = "Sent to ${it.toUsername.name}",
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 IconButton(
