@@ -107,6 +107,11 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
+    override suspend fun addRequest(friendRequest: FriendRequest) = withContext(scope.coroutineContext) {
+        postHelper(route = "/friend_request/add", body = friendRequest) { authenticatedResponseHelper() }
+    }
+
+    @Authenticated
     override suspend fun cancelFriendRequest(to: Username) = withContext(scope.coroutineContext) {
         postHelper(route = "/friend_request/cancel_request", body = to) { authenticatedResponseHelper() }
     }

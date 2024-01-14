@@ -29,7 +29,7 @@ class AcceptModel(
         scope.launch {
             callWrapper(
                 isLoading = loadingState,
-                operation = { server.add(request.requesterUsername) },
+                operation = { server.addRequest(request) },
                 onSuccess = { result ->
                     if (result == Success) scope.launch { closeRequest(request) }
                     else status.update { result }
