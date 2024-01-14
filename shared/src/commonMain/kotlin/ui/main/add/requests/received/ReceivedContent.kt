@@ -19,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.requests.received.ReceivedRequestsComponent
+import io.ktor.client.statement.*
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.expect.ScrollLazyColumn
+import ui.composables.snackbarHelper
 import ui.main.add.AddCard
 import util.Status.Error
 import util.Status.Success
@@ -37,7 +39,12 @@ fun ReceivedContent(component: ReceivedRequestsComponent, modifier: Modifier = M
     val actionStatus by component.actionStatus.subscribeAsState()
 
     LaunchedEffect(requests) { component.getRequests() }
-    LaunchedEffect(actionStatus) { if (actionStatus == Success) component.getRequests() }
+    LaunchedEffect(actionStatus) {
+        if (actionStatus == Success) component.getRequests()
+        if (actionStatus is Error) snackbarHostState.snackbarHelper(
+            message = ((actionStatus as Error).body as HttpResponse).bodyAsText()
+        )
+    }
 
     Scaffold(
         modifier = modifier,
