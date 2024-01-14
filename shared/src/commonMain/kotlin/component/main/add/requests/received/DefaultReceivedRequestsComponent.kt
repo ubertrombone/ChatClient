@@ -1,5 +1,6 @@
 package component.main.add.requests.received
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import api.model.FriendRequest
 import com.arkivanov.decompose.ComponentContext
@@ -17,6 +18,8 @@ class DefaultReceivedRequestsComponent(
     override val dismiss: () -> Unit,
     override val logout: () -> Unit
 ) : ReceivedRequestsComponent, ComponentContext by componentContext {
+    override val snackbarHostState = SnackbarHostState()
+
     private val _getRequestStates = instanceKeeper.getOrCreate(RECEIVED_KEY) {
         ReceiveListModel(
             initialLoadingState = stateKeeper.consume(key = LOADING_KEY, strategy = Boolean.serializer()) ?: true,
