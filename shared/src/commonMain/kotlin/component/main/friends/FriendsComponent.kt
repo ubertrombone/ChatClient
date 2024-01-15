@@ -13,6 +13,7 @@ interface FriendsComponent {
     val server: ApplicationApi
     val chatRepository: ChatRepository
     val cache: Boolean
+    val friendsModel: FriendsModelImpl
     val logout: () -> Unit
 
     val friends: Value<FriendsSet>

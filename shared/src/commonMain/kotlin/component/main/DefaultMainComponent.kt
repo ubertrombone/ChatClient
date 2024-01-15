@@ -11,6 +11,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import component.main.DefaultMainComponent.Config.*
 import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
@@ -18,6 +19,8 @@ import component.main.add.AddComponent
 import component.main.add.DefaultAddComponent
 import component.main.friends.DefaultFriendsComponent
 import component.main.friends.FriendsComponent
+import component.main.friends.FriendsModelImpl
+import component.main.friends.model.FriendsSet
 import component.main.group.DefaultGroupComponent
 import component.main.group.GroupComponent
 import component.main.settings.DefaultSettingsComponent
@@ -101,6 +104,15 @@ class DefaultMainComponent(
             server = server,
             chatRepository = chatRepository,
             cache = settings.cache.get().toBooleanStrict(),
+            friendsModel = instanceKeeper.getOrCreate {
+                FriendsModelImpl(
+                    initialState = FriendsSet(),
+                    initialLoadingState = true,
+                    initialStatus = Loading,
+                    server = server,
+                    authCallback = onLogoutClicked
+                )
+            },
             logout = onLogoutClicked
         )
 
