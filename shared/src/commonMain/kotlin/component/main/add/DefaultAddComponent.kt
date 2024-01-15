@@ -12,6 +12,7 @@ import component.main.add.block.DefaultBlockComponent
 import component.main.add.model.Friends
 import component.main.add.requests.DefaultRequestComponent
 import component.main.add.requests.RequestComponent
+import component.main.add.requests.received.ReceiveListModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import util.Status
@@ -20,6 +21,7 @@ import util.Username
 
 class DefaultAddComponent(
     componentContext: ComponentContext,
+    override val receiveListModel: ReceiveListModel,
     override val server: ApplicationApi,
     override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
@@ -52,6 +54,7 @@ class DefaultAddComponent(
         DefaultRequestComponent(
             childComponentContext,
             server = server,
+            receivedListModel = receiveListModel,
             dismiss = requestNavigation::dismiss,
             logout = logout
         )

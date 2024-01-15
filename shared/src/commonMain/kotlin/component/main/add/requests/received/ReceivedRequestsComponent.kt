@@ -9,6 +9,7 @@ import util.Status
 
 interface ReceivedRequestsComponent {
     val server: ApplicationApi
+    val receiveListModel: ReceiveListModel
     val navToSent: () -> Unit
     val dismiss: () -> Unit
     val logout: () -> Unit

@@ -3,11 +3,13 @@ package component.main.add.requests
 import api.ApplicationApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import component.main.add.requests.received.ReceiveListModel
 import component.main.add.requests.received.ReceivedRequestsComponent
 import component.main.add.requests.sent.SentRequestsComponent
 
 interface RequestComponent {
     val server: ApplicationApi
+    val receivedListModel: ReceiveListModel
     val dismiss: () -> Unit
     val logout: () -> Unit
 

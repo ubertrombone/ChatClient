@@ -17,6 +17,8 @@ import component.main.MainComponent.Child
 import component.main.MainComponent.Child.*
 import component.main.add.AddComponent
 import component.main.add.DefaultAddComponent
+import component.main.add.model.Requests
+import component.main.add.requests.received.ReceiveListModel
 import component.main.friends.DefaultFriendsComponent
 import component.main.friends.FriendsComponent
 import component.main.friends.FriendsModelImpl
@@ -32,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import settings.SettingsRepository
 import util.Constants.UNKNOWN_ERROR
 import util.Status
@@ -89,6 +92,12 @@ class DefaultMainComponent(
         }
     override val settingsSlot: Value<ChildSlot<*, SettingsComponent>> = _settingsSlot
 
+    init {
+        stateKeeper.register(key = RECEIVED_KEY, strategy = Requests.serializer()) { _getRequestStates.result.value }
+        stateKeeper.register(key = LOADING_KEY, strategy = Boolean.serializer()) { _getRequestStates.loadingState.value }
+        stateKeeper.register(key = STATUS_KEY, strategy = Status.serializer()) { _getRequestStates.status.value }
+    }
+
     private fun createChild(
         config: Config,
         componentContext: ComponentContext
@@ -123,10 +132,20 @@ class DefaultMainComponent(
             chatRepository = chatRepository
         )
 
+    private val _getRequestStates = instanceKeeper.getOrCreate(RECEIVED_KEY) {
+        ReceiveListModel(
+            initialLoadingState = stateKeeper.consume(key = LOADING_KEY, strategy = Boolean.serializer()) ?: true,
+            initialStatus = stateKeeper.consume(key = STATUS_KEY, strategy = Status.serializer()) ?: Loading,
+            initialState = stateKeeper.consume(key = RECEIVED_KEY, strategy = Requests.serializer()) ?: Requests(),
+            server = server,
+            authCallback = onLogoutClicked
+        )
+    }
     private fun addComponent(componentContext: ComponentContext): AddComponent =
         DefaultAddComponent(
             componentContext = componentContext,
             server = server,
+            receiveListModel = _getRequestStates,
             logout = onLogoutClicked
         )
 
@@ -166,4 +185,10 @@ class DefaultMainComponent(
 
     @Serializable
     private data object SettingsConfig
+
+    private companion object {
+        const val RECEIVED_KEY = "RECEIVED_KEY"
+        const val LOADING_KEY = "LOADING_KEY"
+        const val STATUS_KEY = "STATUS_KEY"
+    }
 }

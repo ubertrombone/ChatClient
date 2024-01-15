@@ -38,9 +38,7 @@ fun ReceivedContent(component: ReceivedRequestsComponent, modifier: Modifier = M
     val receivedLoading by component.listLoading.subscribeAsState()
     val actionStatus by component.actionStatus.subscribeAsState()
 
-    LaunchedEffect(requests) { component.getRequests() }
     LaunchedEffect(actionStatus) {
-        if (actionStatus == Success) component.getRequests()
         if (actionStatus is Error) snackbarHostState.snackbarHelper(
             message = ((actionStatus as Error).body as HttpResponse).bodyAsText()
         )

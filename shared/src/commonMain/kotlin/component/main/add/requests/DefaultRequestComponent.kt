@@ -10,11 +10,13 @@ import component.main.add.requests.RequestComponent.Child
 import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
 import component.main.add.requests.received.DefaultReceivedRequestsComponent
+import component.main.add.requests.received.ReceiveListModel
 import component.main.add.requests.sent.DefaultSentRequestsComponent
 import kotlinx.serialization.Serializable
 
 class DefaultRequestComponent(
     componentContext: ComponentContext,
+    override val receivedListModel: ReceiveListModel,
     override val server: ApplicationApi,
     override val dismiss: () -> Unit,
     override val logout: () -> Unit
@@ -48,6 +50,7 @@ class DefaultRequestComponent(
     private fun receivedChild(componentContext: ComponentContext) = DefaultReceivedRequestsComponent(
         componentContext = componentContext,
         server = server,
+        receiveListModel = receivedListModel,
         navToSent = ::onSentRequestsSelected,
         dismiss = dismiss,
         logout = logout

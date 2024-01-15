@@ -8,10 +8,7 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import component.main.add.model.Requests
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import util.Constants.UNKNOWN_ERROR
 import util.Status
 import util.Status.Error
@@ -28,6 +25,20 @@ class ReceiveListModel(
     val loadingState = MutableValue(initialLoadingState)
     val status = MutableValue(initialStatus)
     val result = MutableValue(initialState)
+
+    init {
+        scope.launch {
+            delay(500)
+            looper()
+        }
+    }
+
+    private suspend fun looper() = withContext(scope.coroutineContext) {
+        while (scope.isActive) {
+            getRequests()
+            delay(10_000)
+        }
+    }
 
     fun getRequests() {
         scope.launch {
