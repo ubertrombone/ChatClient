@@ -141,6 +141,7 @@ class DefaultMainComponent(
             authCallback = onLogoutClicked
         )
     }
+    override val friendRequests: Value<Requests> = _getRequestStates.result
     private fun addComponent(componentContext: ComponentContext): AddComponent =
         DefaultAddComponent(
             componentContext = componentContext,

@@ -36,6 +36,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
     val logoutStatus by component.logoutStatus.subscribeAsState()
+    val friendRequests by component.friendRequests.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(logoutStatus) {
@@ -97,7 +98,11 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
 
                 NavBarItem(
                     label = REQUESTS,
-                    icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests") },
+                    icon = {
+                        BadgedBox(badge = { Badge { if (friendRequests.reqs.isNotEmpty()) Text(text = "${friendRequests.reqs.size}") } }) {
+                            Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests")
+                        }
+                    },
                     selected = activeComponent is AddChild,
                     onClick = component::onAddTabClicked
                 )

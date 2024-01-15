@@ -9,9 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Icon
+import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.NavigationRail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,14 +27,12 @@ import util.Constants.FRIENDS
 import util.Constants.GROUP_CHATS
 import util.Constants.REQUESTS
 
-@OptIn(ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun NavRail(
-    component: MainComponent,
-    modifier: Modifier = Modifier
-) {
+fun NavRail(component: MainComponent, modifier: Modifier = Modifier) {
     val settingsSlot by component.settingsSlot.subscribeAsState()
     val childStack by component.childStack.subscribeAsState()
+    val friendRequests by component.friendRequests.subscribeAsState()
     val activeComponent = childStack.active.instance
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -64,7 +61,11 @@ fun NavRail(
 
             NavRailItem(
                 label = REQUESTS,
-                icon = { Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests") },
+                icon = {
+                    BadgedBox(badge = { Badge { if (friendRequests.reqs.isNotEmpty()) Text(text = "${friendRequests.reqs.size}") } }) {
+                        Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests")
+                    }
+                },
                 selected = activeComponent is AddChild && settingsSlot.child == null,
                 onClick = {
                     component.onAddTabClicked()

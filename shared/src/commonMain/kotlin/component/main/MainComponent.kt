@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import component.main.add.AddComponent
+import component.main.add.model.Requests
 import component.main.friends.FriendsComponent
 import component.main.group.GroupComponent
 import component.main.settings.SettingsComponent
@@ -25,6 +26,8 @@ interface MainComponent {
     val initStatus: Value<Status>
     val childStack: Value<ChildStack<*, Child>>
     val settingsSlot: Value<ChildSlot<*, SettingsComponent>>
+
+    val friendRequests: Value<Requests>
     
     fun onFriendsTabClicked()
     fun onGroupChatsTabClicked()
