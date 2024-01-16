@@ -20,6 +20,7 @@ import io.ktor.client.statement.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.snackbarHelper
+import ui.main.components.AddFriendTab
 import ui.main.components.ChildrenBox
 import ui.main.components.NavBarItem
 import ui.main.settings.SettingsContent
@@ -98,11 +99,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
 
                 NavBarItem(
                     label = REQUESTS,
-                    icon = {
-                        BadgedBox(badge = { Badge { if (friendRequests.reqs.isNotEmpty()) Text(text = "${friendRequests.reqs.size}") } }) {
-                            Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests")
-                        }
-                    },
+                    icon = { AddFriendTab(friendRequests.reqs.size) },
                     selected = activeComponent is AddChild,
                     onClick = component::onAddTabClicked
                 )

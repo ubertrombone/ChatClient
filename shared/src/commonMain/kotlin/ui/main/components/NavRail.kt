@@ -9,8 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationRail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -61,11 +63,7 @@ fun NavRail(component: MainComponent, modifier: Modifier = Modifier) {
 
             NavRailItem(
                 label = REQUESTS,
-                icon = {
-                    BadgedBox(badge = { Badge { if (friendRequests.reqs.isNotEmpty()) Text(text = "${friendRequests.reqs.size}") } }) {
-                        Icon(painter = painterResource("add_friend.xml"), contentDescription = "Friend requests")
-                    }
-                },
+                icon = { AddFriendTab(friendRequests.reqs.size) },
                 selected = activeComponent is AddChild && settingsSlot.child == null,
                 onClick = {
                     component.onAddTabClicked()
