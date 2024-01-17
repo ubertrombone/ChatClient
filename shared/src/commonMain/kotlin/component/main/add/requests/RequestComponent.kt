@@ -16,6 +16,7 @@ interface RequestComponent {
     val childStack: Value<ChildStack<*, Child>>
 
     fun onSentRequestsSelected()
+    fun onReceivedRequestsSelected()
     fun navBack()
 
     sealed class Child {

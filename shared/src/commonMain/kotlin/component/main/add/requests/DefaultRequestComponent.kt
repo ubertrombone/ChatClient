@@ -57,6 +57,7 @@ class DefaultRequestComponent(
     )
 
     override fun onSentRequestsSelected() = navigation.bringToFront(Sent)
+    override fun onReceivedRequestsSelected() = navigation.bringToFront(Received)
 
     override fun navBack() = navigation.pop()
 
