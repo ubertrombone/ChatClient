@@ -17,6 +17,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.main.add.requests.ExpandedRequestsContent
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -87,8 +88,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                         Icon(
                             painter = painterResource("person_alert.xml"),
                             contentDescription = "Go to requests",
-                            tint = colorScheme.primary,
-                            modifier = Modifier
+                            tint = colorScheme.primary
                         )
                     }
                 }
@@ -116,9 +116,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 }
             }
 
-            requestSlot.child?.instance?.also {
-                // TODO: Add request content, figure it out
-            }
+            requestSlot.child?.instance?.also { ExpandedRequestsContent(it, Modifier.fillMaxSize()) }
             blockSlot.child?.instance?.also {
                 // TODO: Figure it out
             }
