@@ -30,6 +30,8 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
     val queryStatus by component.queryStatus.subscribeAsState()
     val queryInput by component.queryInput.subscribeAsState()
 
+    val snackbarHostState = component.snackbarHostState
+
     LaunchedEffect(requestSlot) {
         if (requestSlot.child?.instance == null && blockSlot.child?.instance == null) component.showRequest()
     }
@@ -116,7 +118,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 }
             }
 
-            requestSlot.child?.instance?.also { ExpandedRequestsContent(it, Modifier.fillMaxSize()) }
+            requestSlot.child?.instance?.also { ExpandedRequestsContent(it, snackbarHostState, Modifier.fillMaxSize()) }
             blockSlot.child?.instance?.also {
                 // TODO: Figure it out
             }

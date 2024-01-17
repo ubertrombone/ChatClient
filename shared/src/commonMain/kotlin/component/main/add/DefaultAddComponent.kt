@@ -1,5 +1,6 @@
 package component.main.add
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
@@ -25,6 +26,7 @@ class DefaultAddComponent(
     override val server: ApplicationApi,
     override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
+    override val snackbarHostState = SnackbarHostState()
 
     private val blockNavigation = SlotNavigation<BlockConfig>()
     private val _blockSlot = childSlot(

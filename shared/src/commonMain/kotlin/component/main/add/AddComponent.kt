@@ -1,5 +1,6 @@
 package component.main.add
 
+import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
@@ -14,6 +15,7 @@ interface AddComponent {
     val server: ApplicationApi
     val receiveListModel: ReceiveListModel
     val logout: () -> Unit
+    val snackbarHostState: SnackbarHostState
 
     val blockSlot: Value<ChildSlot<*, BlockComponent>>
     fun showBlock()
