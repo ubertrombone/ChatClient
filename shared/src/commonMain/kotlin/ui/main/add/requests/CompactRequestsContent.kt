@@ -35,7 +35,7 @@ fun CompactRequestsContent(component: RequestComponent, modifier: Modifier = Mod
                         SearchIcon {
                             when (val child = it.instance) {
                                 is ReceivedChild -> child.component.dismiss()
-                                is SentChild -> child.component.dismiss
+                                is SentChild -> child.component.dismiss()
                             }
                         }
                     },
