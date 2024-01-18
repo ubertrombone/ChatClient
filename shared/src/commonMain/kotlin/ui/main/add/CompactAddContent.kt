@@ -13,6 +13,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import ui.icons.BlockIcon
 import ui.main.add.requests.RequestsContent
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -47,13 +48,7 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 )
             }
 
-            IconButton(onClick = component::showBlock, modifier = Modifier.padding(start = 8.dp)) {
-                Icon(
-                    painter = painterResource("block.xml"),
-                    contentDescription = "Go to block list",
-                    tint = colorScheme.primary
-                )
-            }
+            BlockIcon(modifier = Modifier.padding(start = 8.dp), onClick = component::showBlock)
         }
 
         QueryField(
