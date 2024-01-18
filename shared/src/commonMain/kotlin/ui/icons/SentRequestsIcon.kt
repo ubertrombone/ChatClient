@@ -11,7 +11,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SentRequestsIcon(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    IconButton(modifier = modifier, onClick = { onClick() }) {
+    IconButton(modifier = modifier, onClick = onClick) {
         Icon(
             painter = painterResource("outgoing.xml"),
             contentDescription = "Sent Requests",
