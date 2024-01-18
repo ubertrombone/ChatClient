@@ -22,6 +22,7 @@ import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.expect.ScrollLazyColumn
+import ui.icons.SentRequestsIcon
 import ui.main.add.AddCard
 import ui.main.add.requests.received.ReceivedContent
 import util.Status
@@ -64,15 +65,9 @@ fun ExpandedRequestsContent(
                     color = if (it.instance is SentChild) colorScheme.primaryContainer else colorScheme.background,
                     modifier = Modifier.padding(end = 8.dp)
                 ) {
-                    IconButton(onClick = {
+                    SentRequestsIcon {
                         if (it.instance is SentChild) component.onReceivedRequestsSelected()
                         else component.onSentRequestsSelected()
-                    }) {
-                        Icon(
-                            painter = painterResource("outgoing.xml"),
-                            contentDescription = "Sent Requests",
-                            tint = colorScheme.primary
-                        )
                     }
                 }
             }
