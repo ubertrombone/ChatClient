@@ -1,6 +1,5 @@
 package component.main.add.requests.sent
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
@@ -18,8 +17,6 @@ class DefaultSentRequestsComponent(
     override val dismiss: () -> Unit,
     override val logout: () -> Unit
 ) : SentRequestsComponent, ComponentContext by componentContext {
-    override val snackbarHostState = SnackbarHostState()
-
     private val _getSentRequestStates = instanceKeeper.getOrCreate(SENT_KEY) {
         SentListModel(
             initialLoadingState = stateKeeper.consume(key = LOADING_KEY, strategy = Boolean.serializer()) ?: true,

@@ -1,6 +1,5 @@
 package component.main.add.requests.sent
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.value.Value
 import component.main.add.model.Requests
@@ -12,7 +11,6 @@ interface SentRequestsComponent {
     val navBack: () -> Unit
     val dismiss: () -> Unit
     val logout: () -> Unit
-    val snackbarHostState: SnackbarHostState
 
     val listStatus: Value<Status>
     val listLoading: Value<Boolean>
