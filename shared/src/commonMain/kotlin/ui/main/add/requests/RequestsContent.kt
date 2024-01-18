@@ -10,7 +10,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.requests.RequestComponent
 import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
-import ui.main.add.requests.received.ReceivedContent
+import ui.main.add.requests.received.CompactReceivedContent
 import ui.main.add.requests.sent.SentContent
 
 @Composable
@@ -20,7 +20,7 @@ fun RequestsContent(component: RequestComponent, modifier: Modifier = Modifier) 
     Box(modifier) {
         Children(childStack) {
             when (val child = it.instance) {
-                is ReceivedChild -> ReceivedContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is ReceivedChild -> CompactReceivedContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is SentChild -> SentContent(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }
