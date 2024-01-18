@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.register.RegisterComponent
-import ui.composables.NavBackButton
+import ui.icons.NavBackButton
 import ui.composables.states.rememberRegisterAuthenticationFieldState
 import util.MainPhases.LOGIN
 import util.SoftInputMode

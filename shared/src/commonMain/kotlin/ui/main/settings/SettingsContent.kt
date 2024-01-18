@@ -19,7 +19,7 @@ import component.main.settings.SettingsComponent
 import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
 import ui.composables.Divider
-import ui.composables.NavBackButton
+import ui.icons.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.snackbarHelper
 import util.BottomBarSystemNavColor
