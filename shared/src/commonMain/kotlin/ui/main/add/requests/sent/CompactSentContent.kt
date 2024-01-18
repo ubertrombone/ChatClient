@@ -1,9 +1,7 @@
 package ui.main.add.requests.sent
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -13,14 +11,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.requests.sent.SentRequestsComponent
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import ui.composables.expect.ScrollLazyColumn
+import ui.icons.ReceivedRequestsIcon
 import ui.icons.SearchIcon
 import ui.main.add.AddCard
 import util.Status.Error
@@ -47,17 +44,11 @@ fun CompactSentContent(component: SentRequestsComponent, modifier: Modifier = Mo
                 title = {},
                 navigationIcon = { SearchIcon { component.dismiss() } },
                 actions = {
-                    Icon(
-                        painter = painterResource("inbox.xml"),
-                        contentDescription = "Sent Requests",
-                        tint = colorScheme.primary,
+                    ReceivedRequestsIcon(
                         modifier = Modifier
                             .padding(top = 12.dp, end = 12.dp)
-                            .size(40.dp)
                             .padding(5.dp)
-                            .clip(CircleShape)
-                            .clickable { component.navBack() }
-                    )
+                    ) { component.navBack() }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorScheme.background,

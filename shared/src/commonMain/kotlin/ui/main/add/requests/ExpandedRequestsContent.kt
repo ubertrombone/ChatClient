@@ -20,8 +20,8 @@ import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import ui.composables.expect.ScrollLazyColumn
+import ui.icons.ReceivedRequestsIcon
 import ui.icons.SentRequestsIcon
 import ui.main.add.AddCard
 import ui.main.add.requests.received.ReceivedContent
@@ -50,15 +50,7 @@ fun ExpandedRequestsContent(
                     shape = CircleShape,
                     color = if (it.instance is ReceivedChild) colorScheme.primaryContainer else colorScheme.background,
                     modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    IconButton(onClick = { if (it.instance is SentChild) component.onReceivedRequestsSelected() }) {
-                        Icon(
-                            painter = painterResource("inbox.xml"),
-                            contentDescription = "Received Requests",
-                            tint = colorScheme.primary
-                        )
-                    }
-                }
+                ) { ReceivedRequestsIcon { if (it.instance is SentChild) component.onReceivedRequestsSelected() } }
 
                 Surface(
                     shape = CircleShape,
