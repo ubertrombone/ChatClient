@@ -14,7 +14,7 @@ import ui.main.add.requests.received.CompactReceivedContent
 import ui.main.add.requests.sent.CompactSentContent
 
 @Composable
-fun RequestsContent(component: RequestComponent, modifier: Modifier = Modifier) {
+fun CompactRequestsContent(component: RequestComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
 
     Box(modifier) {
