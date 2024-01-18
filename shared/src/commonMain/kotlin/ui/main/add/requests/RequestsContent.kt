@@ -11,7 +11,7 @@ import component.main.add.requests.RequestComponent
 import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
 import ui.main.add.requests.received.CompactReceivedContent
-import ui.main.add.requests.sent.SentContent
+import ui.main.add.requests.sent.CompactSentContent
 
 @Composable
 fun RequestsContent(component: RequestComponent, modifier: Modifier = Modifier) {
@@ -21,7 +21,7 @@ fun RequestsContent(component: RequestComponent, modifier: Modifier = Modifier) 
         Children(childStack) {
             when (val child = it.instance) {
                 is ReceivedChild -> CompactReceivedContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is SentChild -> SentContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is SentChild -> CompactSentContent(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }
     }

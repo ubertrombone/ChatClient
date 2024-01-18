@@ -28,7 +28,7 @@ import util.Status.Success
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
-fun SentContent(component: SentRequestsComponent, modifier: Modifier = Modifier) {
+fun CompactSentContent(component: SentRequestsComponent, modifier: Modifier = Modifier) {
     val snackbarHostState = component.snackbarHostState
     val requests by component.sentList.subscribeAsState()
     val sentStatus by component.listStatus.subscribeAsState()
