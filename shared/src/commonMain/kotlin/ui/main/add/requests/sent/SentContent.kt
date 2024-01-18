@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.expect.ScrollLazyColumn
+import ui.icons.SearchIcon
 import ui.main.add.AddCard
 import util.Status.Error
 import util.Status.Success
@@ -45,19 +45,7 @@ fun SentContent(component: SentRequestsComponent, modifier: Modifier = Modifier)
             CenterAlignedTopAppBar(
                 modifier = Modifier.padding(bottom = 12.dp),
                 title = {},
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Return to search users",
-                        tint = colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 12.dp, top = 12.dp)
-                            .size(40.dp)
-                            .padding(5.dp)
-                            .clip(CircleShape)
-                            .clickable { component.dismiss() }
-                    )
-                },
+                navigationIcon = { SearchIcon { component.dismiss() } },
                 actions = {
                     Icon(
                         painter = painterResource("inbox.xml"),

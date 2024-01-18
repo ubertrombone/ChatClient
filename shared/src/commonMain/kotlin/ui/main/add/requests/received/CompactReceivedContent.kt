@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -21,6 +19,7 @@ import io.ktor.client.statement.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.composables.snackbarHelper
+import ui.icons.SearchIcon
 import util.Status.Error
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -41,19 +40,7 @@ fun CompactReceivedContent(component: ReceivedRequestsComponent, modifier: Modif
             CenterAlignedTopAppBar(
                 modifier = Modifier.padding(bottom = 12.dp),
                 title = {},
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Return to search users",
-                        tint = colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 12.dp, top = 12.dp)
-                            .size(40.dp)
-                            .padding(5.dp)
-                            .clip(CircleShape)
-                            .clickable { component.dismiss() }
-                    )
-                },
+                navigationIcon = { SearchIcon { component.dismiss() } },
                 actions = {
                     // TODO: Extract
                     Icon(
