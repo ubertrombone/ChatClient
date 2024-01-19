@@ -9,17 +9,11 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.http.ContentType.Application.Json
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import settings.SettingsRepository
 import util.Status
-import util.Status.Error
-import util.Status.Success
 import util.Username
 
 // TODO: Consider statuses that are because of no internet or server issues; how to handle that to avoid
@@ -41,13 +35,13 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     // TODO: Add logout callback to any component that calls an authenticated route
     override suspend fun register(account: AccountRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/register", body = account) {
-            if (status == OK) Success.also {
+            if (status == HttpStatusCode.OK) Status.Success.also {
                 settings.apply {
                     token.set(bodyAsText())
                     username.set(account.username.name)
                     password.set(account.password) // TODO: Encrypt password in local storage
                 }
-            } else Error(bodyAsText())
+            } else Status.Error(bodyAsText())
         }
     }
 
@@ -58,9 +52,9 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     override suspend fun authenticate(credentials: AuthenticationRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/authenticate", body = credentials) {
             when (status) {
-                OK -> Success.also { settings.token.set(bodyAsText()) }
-                BadRequest -> Error(bodyAsText())
-                else -> Error("Unknown error - the server may be down. Try logging in again later.")
+                HttpStatusCode.OK -> Status.Success.also { settings.token.set(bodyAsText()) }
+                HttpStatusCode.BadRequest -> Status.Error(bodyAsText())
+                else -> Status.Error("Unknown error - the server may be down. Try logging in again later.")
             }
         }
     }
@@ -168,7 +162,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     @Authenticated
     override suspend fun update(password: UpdatePasswordRequest) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/updatepwd", body = password) {
-            authenticatedResponseHelper().also { if (status == OK) settings.password.set(password.newPassword) }
+            authenticatedResponseHelper().also { if (status == HttpStatusCode.OK) settings.password.set(password.newPassword) }
         }
     }
 
@@ -177,6 +171,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         postHelper(route = "/settings/updateuser", body = username) { authenticatedResponseHelper() }
     }
 
+    // TODO: On delete, clear local storage
     @Authenticated
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/delete", body = decision) { authenticatedResponseHelper() }
@@ -188,7 +183,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         crossinline operation: suspend HttpResponse.() -> Status
     ): Status = withContext(scope.coroutineContext) {
         client.post(route) {
-            contentType(Json)
+            contentType(ContentType.Application.Json)
             setBody(body)
             bearerAuth(settings.token.get())
         }.let { operation(it) }
@@ -200,7 +195,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         crossinline operation: suspend HttpResponse.() -> R
     ): R = withContext(scope.coroutineContext) {
         client.post(route) {
-            contentType(Json)
+            contentType(ContentType.Application.Json)
             setBody(body)
             bearerAuth(settings.token.get())
         }.let { operation(it) }
@@ -212,14 +207,14 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         }
 
     private suspend fun HttpResponse.authenticatedResponseHelper(): Status =
-        withContext(scope.coroutineContext) { if (status == OK) Success else Error(this@authenticatedResponseHelper) }
+        withContext(scope.coroutineContext) { if (status == HttpStatusCode.OK) Status.Success else Status.Error(this@authenticatedResponseHelper) }
 
     // TODO: Any get function will need to check Error based on string instead of HttpResponse
     private suspend inline fun <reified T> HttpResponse.nullableAuthenticatedResponseHelper(): T? =
         withContext(scope.coroutineContext) {
             when (status) {
-                OK -> body<T>()
-                Unauthorized -> throw Exception(status.description)
+                HttpStatusCode.OK -> body<T>()
+                HttpStatusCode.Unauthorized -> throw Exception(status.description)
                 else -> null
             }
         }
