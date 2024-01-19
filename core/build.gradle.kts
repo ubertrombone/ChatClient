@@ -49,6 +49,7 @@ kotlin {
             api(libs.aakira.napier)
             api(libs.decompose.decompose)
             api(libs.decompose.extensionsCompose)
+            api(libs.multiplatformSettings)
             implementation(libs.bundles.ktor.common)
             implementation(libs.bundles.kotlinx.common)
             implementation(libs.sqldelight.coroutinesExtensions)

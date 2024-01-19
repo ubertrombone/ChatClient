@@ -45,7 +45,6 @@ kotlin {
             api(libs.decompose.decompose)
             api(libs.decompose.extensionsCompose)
             api(libs.aakira.napier)
-            api(libs.multiplatformSettings)
             api(libs.compose.window.size)
             implementation(libs.bundles.ktor.common)
             implementation(libs.bundles.kotlinx.common)

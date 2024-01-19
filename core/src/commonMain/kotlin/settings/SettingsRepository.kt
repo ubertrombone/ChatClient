@@ -2,7 +2,6 @@ package settings
 
 import com.russhwolf.settings.Settings
 
-// TODO: Take some time to experiment with this; consider using experimental APIs
 class SettingsRepository(private val settings: Settings) {
     val token = SettingConfig(settings, "TOKEN", "")
     val username = SettingConfig(settings, "USERNAME", "")
