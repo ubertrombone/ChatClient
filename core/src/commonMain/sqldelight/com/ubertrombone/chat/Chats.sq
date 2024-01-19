@@ -1,0 +1,9 @@
+CREATE TABLE chats (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    recipient TEXT NOT NULL,
+    messages TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM chats;

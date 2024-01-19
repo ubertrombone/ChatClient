@@ -10,6 +10,16 @@ plugins {
     alias(libs.plugins.sqldelight)
 }
 
+sqldelight {
+    databases {
+        create("ChatDatabase") {
+            packageName.set("com.ubertrombone.chat")
+            schemaOutputDirectory.set(file("build/sqldelight"))
+        }
+    }
+    linkSqlite.set(true)
+}
+
 kotlin {
     androidTarget()
 
@@ -36,7 +46,7 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
-
+            api(libs.aakira.napier)
         }
 
         androidMain.dependencies {
