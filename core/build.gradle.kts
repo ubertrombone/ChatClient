@@ -47,18 +47,28 @@ kotlin {
 
         commonMain.dependencies {
             api(libs.aakira.napier)
+            api(libs.decompose.decompose)
+            api(libs.decompose.extensionsCompose)
+            implementation(libs.bundles.ktor.common)
+            implementation(libs.bundles.kotlinx.common)
+            implementation(libs.sqldelight.coroutinesExtensions)
         }
 
         androidMain.dependencies {
-
+            implementation(libs.ktor.ktorClientOkhttp)
+            implementation(libs.kotlinx.kotlinxCoroutinesAndroid)
+            implementation(libs.android.driver)
         }
 
         desktopMain.dependencies {
-
+            implementation(libs.ktor.ktorClientOkhttp)
+            implementation(libs.kotlinx.kotlinxCoroutinesSwing)
+            implementation(libs.sqlite.driver)
         }
 
         iosMain.dependencies {
-
+            implementation(libs.ktor.ktorClientDarwin)
+            implementation(libs.native.driver)
         }
     }
 }
