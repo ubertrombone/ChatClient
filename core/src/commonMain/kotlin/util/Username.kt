@@ -12,3 +12,12 @@ value class Username(val name: String) {
         require(name.none { !it.isLetterOrDigit() }) { Constants.INVALID_CHARS_USERNAME }
     }
 }
+
+fun String.toUsername() = Username(this)
+fun String.toUsernameOrNull() = runCatching { toUsername() }.getOrNull()
+fun String.usernameToStatus(): Status =
+    runCatching { toUsername().let { Status.Success } }.getOrElse {
+        Status.Error(
+            it.message ?: Constants.UNKNOWN_ERROR
+        )
+    }

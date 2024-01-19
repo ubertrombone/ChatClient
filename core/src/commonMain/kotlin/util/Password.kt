@@ -15,3 +15,12 @@ value class Password(private val pass: String) {
         require(pass.length <= Constants.REQUIREMENT_MAX) { "${Constants.PASSWORD_LONG} Length is: ${pass.length}" }
     }
 }
+
+fun String.toPassword() = Password(this)
+fun String.toPasswordOrNull() = runCatching { toPassword() }.getOrNull()
+fun String.passwordToStatus(): Status =
+    runCatching { toPassword().let { Status.Success } }.getOrElse {
+        Status.Error(
+            it.message ?: Constants.UNKNOWN_ERROR
+        )
+    }
