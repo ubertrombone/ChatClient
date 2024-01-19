@@ -52,6 +52,7 @@ kotlin {
             api(compose.material3)
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             api(compose.components.resources)
+            api(project(":core"))
             api(libs.decompose.decompose)
             api(libs.decompose.extensionsCompose)
             api(libs.aakira.napier)

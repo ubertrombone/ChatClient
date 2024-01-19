@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 }
 
 include(":shared")
+include(":core")
