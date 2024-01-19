@@ -1,6 +1,5 @@
 package component.main.add.requests
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
@@ -13,7 +12,6 @@ interface RequestComponent {
     val receivedListModel: ReceiveListModel
     val dismiss: () -> Unit
     val logout: () -> Unit
-    val snackbarHostState: SnackbarHostState
 
     val childStack: Value<ChildStack<*, Child>>
 

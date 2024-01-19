@@ -1,6 +1,5 @@
 package component.main.settings
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import api.model.UpdatePasswordRequest
 import api.model.UpdateUsernameRequest
@@ -61,8 +60,6 @@ class DefaultSettingsComponent(
     override val deleteDialogSlot: Value<ChildSlot<*, DeleteAccountComponent>> = _deleteDialogSlot
     override fun showDeleteAccountWarning() = deleteAccountNavigation.activate(DeleteAccountWarningConfig)
     override fun dismissDeleteAccountWarning() = deleteAccountNavigation.dismiss()
-
-    override val snackbarHostState = SnackbarHostState()
 
     private val _settingsOptions: MutableStateFlow<SettingsOptions?> = MutableStateFlow(null)
     override val settingsOptions: StateFlow<SettingsOptions?> = _settingsOptions

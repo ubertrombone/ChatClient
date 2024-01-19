@@ -1,6 +1,5 @@
 package component.main.add
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
@@ -26,7 +25,6 @@ class DefaultAddComponent(
     override val server: ApplicationApi,
     override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
-    override val snackbarHostState = SnackbarHostState()
 
     private val blockNavigation = SlotNavigation<BlockConfig>()
     private val _blockSlot = childSlot(
@@ -67,9 +65,18 @@ class DefaultAddComponent(
 
     private val _queryState = instanceKeeper.getOrCreate(QUERY_KEY) {
         QueryModel(
-            initialLoadingState = stateKeeper.consume(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) ?: false,
-            initialStatus = stateKeeper.consume(key = QUERY_STATUS_KEY, strategy = Status.serializer()) ?: Success,
-            initialState = stateKeeper.consume(key = QUERY_KEY, strategy = Friends.serializer()) ?: Friends(),
+            initialLoadingState = stateKeeper.consume(
+                key = QUERY_LOAD_KEY,
+                strategy = Boolean.serializer()
+            ) ?: false,
+            initialStatus = stateKeeper.consume(
+                key = QUERY_STATUS_KEY,
+                strategy = Status.serializer()
+            ) ?: Success,
+            initialState = stateKeeper.consume(
+                key = QUERY_KEY,
+                strategy = Friends.serializer()
+            ) ?: Friends(),
             server = server,
             authCallback = logout
         )

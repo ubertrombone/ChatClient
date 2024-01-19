@@ -1,6 +1,5 @@
 package component.main.add.requests
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
@@ -22,8 +21,6 @@ class DefaultRequestComponent(
     override val dismiss: () -> Unit,
     override val logout: () -> Unit
 ) : RequestComponent, ComponentContext by componentContext {
-    override val snackbarHostState = SnackbarHostState()
-
     private val navigation = StackNavigation<Config>()
     private val _childStack = childStack(
         source = navigation,

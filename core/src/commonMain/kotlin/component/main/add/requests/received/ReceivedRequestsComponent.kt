@@ -1,6 +1,5 @@
 package component.main.add.requests.received
 
-import androidx.compose.material3.SnackbarHostState
 import api.ApplicationApi
 import api.model.FriendRequest
 import com.arkivanov.decompose.value.Value
@@ -13,7 +12,6 @@ interface ReceivedRequestsComponent {
     val navToSent: () -> Unit
     val dismiss: () -> Unit
     val logout: () -> Unit
-    val snackbarHostState: SnackbarHostState
 
     val listStatus: Value<Status>
     val listLoading: Value<Boolean>
