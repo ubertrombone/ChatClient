@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -22,7 +23,7 @@ import ui.main.add.requests.sent.SentContent
 @Composable
 fun CompactRequestsContent(component: RequestComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
-    val snackbarHostState = component.snackbarHostState
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Children(stack = childStack, modifier = modifier) {
         Scaffold(

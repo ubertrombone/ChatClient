@@ -5,9 +5,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,7 +32,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
     val queryStatus by component.queryStatus.subscribeAsState()
     val queryInput by component.queryInput.subscribeAsState()
 
-    val snackbarHostState = component.snackbarHostState
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(requestSlot) {
         if (requestSlot.child?.instance == null && blockSlot.child?.instance == null) component.showRequest()

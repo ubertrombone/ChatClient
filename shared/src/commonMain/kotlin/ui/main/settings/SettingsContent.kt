@@ -16,14 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
+import component.main.settings.util.SettingsOptions.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.launch
 import ui.composables.Divider
-import ui.icons.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.snackbarHelper
+import ui.icons.NavBackButton
 import util.BottomBarSystemNavColor
-import component.main.settings.util.SettingsOptions.*
 import util.SoftInputMode
 import util.Status.Error
 import util.Status.Success
@@ -33,7 +33,7 @@ import util.Status.Success
 fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier) {
     val warningSlot by component.deleteDialogSlot.subscribeAsState()
     val windowSizeClass = calculateWindowSizeClass()
-    val snackbarHostState = component.snackbarHostState // TODO: Check
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val selectedSetting by component.settingsOptions.collectAsState()
     val deleteStatus by component.deleteAccountStatus.subscribeAsState()
