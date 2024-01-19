@@ -42,29 +42,20 @@ kotlin {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             api(compose.components.resources)
             api(project(":core"))
-            api(libs.decompose.decompose)
-            api(libs.decompose.extensionsCompose)
             api(libs.aakira.napier)
             api(libs.compose.window.size)
-            implementation(libs.bundles.ktor.common)
-            implementation(libs.bundles.kotlinx.common)
+            implementation(libs.ktor.ktorClientCore)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.collections)
         }
 
         androidMain.dependencies {
             implementation(libs.bundles.androidx.common)
-            implementation(libs.ktor.ktorClientOkhttp)
-            implementation(libs.kotlinx.kotlinxCoroutinesAndroid)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(libs.ktor.ktorClientOkhttp)
-            implementation(libs.kotlinx.kotlinxCoroutinesSwing)
             implementation(libs.themedetector)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.ktorClientDarwin)
         }
     }
 }
