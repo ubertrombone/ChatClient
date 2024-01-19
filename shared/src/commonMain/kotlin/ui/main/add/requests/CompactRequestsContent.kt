@@ -14,6 +14,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.requests.RequestComponent
 import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
+import ui.icons.ReceivedRequestsIcon
 import ui.icons.SearchIcon
 import ui.icons.SentRequestsIcon
 import ui.main.add.requests.received.ReceivedContent
@@ -41,15 +42,17 @@ fun CompactRequestsContent(component: RequestComponent, modifier: Modifier = Mod
                         }
                     },
                     actions = {
-                        SentRequestsIcon(
-                            modifier = Modifier
-                                .padding(top = 12.dp, end = 12.dp)
-                                .padding(5.dp)
-                        ) {
-                            when (val child = it.instance) {
-                                is ReceivedChild -> child.component.navToSent()
-                                is SentChild -> child.component.navBack()
-                            }
+                        when (val child = it.instance) {
+                            is ReceivedChild -> SentRequestsIcon(
+                                modifier = Modifier
+                                    .padding(top = 12.dp, end = 12.dp)
+                                    .padding(5.dp)
+                            ) { child.component.navToSent() }
+                            is SentChild -> ReceivedRequestsIcon(
+                                modifier = Modifier
+                                    .padding(top = 12.dp, end = 12.dp)
+                                    .padding(5.dp)
+                            ) { child.component.navBack() }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
