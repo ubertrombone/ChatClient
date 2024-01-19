@@ -14,7 +14,6 @@ class ChatClientApp : Application() {
         super.onCreate()
         appContext = applicationContext
 
-        // TODO: Napier setup functions could be expect/actual so that Napier can be just a Core dependency
         Napier.base(DebugAntilog())
     }
 }
