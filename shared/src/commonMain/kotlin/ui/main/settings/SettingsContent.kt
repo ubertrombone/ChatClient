@@ -23,7 +23,7 @@ import ui.icons.NavBackButton
 import ui.composables.expect.ScrollLazyColumn
 import ui.composables.snackbarHelper
 import util.BottomBarSystemNavColor
-import util.SettingsOptions.*
+import component.main.settings.util.SettingsOptions.*
 import util.SoftInputMode
 import util.Status.Error
 import util.Status.Success

@@ -1,4 +1,4 @@
-package util
+package component.main.settings.util
 
 enum class SettingsOptions {
     STATUS,

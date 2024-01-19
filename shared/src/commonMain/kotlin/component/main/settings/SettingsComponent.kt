@@ -9,7 +9,7 @@ import com.arkivanov.decompose.value.Value
 import component.main.settings.warning.DeleteAccountComponent
 import kotlinx.coroutines.flow.StateFlow
 import settings.SettingsRepository
-import util.SettingsOptions
+import component.main.settings.util.SettingsOptions
 import util.Status
 import kotlin.coroutines.CoroutineContext
 
