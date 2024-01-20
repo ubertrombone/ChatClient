@@ -2,6 +2,7 @@ package ui.main.add.requests
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -65,7 +66,8 @@ fun CompactRequestsContent(component: RequestComponent, modifier: Modifier = Mod
                 SnackbarHost(snackbarHostState) { data ->
                     Snackbar(
                         snackbarData = data,
-                        containerColor = colorScheme.primaryContainer.copy(alpha = .7f), // TODO: Something wrong here in light mode
+                        shape = CircleShape,
+                        containerColor = colorScheme.primaryContainer.copy(alpha = .7f),
                         contentColor = colorScheme.onPrimaryContainer,
                         dismissActionContentColor = colorScheme.onPrimaryContainer
                     )
