@@ -174,7 +174,7 @@ class DefaultSettingsComponent(
         _confirmPassword.update { "" }
     }
 
-    private val _deleteAccountStates = instanceKeeper.getOrCreate { DeleteModelImpl(server) }
+    private val _deleteAccountStates = instanceKeeper.getOrCreate { DeleteModelImpl(server, settings) }
     override val deleteAccountLoading: Value<Boolean> = _deleteAccountStates.loadingState
     override val deleteAccountStatus: Value<Status> = _deleteAccountStates.status
     override suspend fun deleteAccount(delete: Boolean, context: CoroutineContext) = withContext(context) {

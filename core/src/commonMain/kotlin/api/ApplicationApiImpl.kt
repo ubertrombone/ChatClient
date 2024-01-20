@@ -171,7 +171,6 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
         postHelper(route = "/settings/updateuser", body = username) { authenticatedResponseHelper() }
     }
 
-    // TODO: On delete, clear local storage
     @Authenticated
     override suspend fun deleteAccount(decision: Boolean) = withContext(scope.coroutineContext) {
         postHelper(route = "/settings/delete", body = decision) { authenticatedResponseHelper() }

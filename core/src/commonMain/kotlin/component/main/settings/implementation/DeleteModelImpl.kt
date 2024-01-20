@@ -7,12 +7,15 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import component.main.settings.interfaces.ApiModel
 import kotlinx.coroutines.withContext
+import settings.SettingsRepository
 import util.Status
-import util.Status.Error
-import util.Status.Loading
+import util.Status.*
 import kotlin.coroutines.CoroutineContext
 
-class DeleteModelImpl(private val server: ApplicationApi) : ApiModel, InstanceKeeper.Instance {
+class DeleteModelImpl(
+    private val server: ApplicationApi,
+    private val settings: SettingsRepository
+) : ApiModel, InstanceKeeper.Instance {
     override val loadingState = MutableValue(false)
     override val status: MutableValue<Status> = MutableValue(Loading)
 
@@ -22,7 +25,10 @@ class DeleteModelImpl(private val server: ApplicationApi) : ApiModel, InstanceKe
         callWrapper(
             isLoading = loadingState,
             operation = { server.deleteAccount(value as Boolean) },
-            onSuccess = { status.update { _ -> it } },
+            onSuccess = {
+                status.update { _ -> it }
+                if (it == Success) settings.clear()
+            },
             onError = { status.update { _ -> Error(it) } }
         )
     }
