@@ -77,8 +77,8 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                 Snackbar(
                     snackbarData = data,
                     containerColor = colorScheme.primaryContainer.copy(alpha = .7f), // TODO: Something wrong here in light mode
-                    contentColor = colorScheme.onPrimaryContainer,
-                    dismissActionContentColor = colorScheme.onPrimaryContainer
+                    contentColor = colorScheme.onPrimaryContainer.copy(alpha = .7f),
+                    dismissActionContentColor = colorScheme.onPrimaryContainer.copy(alpha = .7f)
                 )
             }
         },
@@ -155,7 +155,7 @@ fun SettingsContent(component: SettingsComponent, modifier: Modifier = Modifier)
                     ) {
                         scope.launch {
                             snackbarHostState.snackbarHelper(
-                                message = "Updated Cache: ${it.toString().replaceFirstChar { it.uppercase() }}"
+                                message = "Caching Messages: ${it.toString().replaceFirstChar { it.uppercase() }}"
                             )
                         }
                     }
