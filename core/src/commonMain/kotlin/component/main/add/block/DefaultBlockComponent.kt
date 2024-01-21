@@ -8,7 +8,6 @@ import component.main.add.model.Friends
 import kotlinx.serialization.builtins.serializer
 import util.Status
 import util.Status.Loading
-import util.Status.Success
 import util.Username
 
 class DefaultBlockComponent(
@@ -34,7 +33,7 @@ class DefaultBlockComponent(
     private val _actionStates = instanceKeeper.getOrCreate {
         BlockModel(
             initialLoadingState = false,
-            initialStatus = Success,
+            initialStatus = Loading,
             server = server,
             authCallback = logout
         )
