@@ -11,6 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
+import component.main.add.AddComponent.Config.BlockConfig
+import component.main.add.AddComponent.Config.RequestConfig
+import component.main.add.AddComponent.Slots.BlockList
+import component.main.add.AddComponent.Slots.Requests
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.icons.BlockIcon
@@ -21,8 +25,7 @@ import ui.main.add.requests.CompactRequestsContent
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
-    val requestSlot by component.requestSlot.subscribeAsState()
-    val blockSlot by component.blockSlot.subscribeAsState()
+    val slots by component.slots.subscribeAsState()
 
     val queryResult by component.query.subscribeAsState()
     val queryLoading by component.queryLoadingState.subscribeAsState()
@@ -39,7 +42,7 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
             BadgedBox(
                 modifier = Modifier
                     .padding(20.dp)
-                    .clickable { component.showRequest() },
+                    .clickable { component.showSlot(RequestConfig) },
                 badge = { if (requests.reqs.isNotEmpty()) Badge { Text(text = "${requests.reqs.size}") } }
             ) {
                 Icon(
@@ -50,7 +53,7 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 )
             }
 
-            BlockIcon(modifier = Modifier.padding(start = 8.dp), onClick = component::showBlock)
+            BlockIcon(modifier = Modifier.padding(start = 8.dp), onClick = { component.showSlot(BlockConfig) })
         }
 
         QueryField(
@@ -71,24 +74,26 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
         )
     }
 
-    requestSlot.child?.instance?.also { CompactRequestsContent(component = it, modifier = modifier) }
-    blockSlot.child?.instance?.also {
-        Scaffold(
-            modifier = modifier,
-            topBar = {
-                CenterAlignedTopAppBar(
-                    modifier = Modifier.padding(bottom = 12.dp),
-                    title = {},
-                    navigationIcon = { NavBackButton { it.dismiss() } },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = colorScheme.background,
-                        titleContentColor = colorScheme.primary
+    slots.child?.instance?.also {
+        when (it) {
+            is BlockList -> Scaffold(
+                modifier = modifier,
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        title = {},
+                        navigationIcon = { NavBackButton { it.component.dismiss() } },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = colorScheme.background,
+                            titleContentColor = colorScheme.primary
+                        )
                     )
-                )
-            },
-            containerColor = colorScheme.background
-        ) { padding ->
-            BlockContent(component = it, modifier = Modifier.fillMaxSize().padding(padding))
+                },
+                containerColor = colorScheme.background
+            ) { padding ->
+                BlockContent(component = it.component, modifier = Modifier.fillMaxSize().padding(padding))
+            }
+            is Requests -> CompactRequestsContent(component = it.component, modifier = modifier)
         }
     }
 }

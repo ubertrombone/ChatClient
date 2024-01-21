@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
+import component.main.add.AddComponent.Config.BlockConfig
+import component.main.add.AddComponent.Config.RequestConfig
+import component.main.add.AddComponent.Slots.BlockList
+import component.main.add.AddComponent.Slots.Requests
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.icons.BlockIcon
@@ -25,8 +29,7 @@ import ui.main.add.requests.ExpandedRequestsContent
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
-    val requestSlot by component.requestSlot.subscribeAsState()
-    val blockSlot by component.blockSlot.subscribeAsState()
+    val slots by component.slots.subscribeAsState()
 
     val queryResult by component.query.subscribeAsState()
     val queryLoading by component.queryLoadingState.subscribeAsState()
@@ -35,9 +38,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(requestSlot) {
-        if (requestSlot.child?.instance == null && blockSlot.child?.instance == null) component.showRequest()
-    }
+    LaunchedEffect(slots) { if (slots.child?.instance == null) component.showSlot(RequestConfig) }
 
     Row(
         modifier = modifier,
@@ -83,12 +84,9 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
             ) {
                 SelectionIcon(
                     modifier = Modifier.padding(end = 8.dp),
-                    color = requestSlot.child?.instance?.let { colorScheme.primaryContainer } ?: colorScheme.background
+                    color = if (slots.child?.instance is Requests) colorScheme.primaryContainer else colorScheme.background
                 ) {
-                    IconButton(onClick = {
-                        if (requestSlot.child?.instance == null) component.showRequest()
-                        if (blockSlot.child?.instance != null) component.dismissBlock()
-                    }) {
+                    IconButton(onClick = { component.showSlot(RequestConfig) }) {
                         Icon(
                             painter = painterResource("person_alert.xml"),
                             contentDescription = "Go to requests",
@@ -99,22 +97,16 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
 
                 SelectionIcon(
                     modifier = Modifier.padding(end = 8.dp),
-                    color = blockSlot.child?.instance?.let { colorScheme.primaryContainer } ?: colorScheme.background
-                ) {
-                    BlockIcon {
-                        blockSlot.child?.instance?.let {
-                            component.dismissBlock()
-                            component.showRequest()
-                        } ?: run {
-                            component.showBlock()
-                            component.dismissRequest()
-                        }
-                    }
-                }
+                    color = if (slots.child?.instance is BlockList) colorScheme.primaryContainer else colorScheme.background
+                ) { BlockIcon { component.showSlot(BlockConfig) } }
             }
 
-            requestSlot.child?.instance?.also { ExpandedRequestsContent(it, snackbarHostState, Modifier.fillMaxSize()) }
-            blockSlot.child?.instance?.also { BlockContent(it, Modifier.fillMaxSize()) }
+            slots.child?.instance?.also {
+                when (it) {
+                    is BlockList -> BlockContent(it.component, Modifier.fillMaxSize())
+                    is Requests -> ExpandedRequestsContent(it.component, snackbarHostState, Modifier.fillMaxSize())
+                }
+            }
         }
     }
 }

@@ -7,13 +7,18 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.getOrCreate
+import component.main.add.AddComponent.Config
+import component.main.add.AddComponent.Config.BlockConfig
+import component.main.add.AddComponent.Config.RequestConfig
+import component.main.add.AddComponent.Slots
+import component.main.add.AddComponent.Slots.BlockList
+import component.main.add.AddComponent.Slots.Requests
 import component.main.add.block.BlockComponent
 import component.main.add.block.DefaultBlockComponent
 import component.main.add.model.Friends
 import component.main.add.requests.DefaultRequestComponent
 import component.main.add.requests.RequestComponent
 import component.main.add.requests.received.ReceiveListModel
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import util.Status
 import util.Status.Success
@@ -26,57 +31,43 @@ class DefaultAddComponent(
     override val logout: () -> Unit
 ) : AddComponent, ComponentContext by componentContext {
 
-    private val blockNavigation = SlotNavigation<BlockConfig>()
-    private val _blockSlot = childSlot(
-        source = blockNavigation,
-        serializer = BlockConfig.serializer(),
-        key = "BLOCK_SLOT",
+    private val navigation = SlotNavigation<Config>()
+    private val _slots = childSlot(
+        source = navigation,
+        serializer = Config.serializer(),
+        key = "SLOTS",
         handleBackButton = true
-    ) { _, childComponentContext ->
-        DefaultBlockComponent(
-            childComponentContext,
-            server = server,
-            dismiss = ::dismissBlock,
-            logout = logout
-        )
+    ) { slot, childComponentContext ->
+        when (slot) {
+            BlockConfig -> BlockList(block(childComponentContext))
+            RequestConfig -> Requests(requests(childComponentContext))
+        }
     }
-    override val blockSlot: Value<ChildSlot<*, BlockComponent>> = _blockSlot
-    override fun showBlock() = blockNavigation.activate(BlockConfig)
-    override fun dismissBlock() = blockNavigation.dismiss()
+    override val slots: Value<ChildSlot<*, Slots>> = _slots
 
-    private val requestNavigation = SlotNavigation<RequestConfig>()
-    private val _requestSlot = childSlot(
-        source = requestNavigation,
-        serializer = RequestConfig.serializer(),
-        key = "REQUEST_SLOT",
-        handleBackButton = true
-    ) { _, childComponentContext ->
-        DefaultRequestComponent(
-            childComponentContext,
-            server = server,
-            receivedListModel = receiveListModel,
-            dismiss = requestNavigation::dismiss,
-            logout = logout
-        )
-    }
-    override val requestSlot: Value<ChildSlot<*, RequestComponent>> = _requestSlot
-    override fun showRequest() = requestNavigation.activate(RequestConfig)
-    override fun dismissRequest() = requestNavigation.dismiss()
+    private fun block(componentContext: ComponentContext): BlockComponent = DefaultBlockComponent(
+        componentContext = componentContext,
+        server = server,
+        dismiss = navigation::dismiss,
+        logout = logout
+    )
+
+    private fun requests(componentContext: ComponentContext): RequestComponent = DefaultRequestComponent(
+        componentContext = componentContext,
+        receivedListModel = receiveListModel,
+        server = server,
+        dismiss = navigation::dismiss,
+        logout = logout
+    )
+
+    override fun dismissSlot() = navigation.dismiss()
+    override fun showSlot(config: Config) = navigation.activate(config)
 
     private val _queryState = instanceKeeper.getOrCreate(QUERY_KEY) {
         QueryModel(
-            initialLoadingState = stateKeeper.consume(
-                key = QUERY_LOAD_KEY,
-                strategy = Boolean.serializer()
-            ) ?: false,
-            initialStatus = stateKeeper.consume(
-                key = QUERY_STATUS_KEY,
-                strategy = Status.serializer()
-            ) ?: Success,
-            initialState = stateKeeper.consume(
-                key = QUERY_KEY,
-                strategy = Friends.serializer()
-            ) ?: Friends(),
+            initialLoadingState = stateKeeper.consume(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) ?: false,
+            initialStatus = stateKeeper.consume(key = QUERY_STATUS_KEY, strategy = Status.serializer()) ?: Success,
+            initialState = stateKeeper.consume(key = QUERY_KEY, strategy = Friends.serializer()) ?: Friends(),
             server = server,
             authCallback = logout
         )
@@ -112,11 +103,6 @@ class DefaultAddComponent(
         stateKeeper.register(key = QUERY_LOAD_KEY, strategy = Boolean.serializer()) { _queryState.loadingState.value }
         stateKeeper.register(key = QUERY_STATUS_KEY, strategy = Status.serializer()) { _queryState.status.value }
     }
-
-    @Serializable
-    data object BlockConfig
-    @Serializable
-    data object RequestConfig
 
     private companion object {
         const val QUERY_KEY = "QUERY_KEY"
