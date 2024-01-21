@@ -14,6 +14,7 @@ import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.icons.BlockIcon
+import ui.icons.NavBackButton
 import ui.main.add.block.BlockContent
 import ui.main.add.requests.CompactRequestsContent
 
@@ -71,5 +72,23 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
     }
 
     requestSlot.child?.instance?.also { CompactRequestsContent(component = it, modifier = modifier) }
-    blockSlot.child?.instance?.also { BlockContent(component = it, modifier = modifier) }
+    blockSlot.child?.instance?.also {
+        Scaffold(
+            modifier = modifier,
+            topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    title = {},
+                    navigationIcon = { NavBackButton { it.dismiss() } },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = colorScheme.background,
+                        titleContentColor = colorScheme.primary
+                    )
+                )
+            },
+            containerColor = colorScheme.background
+        ) { padding ->
+            BlockContent(component = it, modifier = Modifier.fillMaxSize().padding(padding))
+        }
+    }
 }
