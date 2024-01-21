@@ -1,7 +1,7 @@
 CREATE TABLE chats (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    recipient TEXT NOT NULL,
-    messages TEXT NOT NULL
+    userOne INTEGER NOT NULL,
+    userTwo INTEGER NOT NULL
 );
 
 selectAll:
