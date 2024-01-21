@@ -19,6 +19,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.icons.BlockIcon
 import ui.icons.SelectionIcon
+import ui.main.add.block.BlockContent
 import ui.main.add.requests.ExpandedRequestsContent
 
 @OptIn(ExperimentalResourceApi::class)
@@ -113,9 +114,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
             }
 
             requestSlot.child?.instance?.also { ExpandedRequestsContent(it, snackbarHostState, Modifier.fillMaxSize()) }
-            blockSlot.child?.instance?.also {
-                // TODO: Figure it out
-            }
+            blockSlot.child?.instance?.also { BlockContent(it, Modifier.fillMaxSize()) }
         }
     }
 }

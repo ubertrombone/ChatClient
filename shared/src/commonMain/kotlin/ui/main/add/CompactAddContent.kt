@@ -14,6 +14,7 @@ import component.main.add.AddComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import ui.icons.BlockIcon
+import ui.main.add.block.BlockContent
 import ui.main.add.requests.CompactRequestsContent
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -70,4 +71,5 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
     }
 
     requestSlot.child?.instance?.also { CompactRequestsContent(component = it, modifier = modifier) }
+    blockSlot.child?.instance?.also { BlockContent(component = it, modifier = modifier) }
 }
