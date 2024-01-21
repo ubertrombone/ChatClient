@@ -7,17 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.sqldelight)
-}
-
-sqldelight {
-    databases {
-        create("ChatDatabase") {
-            packageName.set("com.ubertrombone.chat")
-            schemaOutputDirectory.set(file("build/sqldelight"))
-        }
-    }
-    linkSqlite.set(true)
 }
 
 kotlin {
@@ -46,31 +35,27 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
+            api(project(":coreData"))
             api(libs.aakira.napier)
             api(libs.decompose.decompose)
             api(libs.decompose.extensionsCompose)
             api(libs.multiplatformSettings)
             implementation(libs.bundles.ktor.common)
             implementation(libs.bundles.kotlinx.common)
-            implementation(libs.sqldelight.coroutinesExtensions)
-            implementation(project(":coreData"))
         }
 
         androidMain.dependencies {
             implementation(libs.ktor.ktorClientOkhttp)
             implementation(libs.kotlinx.kotlinxCoroutinesAndroid)
-            implementation(libs.android.driver)
         }
 
         desktopMain.dependencies {
             implementation(libs.ktor.ktorClientOkhttp)
             implementation(libs.kotlinx.kotlinxCoroutinesSwing)
-            implementation(libs.sqlite.driver)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.ktorClientDarwin)
-            implementation(libs.native.driver)
         }
     }
 }
