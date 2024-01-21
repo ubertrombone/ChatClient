@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.bundles.ktor.common)
             implementation(libs.bundles.kotlinx.common)
             implementation(libs.sqldelight.coroutinesExtensions)
+            implementation(project(":coreData"))
         }
 
         androidMain.dependencies {
