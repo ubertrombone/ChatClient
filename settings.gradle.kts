@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 
 include(":shared")
 include(":core")
+include(":coreData")
