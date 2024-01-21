@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import api.model.FriendRequest
 import kotlinx.collections.immutable.ImmutableList
 import ui.composables.expect.ScrollLazyColumn
 import util.Status
@@ -19,13 +18,13 @@ import util.Status.Error
 import util.Status.Success
 
 @Composable
-fun RequestSwitch(
+fun <T> RequestSwitch(
     label: String,
-    results: ImmutableList<FriendRequest>,
+    results: ImmutableList<T>,
     status: Status,
     loading: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable (FriendRequest) -> Unit
+    content: @Composable (T) -> Unit
 ) {
     Box(modifier) {
         when {
