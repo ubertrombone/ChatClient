@@ -8,3 +8,31 @@ CREATE TABLE messages (
     FOREIGN KEY (chat) REFERENCES chats(id)
 );
 
+selectAll:
+SELECT *
+FROM messages;
+
+selectAllFromChat:
+SELECT *
+FROM messages
+WHERE chat = ?;
+
+selectCache:
+SELECT *
+FROM messages
+WHERE id = ?;
+
+insertCache:
+INSERT INTO messages(message, sender, timestamp, primaryUserRef, chat)
+VALUES (:message, :sender, :timestamp, :primaryUserRef, :chat);
+
+updateCache:
+UPDATE messages
+SET message = :message, sender = :sender, timestamp = :timestamp, primaryUserRef = :primaryUserRef, chat = :chat
+WHERE id = :id;
+
+deleteCache:
+DELETE FROM messages WHERE id = ?;
+
+deleteAll:
+DELETE FROM messages;
