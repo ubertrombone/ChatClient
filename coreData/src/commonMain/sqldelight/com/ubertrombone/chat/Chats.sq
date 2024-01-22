@@ -7,3 +7,25 @@ CREATE TABLE chats (
 selectAll:
 SELECT *
 FROM chats;
+
+selectChatByID:
+SELECT *
+FROM chats
+WHERE id = ?;
+
+selectChat:
+SELECT *
+FROM chats
+WHERE userOne = :userOne AND userTwo = :userTwo;
+
+insertChat:
+INSERT INTO chats(userOne, userTwo)
+VALUES (:userOne, :userTwo);
+
+updateChat:
+UPDATE chats
+SET userOne = :userOne, userTwo = :userTwo
+WHERE id = :id;
+
+deleteChat:
+DELETE FROM chats WHERE id = :id;
