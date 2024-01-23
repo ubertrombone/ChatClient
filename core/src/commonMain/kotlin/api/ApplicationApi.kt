@@ -27,6 +27,9 @@ interface ApplicationApi {
     suspend fun block(user: Username): Status
     suspend fun unblock(user: Username): Status
 
+    suspend fun deleteChat(id: Int): Status
+    suspend fun deleteMessage(id: Int): Status
+
     suspend fun getGroupChats(): Set<GroupChat>?
     suspend fun createGroupChat(name: GroupChatNameRequest): Status
 
