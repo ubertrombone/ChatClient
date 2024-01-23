@@ -130,11 +130,6 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
     }
 
     @Authenticated
-    override suspend fun deleteChat(id: Int) = withContext(scope.coroutineContext) {
-        postHelper(route = "/chat_actions/delete_chat", body = id) { authenticatedResponseHelper() }
-    }
-
-    @Authenticated
     override suspend fun deleteMessage(id: Int) = withContext(scope.coroutineContext) {
         postHelper(route = "/chat_actions/delete_message", body = id) { authenticatedResponseHelper() }
     }
