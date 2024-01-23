@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,13 +45,6 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
                     fontSize = MaterialTheme.typography.displayLarge.fontSize,
                     modifier = Modifier.align(Alignment.Center)
                 )
-
-                IconButton(
-                    onClick = component::dismissChat,
-                    modifier = Modifier.align(Alignment.TopStart)
-                ) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Go back")
-                }
             }
         }
     }
