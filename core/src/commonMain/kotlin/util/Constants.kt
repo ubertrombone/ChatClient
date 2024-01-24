@@ -25,4 +25,8 @@ object Constants {
     const val REQUESTS = "Requests"
     const val GROUP_CHATS = "Groups"
     const val FRIENDS = "Friends"
+
+    const val IP = "192.168.0.10"
+    const val PORT = 8080
+    const val URL = "http://$IP:$PORT"
 }
