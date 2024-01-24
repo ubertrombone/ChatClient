@@ -13,6 +13,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import settings.SettingsRepository
+import util.Constants.URL
 import util.Status
 import util.Username
 
@@ -26,9 +27,7 @@ class ApplicationApiImpl(private val settings: SettingsRepository) : InstanceKee
             json(json = Json { prettyPrint = true })
         }
 
-        defaultRequest {
-            url("http://192.168.0.10:8080")
-        }
+        defaultRequest { url(URL) }
     }
 
     // TODO: Apply the new helper functions to authenticated routes and check that results are as expected on routes that have already been implemented.
