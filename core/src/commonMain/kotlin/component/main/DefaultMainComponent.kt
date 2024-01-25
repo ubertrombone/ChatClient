@@ -1,6 +1,7 @@
 package component.main
 
 import api.ApplicationApi
+import api.WebSocketApi
 import api.callWrapper
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
@@ -32,6 +33,7 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
@@ -49,6 +51,12 @@ class DefaultMainComponent(
 ) : MainComponent, ComponentContext by componentContext {
     private val scope = CoroutineScope(Dispatchers.IO)
     override val title: String = "Friends"
+
+    override val webSocket = WebSocketApi(
+        userInput = MutableSharedFlow(),
+        settings = settings,
+        chatRepository = chatRepository
+    )
 
     private val _isLogoutLoading = MutableValue(false)
     override val isLogoutLoading: Value<Boolean> = _isLogoutLoading
@@ -111,8 +119,9 @@ class DefaultMainComponent(
         DefaultFriendsComponent(
             componentContext = componentContext,
             server = server,
+            webSocket = webSocket,
             chatRepository = chatRepository,
-            cache = settings.cache.get().toBooleanStrict(),
+            settings = settings,
             friendsModel = instanceKeeper.getOrCreate {
                 FriendsModelImpl(
                     initialState = FriendsSet(),

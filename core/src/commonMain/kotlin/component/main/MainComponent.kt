@@ -1,6 +1,7 @@
 package component.main
 
 import api.ApplicationApi
+import api.WebSocketApi
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
@@ -20,6 +21,7 @@ interface MainComponent {
     val onLogoutClicked: () -> Unit
 
     val title: String
+    val webSocket: WebSocketApi
     val isLogoutLoading: Value<Boolean>
     val logoutStatus: Value<Status>
     val isInitLoading: Value<Boolean>
