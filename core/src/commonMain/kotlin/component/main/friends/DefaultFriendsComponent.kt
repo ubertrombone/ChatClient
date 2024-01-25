@@ -1,6 +1,7 @@
 package component.main.friends
 
 import api.ApplicationApi
+import api.WebSocketApi
 import api.model.FriendInfo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.*
@@ -10,13 +11,16 @@ import component.main.friends.chat.DefaultChatComponent
 import component.main.friends.model.FriendsSet
 import db.ChatRepository
 import kotlinx.serialization.Serializable
+import settings.SettingsRepository
 import util.Status
+import util.toUsername
 
 class DefaultFriendsComponent(
     componentContext: ComponentContext,
     override val server: ApplicationApi,
+    override val webSocket: WebSocketApi,
     override val chatRepository: ChatRepository,
-    override val cache: Boolean,
+    override val settings: SettingsRepository,
     override val friendsModel: FriendsModelImpl,
     override val logout: () -> Unit
 ) : FriendsComponent, ComponentContext by componentContext {
@@ -36,8 +40,10 @@ class DefaultFriendsComponent(
             DefaultChatComponent(
                 componentContext = childComponentContext,
                 server = server,
+                webSocket = webSocket,
                 chatRepository = chatRepository,
-                cache = cache,
+                username = settings.username.get().toUsername(),
+                cache = settings.cache.get().toBooleanStrict(),
                 friend = config.user
             )
         }
