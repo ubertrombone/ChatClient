@@ -36,7 +36,7 @@ class ReceiveListModel(
     private suspend fun looper() = withContext(scope.coroutineContext) {
         while (scope.isActive) {
             getRequests()
-            delay(10_000)
+            delay(30_000)
         }
     }
 

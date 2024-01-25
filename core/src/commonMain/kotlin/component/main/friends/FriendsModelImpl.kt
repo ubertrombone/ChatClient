@@ -36,7 +36,7 @@ class FriendsModelImpl(
     override suspend fun friendLooper() = withContext(scope.coroutineContext) {
         while (scope.isActive) {
             getFriends()
-            delay(10_000)
+            delay(30_000)
         }
     }
 
