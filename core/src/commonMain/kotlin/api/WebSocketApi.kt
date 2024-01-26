@@ -12,7 +12,6 @@ import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.json.Json
@@ -51,19 +50,16 @@ class WebSocketApi(
     }
 
     private suspend fun DefaultClientWebSocketSession.outputMessages() {
-        try {
-            incoming.consumeEach {
-                val m = receiveDeserialized<ChatMessage>()
-                println("MESSAGE: $m")
-                _incomingMessages.emit(m)
+        while (scope.isActive) {
+            runCatching { _incomingMessages.emit(receiveDeserialized()) }.getOrElse { throwable ->
+                Napier.e(throwable.message ?: "An unknown error has occurred.")
             }
-        } catch (e: Exception) { println("ERROR: ${e.message}") }
+        }
     }
 
     private suspend fun DefaultClientWebSocketSession.inputMessages() {
-        while (true) {
+        while (scope.isActive) {
             _userInput.collect {
-                println("INPUT: $it")
                 runCatching { it?.let { sendSerialized(it) } }.getOrElse { throwable ->
                     Napier.e(throwable.message ?: "An unknown error has occurred.")
                 }
@@ -71,8 +67,8 @@ class WebSocketApi(
         }
     }
 
-
     override fun onDestroy() {
+        println("DESTROYED")
         client.close()
         scope.cancel()
     }
