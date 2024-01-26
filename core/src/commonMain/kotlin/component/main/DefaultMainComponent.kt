@@ -52,11 +52,13 @@ class DefaultMainComponent(
     private val scope = CoroutineScope(Dispatchers.IO)
     override val title: String = "Friends"
 
-    override val webSocket = WebSocketApi(
-        userInput = MutableSharedFlow(),
-        settings = settings,
-        chatRepository = chatRepository
-    )
+    override val webSocket = instanceKeeper.getOrCreate {
+        WebSocketApi(
+            userInput = MutableSharedFlow(),
+            settings = settings,
+            chatRepository = chatRepository
+        )
+    }
 
     private val _isLogoutLoading = MutableValue(false)
     override val isLogoutLoading: Value<Boolean> = _isLogoutLoading
