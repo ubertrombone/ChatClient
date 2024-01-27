@@ -40,7 +40,7 @@ class WebSocketApi(
     init {
         scope.launch {
             client.webSocket(path = "/chat", request = { bearerAuth(settings.token.get()) }) {
-                val incomingMessageRoutine = launch { outputMessages() }
+                val incomingMessageRoutine = launch { incomingMessages() }
                 val userInputRoutine = launch { inputMessages() }
 
                 userInputRoutine.join()
@@ -49,10 +49,17 @@ class WebSocketApi(
         }
     }
 
-    private suspend fun DefaultClientWebSocketSession.outputMessages() {
+    private suspend fun DefaultClientWebSocketSession.incomingMessages() {
         while (scope.isActive) {
-            runCatching { _incomingMessages.emit(receiveDeserialized()) }.getOrElse { throwable ->
-                Napier.e(throwable.message ?: "An unknown error has occurred.")
+            runCatching {
+                val m = receiveDeserialized<ChatMessage>()
+                println(m)
+                _incomingMessages.emit(m)
+            }.getOrElse { throwable ->
+                if (throwable.message?.startsWith("Unexpected JSON token") == true) {
+                    Napier.w(message = throwable.message ?: "An unknown error has occurred.", throwable)
+                    TODO("Handle messages that could not be sent to recipient.")
+                } else Napier.e(throwable.message ?: "An unknown error has occurred.")
             }
         }
     }
