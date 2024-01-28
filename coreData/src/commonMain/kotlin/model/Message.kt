@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Message(
-    val id: Int,
+    val id: Int? = null,
     val message: String,
-    val sender: Int,
+    val sender: String,
     val timestamp: Instant,
-    val primaryUserRef: Int,
+    val primaryUserRef: String,
     val chat: Int
 )
