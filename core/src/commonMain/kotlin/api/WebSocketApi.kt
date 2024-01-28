@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import settings.SettingsRepository
 import util.Constants.IP
 import util.Constants.PORT
+import util.Functions.ERROR
 
 class WebSocketApi(
     userInput: MutableSharedFlow<ChatMessage?>,
@@ -53,14 +54,9 @@ class WebSocketApi(
         while (scope.isActive) {
             runCatching {
                 val m = receiveDeserialized<ChatMessage>()
-                println(m)
+                if (m.function == ERROR) Napier.w(m.error ?: "An unknown error has occurred.")
                 _incomingMessages.emit(m)
-            }.getOrElse { throwable ->
-                if (throwable.message?.startsWith("Unexpected JSON token") == true) {
-                    Napier.w(message = throwable.message ?: "An unknown error has occurred.", throwable)
-                    TODO("Handle messages that could not be sent to recipient.")
-                } else Napier.e(throwable.message ?: "An unknown error has occurred.")
-            }
+            }.getOrElse { Napier.e(it.message ?: "An unknown error has occurred.") }
         }
     }
 
