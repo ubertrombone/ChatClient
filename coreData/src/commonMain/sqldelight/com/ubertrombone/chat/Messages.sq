@@ -1,9 +1,9 @@
 CREATE TABLE messages (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     message TEXT NOT NULL,
-    sender INTEGER NOT NULL,
+    sender TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
-    primaryUserRef INTEGER NOT NULL,
+    primaryUserRef TEXT NOT NULL,
     chat INTEGER NOT NULL,
     FOREIGN KEY (chat) REFERENCES chats(id)
 );

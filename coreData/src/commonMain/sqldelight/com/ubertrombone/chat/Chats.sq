@@ -1,7 +1,7 @@
 CREATE TABLE chats (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    userOne INTEGER NOT NULL,
-    userTwo INTEGER NOT NULL
+    userOne TEXT NOT NULL,
+    userTwo TEXT NOT NULL
 );
 
 selectAll:
@@ -16,7 +16,7 @@ WHERE id = ?;
 selectChat:
 SELECT *
 FROM chats
-WHERE userOne = :userOne AND userTwo = :userTwo;
+WHERE userOne = :userOne AND userTwo = :userTwo OR userOne = :userTwo AND userTwo = :userOne;
 
 insertChat:
 INSERT INTO chats(userOne, userTwo)
