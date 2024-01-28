@@ -10,5 +10,6 @@ data class ChatMessage(
     val function: Functions = INDIVIDUAL,
     val sender: Username,
     val recipientOrGroup: String,
-    val message: String
+    val message: String,
+    val error: String? = null
 )
