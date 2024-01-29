@@ -1,6 +1,7 @@
 package api
 
 import api.model.ChatMessage
+import api.model.SendChatResponse
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import db.ChatRepository
 import io.github.aakira.napier.Napier
@@ -18,7 +19,6 @@ import kotlinx.serialization.json.Json
 import settings.SettingsRepository
 import util.Constants.IP
 import util.Constants.PORT
-import util.Functions.ERROR
 
 class WebSocketApi(
     userInput: MutableSharedFlow<ChatMessage?>,
@@ -38,6 +38,9 @@ class WebSocketApi(
     private val _incomingMessages = MutableSharedFlow<ChatMessage>()
     val incomingMessages: SharedFlow<ChatMessage> = _incomingMessages
 
+    private val _response = MutableSharedFlow<SendChatResponse>()
+    val response: SharedFlow<SendChatResponse> = _response
+
     init {
         scope.launch {
             client.webSocket(path = "/chat", request = { bearerAuth(settings.token.get()) }) {
@@ -52,11 +55,14 @@ class WebSocketApi(
 
     private suspend fun DefaultClientWebSocketSession.incomingMessages() {
         while (scope.isActive) {
-            runCatching {
-                val m = receiveDeserialized<ChatMessage>()
-                if (m.function == ERROR) Napier.w(m.error ?: "An unknown error has occurred.")
-                _incomingMessages.emit(m)
-            }.getOrElse { Napier.e(it.message ?: "An unknown error has occurred.") }
+            runCatching { _incomingMessages.emit(receiveDeserialized()) }.getOrElse {
+                runCatching {
+                    Napier.i(it.message ?: "")
+                    Json.decodeFromString<SendChatResponse>(it.message!!)
+                }.getOrElse {
+                    Napier.e(it.message ?: "An unknown error has occurred.")
+                }
+            }
         }
     }
 
