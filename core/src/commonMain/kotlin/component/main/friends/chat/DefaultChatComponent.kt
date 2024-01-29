@@ -4,6 +4,7 @@ import api.ApplicationApi
 import api.WebSocketApi
 import api.model.ChatMessage
 import api.model.FriendInfo
+import api.model.SendChatResponse
 import com.arkivanov.decompose.ComponentContext
 import com.ubertrombone.chat.Chats
 import db.ChatRepository
@@ -45,26 +46,51 @@ class DefaultChatComponent(
         scope.launch {
             chat = chatRepository.selectChat(userOne = username.name, userTwo = friend.username.name)
 
-            webSocket.incomingMessages.collect { message ->
-                chat.first()?.let { chat ->
-                    chatRepository.insertMessage(
-                        Message(
-                            message = message.message,
-                            sender = message.sender.name,
-                            timestamp = Clock.System.now(),
-                            primaryUserRef = username.name,
-                            chat = chat.id.toInt()
-                        )
-                    )
-                }
-            }
+            launch { webSocket.incomingMessages.receiveMessages() }
+            launch { webSocket.response.receiveResponses() }
         }
     }
+
+    private suspend fun SharedFlow<ChatMessage>.receiveMessages(): Unit = collect { insertMessage(it) }
+    private suspend fun SharedFlow<SendChatResponse>.receiveResponses(): Unit = collect { insertMessage(it) }
+
+    private suspend fun <T> insertMessage(type: T) {
+        chat.first()?.let {
+            chatRepository.insertMessage(
+                if (type is ChatMessage) insertChatMessage(type, it.id.toInt())
+                else insertResponse(type as SendChatResponse, it.id.toInt())
+            )
+        }
+    }
+
+    private fun insertChatMessage(message: ChatMessage, chatId: Int) = Message(
+        message = message.message,
+        sender = message.sender.name,
+        timestamp = Clock.System.now(),
+        primaryUserRef = username.name,
+        chat = chatId
+    )
+
+    private fun insertResponse(response: SendChatResponse, chatId: Int) = Message(
+        message = if (response.successful) response.message.message else "ERROR ${response.message.message}",
+        sender = response.message.sender.name,
+        timestamp = Clock.System.now(),
+        primaryUserRef = username.name,
+        chat = chatId
+    )
 
     override val incomingMessages: SharedFlow<ChatMessage> = webSocket.incomingMessages
 
     override fun send(message: String) {
-        TODO("Not yet implemented")
+        scope.launch {
+            webSocket.emitInput(
+                ChatMessage(
+                    sender = username,
+                    recipientOrGroup = friend.username.name,
+                    message = message
+                )
+            )
+        }
     }
 
     override fun sendMessage() {
