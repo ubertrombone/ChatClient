@@ -4,6 +4,5 @@ enum class Functions {
     GROUP,
     INDIVIDUAL,
     LEAVE,
-    JOIN,
-    ERROR
+    JOIN
 }
