@@ -12,7 +12,9 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.json.Json
@@ -31,6 +33,7 @@ class WebSocketApi(
         install(ContentNegotiation) { json(json = Json { prettyPrint = true }) }
         defaultRequest { url(scheme = "ws", host = IP, port = PORT) }
     }
+    private val json = Json { prettyPrint = true }
 
     private val _userInput = userInput
     suspend fun emitInput(message: ChatMessage) = _userInput.emit(message)
@@ -55,12 +58,17 @@ class WebSocketApi(
 
     private suspend fun DefaultClientWebSocketSession.incomingMessages() {
         while (scope.isActive) {
-            runCatching { _incomingMessages.emit(receiveDeserialized()) }.getOrElse {
-                runCatching {
-                    Napier.i(it.message ?: "")
-                    Json.decodeFromString<SendChatResponse>(it.message!!)
-                }.getOrElse {
-                    Napier.e(it.message ?: "An unknown error has occurred.")
+            incoming.consumeEach { frame ->
+                if (frame is Frame.Text) {
+                    val text = frame.readText()
+                    runCatching { _incomingMessages.emit(json.decodeFromString(text)) }.getOrElse {
+                        runCatching {
+                            _response.emit(json.decodeFromString<SendChatResponse>(text))
+                            Napier.i("RESPONSE ${json.decodeFromString<SendChatResponse>(text)}", tag = "SEND RESPONSE")
+                        }.getOrElse {
+                            Napier.e(it.message ?: "An unknown error has occurred.", throwable = it)
+                        }
+                    }
                 }
             }
         }
