@@ -31,20 +31,15 @@ class DefaultChatComponent(
     private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var chat: Flow<Chats?>
     // TODO:
-    //  1. Upon sending/receiving message, check if Chat record exists
-    //  2. If not, create a Chat record
-    //  3. Sending a message:
-    //      - Send the message to server
-    //      - If server response is successful: Add Message record (collect timestamp from response, moment of send, or moment of response?)
-    //      - If failure, create a Message record with some kind of error appended to be displayed in UI.
-    //          -- Failed sends should only be displayed to the sender and should not be stored in server cache or erased on server alignment
-    //  4. Receiving a message:
-    //      - Write message to Messages
+    //  3/4a. On server, if User.cache is true, store non-error messages
     //  5. UI should be collecting messages from DB
 
     init {
         scope.launch {
-            chat = chatRepository.selectChat(userOne = username.name, userTwo = friend.username.name)
+            chat = chatRepository.selectChat(userOne = username.name, userTwo = friend.username.name).also {
+                if (chat.first() == null)
+                    chatRepository.insertChat(userOne = username.name, userTwo = friend.username.name)
+            }
 
             launch { webSocket.incomingMessages.receiveMessages() }
             launch { webSocket.response.receiveResponses() }
