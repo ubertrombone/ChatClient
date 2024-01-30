@@ -37,8 +37,7 @@ class DefaultChatComponent(
     init {
         scope.launch {
             chat = chatRepository.selectChat(userOne = username.name, userTwo = friend.username.name).also {
-                if (chat.first() == null)
-                    chatRepository.insertChat(userOne = username.name, userTwo = friend.username.name)
+                if (it.first() == null) chatRepository.insertChat(userOne = username.name, userTwo = friend.username.name)
             }
 
             launch { webSocket.incomingMessages.receiveMessages() }
@@ -67,10 +66,11 @@ class DefaultChatComponent(
     )
 
     private fun insertResponse(response: SendChatResponse, chatId: Int) = Message(
-        message = if (response.successful) response.message.message else "ERROR ${response.message.message}",
+        message = response.message.message,
         sender = response.message.sender.name,
         timestamp = Clock.System.now(),
         primaryUserRef = username.name,
+        error = if (response.successful) null else 1,
         chat = chatId
     )
 

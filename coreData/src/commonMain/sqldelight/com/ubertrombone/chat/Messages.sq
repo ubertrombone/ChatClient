@@ -5,6 +5,7 @@ CREATE TABLE messages (
     timestamp INTEGER NOT NULL,
     primaryUserRef TEXT NOT NULL,
     chat INTEGER NOT NULL,
+    error INTEGER,
     FOREIGN KEY (chat) REFERENCES chats(id)
 );
 
@@ -23,12 +24,12 @@ FROM messages
 WHERE id = ?;
 
 insertCache:
-INSERT INTO messages(message, sender, timestamp, primaryUserRef, chat)
-VALUES (:message, :sender, :timestamp, :primaryUserRef, :chat);
+INSERT INTO messages(message, sender, timestamp, primaryUserRef, error, chat)
+VALUES (:message, :sender, :timestamp, :primaryUserRef, :error, :chat);
 
 updateCache:
 UPDATE messages
-SET message = :message, sender = :sender, timestamp = :timestamp, primaryUserRef = :primaryUserRef, chat = :chat
+SET message = :message, sender = :sender, timestamp = :timestamp, primaryUserRef = :primaryUserRef, error = :error, chat = :chat
 WHERE id = :id;
 
 deleteCache:

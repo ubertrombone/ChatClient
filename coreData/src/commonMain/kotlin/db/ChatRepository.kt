@@ -41,6 +41,7 @@ class ChatRepository(
             sender = message.sender,
             timestamp = message.timestamp.epochSeconds,
             primaryUserRef = message.primaryUserRef,
+            error = message.error?.toLong(),
             chat = message.chat.toLong()
         )
     }
@@ -51,6 +52,7 @@ class ChatRepository(
             sender = message.sender,
             timestamp = message.timestamp.epochSeconds,
             primaryUserRef = message.primaryUserRef,
+            error = message.error?.toLong(),
             chat = message.chat.toLong()
         )
     }

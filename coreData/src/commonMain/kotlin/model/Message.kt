@@ -10,5 +10,6 @@ data class Message(
     val sender: String,
     val timestamp: Instant,
     val primaryUserRef: String,
+    val error: Int? = null,
     val chat: Int
 )
