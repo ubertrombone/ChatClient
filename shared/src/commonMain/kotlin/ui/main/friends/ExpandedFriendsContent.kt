@@ -1,13 +1,8 @@
 package ui.main.friends
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,13 +34,7 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
         )
 
         Box(modifier = Modifier.fillMaxHeight().weight(3f)) {
-            chatSlot.child?.instance?.let {
-                Text(
-                    text = it.friend.username.name,
-                    fontSize = MaterialTheme.typography.displayLarge.fontSize,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            chatSlot.child?.instance?.let { ChatWindow(it, Modifier.fillMaxSize()) }
         }
     }
 }
