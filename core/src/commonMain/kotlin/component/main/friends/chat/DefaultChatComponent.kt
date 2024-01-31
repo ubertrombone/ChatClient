@@ -7,11 +7,13 @@ import api.model.FriendInfo
 import api.model.SendChatResponse
 import com.arkivanov.decompose.ComponentContext
 import com.ubertrombone.chat.Chats
+import com.ubertrombone.chat.Messages
 import db.ChatRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -31,13 +33,21 @@ class DefaultChatComponent(
     private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var chat: Flow<Chats?>
     // TODO:
-    //  3/4a. On server, if User.cache is true, store non-error messages
     //  5. UI should be collecting messages from DB
+
+    private val _messages = MutableSharedFlow<List<Messages>>()
+    override val messages: SharedFlow<List<Messages>> = _messages
 
     init {
         scope.launch {
             chat = chatRepository.selectChat(userOne = username.name, userTwo = friend.username.name).also {
                 if (it.first() == null) chatRepository.insertChat(userOne = username.name, userTwo = friend.username.name)
+            }
+
+            launch {
+                chatRepository.getMessagesFromChat(chat.first()!!.id.toInt()).collect {
+                    _messages.emit(it)
+                }
             }
 
             launch { webSocket.incomingMessages.receiveMessages() }
