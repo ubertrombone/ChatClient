@@ -2,7 +2,6 @@ package component.main.friends.chat
 
 import api.ApplicationApi
 import api.WebSocketApi
-import api.model.ChatMessage
 import api.model.FriendInfo
 import com.ubertrombone.chat.Messages
 import db.ChatRepository
