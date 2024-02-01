@@ -16,8 +16,10 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
+import model.Message
 import settings.SettingsRepository
 import util.Constants.IP
 import util.Constants.PORT
@@ -38,12 +40,6 @@ class WebSocketApi(
     private val _userInput = userInput
     suspend fun emitInput(message: ChatMessage) = _userInput.emit(message)
 
-    private val _incomingMessages = MutableSharedFlow<ChatMessage>()
-    val incomingMessages: SharedFlow<ChatMessage> = _incomingMessages
-
-    private val _response = MutableSharedFlow<SendChatResponse>()
-    val response: SharedFlow<SendChatResponse> = _response
-
     init {
         scope.launch {
             client.webSocket(path = "/chat", request = { bearerAuth(settings.token.get()) }) {
@@ -61,9 +57,32 @@ class WebSocketApi(
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
                     val text = frame.readText()
-                    runCatching { _incomingMessages.emit(json.decodeFromString(text)) }.getOrElse {
+                    runCatching {
+                        with(json.decodeFromString<ChatMessage>(text)) {
+                            chatRepository.insertMessage(
+                                Message(
+                                    message = message,
+                                    sender = sender.name,
+                                    timestamp = Clock.System.now(),
+                                    primaryUserRef = settings.username.get(),
+                                    chat = getOrCreateChat(sender.name, settings.username.get())
+                                )
+                            )
+                        }
+                    }.getOrElse {
                         runCatching {
-                            _response.emit(json.decodeFromString<SendChatResponse>(text))
+                            with(json.decodeFromString<SendChatResponse>(text)) {
+                                chatRepository.insertMessage(
+                                    Message(
+                                        message = message.message,
+                                        sender = settings.username.get(),
+                                        timestamp = Clock.System.now(),
+                                        primaryUserRef = settings.username.get(),
+                                        error = if (successful) null else 1,
+                                        chat = getOrCreateChat(settings.username.get(), message.recipientOrGroup)
+                                    )
+                                )
+                            }
                             Napier.i("RESPONSE ${json.decodeFromString<SendChatResponse>(text)}", tag = "SEND RESPONSE")
                         }.getOrElse {
                             Napier.e(it.message ?: "An unknown error has occurred.", throwable = it)
@@ -83,6 +102,10 @@ class WebSocketApi(
             }
         }
     }
+
+    private suspend fun getOrCreateChat(sender: String, recipient: String): Int =
+        chatRepository.selectChat(sender, recipient).first()?.id?.toInt()
+            ?: chatRepository.insertChat(sender, recipient).run { getOrCreateChat(sender, recipient) }
 
     override fun onDestroy() {
         println("DESTROYED")
