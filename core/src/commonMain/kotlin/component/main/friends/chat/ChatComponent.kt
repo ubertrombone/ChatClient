@@ -18,7 +18,6 @@ interface ChatComponent {
     val friend: FriendInfo
 
     val messages: SharedFlow<List<Messages>>
-    val incomingMessages: SharedFlow<ChatMessage>
 
     fun sendMessage()
     fun send(message: String)
