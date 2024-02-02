@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
 import ui.composables.Divider
 import ui.composables.expect.ScrollLazyColumn
+import util.BottomBarSystemNavColor
 
 @Composable
 fun FriendsList(
@@ -24,6 +26,7 @@ fun FriendsList(
     LaunchedEffect(list) {
         sortedList = list.sortedWith(compareBy({ it.isOnline }, { it.lastOnline })).reversed().toImmutableList()
     }
+    BottomBarSystemNavColor(colorScheme.primary)
 
     ScrollLazyColumn(modifier = modifier) {
         itemsIndexed(items = sortedList) { index, item ->
