@@ -1,5 +1,8 @@
 package ui.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -7,10 +10,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -39,6 +39,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
     val logoutStatus by component.logoutStatus.subscribeAsState()
     val friendRequests by component.friendRequests.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var visibleBottomNav by remember { mutableStateOf(true) }
 
     LaunchedEffect(logoutStatus) {
         if (logoutStatus is Error) snackbarHostState.snackbarHelper(
@@ -82,33 +83,42 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = colorScheme.primary) {
-                NavBarItem(
-                    label = FRIENDS,
-                    icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
-                    selected = activeComponent is FriendsChild,
-                    onClick = component::onFriendsTabClicked
-                )
+            AnimatedVisibility(
+                visible = visibleBottomNav,
+                enter = slideInVertically { it },
+                exit = slideOutVertically { it }
+            ) {
+                NavigationBar(containerColor = colorScheme.primary) {
+                    NavBarItem(
+                        label = FRIENDS,
+                        icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
+                        selected = activeComponent is FriendsChild,
+                        onClick = component::onFriendsTabClicked
+                    )
 
-                NavBarItem(
-                    label = GROUP_CHATS,
-                    icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
-                    selected = activeComponent is GroupChild,
-                    onClick = component::onGroupChatsTabClicked
-                )
+                    NavBarItem(
+                        label = GROUP_CHATS,
+                        icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
+                        selected = activeComponent is GroupChild,
+                        onClick = component::onGroupChatsTabClicked
+                    )
 
-                NavBarItem(
-                    label = REQUESTS,
-                    icon = { AddFriendTab(friendRequests.reqs.size) },
-                    selected = activeComponent is AddChild,
-                    onClick = component::onAddTabClicked
-                )
+                    NavBarItem(
+                        label = REQUESTS,
+                        icon = { AddFriendTab(friendRequests.reqs.size) },
+                        selected = activeComponent is AddChild,
+                        onClick = component::onAddTabClicked
+                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = colorScheme.background
-    ) {
-        ChildrenBox(childStack = childStack, modifier = Modifier.fillMaxSize().padding(it))
+    ) { padding ->
+        ChildrenBox(
+            childStack = childStack,
+            modifier = Modifier.fillMaxSize().padding(padding)
+        ) { visibleBottomNav = it }
     }
 
     settingsSlot.child?.instance?.also {

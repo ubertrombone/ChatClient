@@ -10,15 +10,20 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.FriendsComponent
 
 @Composable
-fun CompactFriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
+fun CompactFriendsContent(
+    component: FriendsComponent,
+    modifier: Modifier = Modifier,
+    showBottomNav: (Boolean) -> Unit
+) {
     val friends by component.friends.subscribeAsState()
     val chatSlot by component.chatSlot.subscribeAsState()
 
     chatSlot.child?.instance?.let {
+        showBottomNav(false)
         ChatWindow(component = it, modifier = Modifier.fillMaxSize())
     } ?: FriendsList(
         list = friends.friends,
         modifier = modifier.padding(vertical = 12.dp),
         friendSelected = component::showChat
-    )
+    ).also { showBottomNav(true) }
 }

@@ -25,7 +25,11 @@ import util.Status.Error
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
+fun FriendsContent(
+    component: FriendsComponent,
+    modifier: Modifier = Modifier,
+    showBottomNav: (Boolean) -> Unit
+) {
     val windowSizeClass = calculateWindowSizeClass()
     val status by component.status.subscribeAsState()
     val isLoading by component.isLoading.subscribeAsState()
@@ -64,7 +68,7 @@ fun FriendsContent(component: FriendsComponent, modifier: Modifier = Modifier) {
 
         else ->
             if (windowSizeClass.widthSizeClass == Expanded && windowSizeClass.heightSizeClass != Compact)
-                ExpandedFriendsContent(component, modifier)//.padding(top = 12.dp))
-            else CompactFriendsContent(component, modifier)
+                ExpandedFriendsContent(component, modifier)
+            else CompactFriendsContent(component, modifier, showBottomNav)
     }
 }

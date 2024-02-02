@@ -14,12 +14,22 @@ import ui.main.friends.FriendsContent
 import ui.main.group.GroupContent
 
 @Composable
-fun ChildrenBox(childStack: ChildStack<*, MainComponent.Child>, modifier: Modifier = Modifier) {
+fun ChildrenBox(
+    childStack: ChildStack<*, MainComponent.Child>,
+    modifier: Modifier = Modifier,
+    showBottomNav: (Boolean) -> Unit = { true }
+) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Children(stack = childStack) {
             when (val child = it.instance) {
-                is AddChild -> AddContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is FriendsChild -> FriendsContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is AddChild ->
+                    AddContent(component = child.component, modifier = Modifier.fillMaxSize())
+                        .also { showBottomNav(true) }
+                is FriendsChild -> FriendsContent(
+                    component = child.component,
+                    modifier = Modifier.fillMaxSize(),
+                    showBottomNav = showBottomNav
+                )
                 is GroupChild -> GroupContent(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }
