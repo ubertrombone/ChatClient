@@ -49,8 +49,8 @@ class DefaultFriendsComponent(
         }
     override val chatSlot: Value<ChildSlot<*, ChatComponent>> = _chatSlot
 
-    override fun showChat(user: FriendInfo) { chatNavigation.activate(ChatConfig(user)) }
-    override fun dismissChat() { chatNavigation.dismiss() }
+    override fun showChat(user: FriendInfo) = chatNavigation.activate(ChatConfig(user))
+    override fun dismissChat() = chatNavigation.dismiss()
 
     @Serializable
     private data class ChatConfig(val user: FriendInfo)
