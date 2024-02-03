@@ -15,6 +15,7 @@ interface ChatComponent {
     val cache: Boolean
     val username: Username
     val friend: FriendInfo
+    val navBack: () -> Unit
 
     val messages: SharedFlow<List<Messages>>
 

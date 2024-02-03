@@ -25,7 +25,8 @@ class DefaultChatComponent(
     override val chatRepository: ChatRepository,
     override val username: Username,
     override val cache: Boolean,
-    override val friend: FriendInfo
+    override val friend: FriendInfo,
+    override val navBack: () -> Unit
 ) : ChatComponent, ComponentContext by componentContext {
     private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var chat: Flow<Chats?>
