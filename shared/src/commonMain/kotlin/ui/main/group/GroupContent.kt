@@ -10,7 +10,11 @@ import component.main.group.GroupComponent
 import util.SoftInputMode
 
 @Composable
-fun GroupContent(component: GroupComponent, modifier: Modifier = Modifier) {
+fun GroupContent(
+    component: GroupComponent,
+    modifier: Modifier = Modifier,
+    showBottomNav: (Boolean) -> Unit
+) {
     SoftInputMode(true)
     Box(modifier, contentAlignment = Alignment.Center) {
         Text(

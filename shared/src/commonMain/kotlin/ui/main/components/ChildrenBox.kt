@@ -30,7 +30,11 @@ fun ChildrenBox(
                     modifier = Modifier.fillMaxSize(),
                     showBottomNav = showBottomNav
                 )
-                is GroupChild -> GroupContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is GroupChild -> GroupContent(
+                    component = child.component,
+                    modifier = Modifier.fillMaxSize(),
+                    showBottomNav = showBottomNav
+                )
             }
         }
     }
