@@ -38,7 +38,7 @@ import util.textFieldColors
 fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
     val chat by component.messages.collectAsState(emptyList())
     val userInput by component.userInput.subscribeAsState()
-    var input by remember(userInput) { mutableStateOf(userInput) }
+    val input by remember(userInput) { mutableStateOf(userInput) }
     var inputIsValid by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val keyboardRequester = remember { BringIntoViewRequester() }
