@@ -3,6 +3,7 @@ package component.main.friends.chat
 import api.ApplicationApi
 import api.WebSocketApi
 import api.model.FriendInfo
+import com.arkivanov.decompose.value.Value
 import com.ubertrombone.chat.Messages
 import db.ChatRepository
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,9 +19,11 @@ interface ChatComponent {
     val navBack: () -> Unit
 
     val messages: SharedFlow<List<Messages>>
+    val userInput: Value<String>
 
     fun sendMessage()
     fun send(message: String)
+    fun updateInput(text: String)
 
     // TODO: Enter or click 'send' sends message to WS endpoint
     // TODO: User can delete or edit a message

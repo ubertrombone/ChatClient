@@ -5,6 +5,9 @@ import api.WebSocketApi
 import api.model.ChatMessage
 import api.model.FriendInfo
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
 import com.ubertrombone.chat.Chats
 import com.ubertrombone.chat.Messages
 import db.ChatRepository
@@ -30,11 +33,12 @@ class DefaultChatComponent(
 ) : ChatComponent, ComponentContext by componentContext {
     private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var chat: Flow<Chats?>
-    // TODO:
-    //  5. UI should be collecting messages from DB
 
     private val _messages = MutableSharedFlow<List<Messages>>()
     override val messages: SharedFlow<List<Messages>> = _messages
+
+    private val _userInput = MutableValue("")
+    override val userInput: Value<String> = _userInput
 
     init {
         scope.launch {
@@ -61,6 +65,8 @@ class DefaultChatComponent(
             )
         }
     }
+
+    override fun updateInput(text: String) = _userInput.update { text }
 
     override fun sendMessage() {
         scope.launch {
