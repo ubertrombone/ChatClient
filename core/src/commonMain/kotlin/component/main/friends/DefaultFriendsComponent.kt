@@ -44,7 +44,8 @@ class DefaultFriendsComponent(
                 chatRepository = chatRepository,
                 username = settings.username.get().toUsername(),
                 cache = settings.cache.get().toBooleanStrict(),
-                friend = config.user
+                friend = config.user,
+                navBack = ::dismissChat
             )
         }
     override val chatSlot: Value<ChildSlot<*, ChatComponent>> = _chatSlot
