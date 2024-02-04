@@ -3,21 +3,19 @@ package ui.main.friends
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material3.Icon
+import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
@@ -28,8 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.friends.chat.ChatComponent
 import kotlinx.coroutines.launch
+import ui.composables.expect.ScrollLazyColumn
 import ui.icons.NavBackButton
 import util.BottomBarSystemNavColor
+import util.ShapeTokens
 import util.SoftInputMode
 import util.textFieldColors
 
@@ -44,6 +44,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
     val keyboardRequester = remember { BringIntoViewRequester() }
 
     LaunchedEffect(input) { inputIsValid = input.isNotBlank() }
+    LaunchedEffect(chat) { println("MESSAGES: $chat") }
     BottomBarSystemNavColor(colorScheme.background)
     SoftInputMode(true)
 
@@ -76,12 +77,12 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
             }
         },
         bottomBar = {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                 OutlinedTextField(
                     value = input,
                     onValueChange = component::updateInput,
                     colors = textFieldColors(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(ShapeTokens.roundedCorners),
                     placeholder = { Text(text = "Message") },
                     maxLines = 5,
                     keyboardOptions = KeyboardOptions(
@@ -90,7 +91,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
                         capitalization = KeyboardCapitalization.Sentences,
                     ),
                     modifier = Modifier
-                        .weight(8f)
+                        .weight(9f)
                         .bringIntoViewRequester(keyboardRequester)
                         .onFocusEvent {
                             if (it.isFocused) {
@@ -98,14 +99,38 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
                             }
                         }
                 )
+
+                FilledIconButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp)
+                        .padding(5.dp),
+                    onClick = {
+                        component.send(input)
+                        component.clearInput()
+                    },
+                    enabled = inputIsValid,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = colorScheme.primaryContainer,
+                        contentColor = colorScheme.onPrimaryContainer,
+                        disabledContainerColor = colorScheme.secondaryContainer,
+                        disabledContentColor = colorScheme.onSecondaryContainer
+                    )
+                ) {
+                    Icon(imageVector = Icons.Default.Send, contentDescription = "Send Message")
+                }
             }
         }
     ) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
+        ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
+            items(items = chat) {
+                // TODO: Row
+                //  1. Aligned left if from friend, right if user's own message
+                //  2. Different colors
+                //  3. Possibility to have username (for groups) or not
+                //  4. Space for error messages
+                //  5. Icon for read receipts (JIC)
+            }
         }
     }
 }
