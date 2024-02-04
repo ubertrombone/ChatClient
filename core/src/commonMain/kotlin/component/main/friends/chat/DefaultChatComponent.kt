@@ -67,6 +67,7 @@ class DefaultChatComponent(
     }
 
     override fun updateInput(text: String) = _userInput.update { text }
+    override fun clearInput() = _userInput.update { "" }
 
     override fun sendMessage() {
         scope.launch {

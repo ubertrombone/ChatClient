@@ -24,6 +24,7 @@ interface ChatComponent {
     fun sendMessage()
     fun send(message: String)
     fun updateInput(text: String)
+    fun clearInput()
 
     // TODO: Enter or click 'send' sends message to WS endpoint
     // TODO: User can delete or edit a message
