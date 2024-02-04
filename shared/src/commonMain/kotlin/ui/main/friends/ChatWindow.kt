@@ -45,7 +45,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
 
     LaunchedEffect(input) { inputIsValid = input.isNotBlank() }
     BottomBarSystemNavColor(colorScheme.background)
-    SoftInputMode(false)
+    SoftInputMode(true)
 
     Scaffold(
         modifier = modifier,
