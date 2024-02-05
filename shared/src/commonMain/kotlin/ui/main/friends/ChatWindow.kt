@@ -1,6 +1,7 @@
 package ui.main.friends
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -16,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
@@ -91,7 +93,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
                         capitalization = KeyboardCapitalization.Sentences,
                     ),
                     modifier = Modifier
-                        .weight(9f)
+                        .weight(8f)
                         .bringIntoViewRequester(keyboardRequester)
                         .onFocusEvent {
                             if (it.isFocused) {
@@ -102,7 +104,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
 
                 FilledIconButton(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(2f)
                         .padding(horizontal = 12.dp)
                         .padding(5.dp),
                     onClick = {
@@ -123,13 +125,44 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
         }
     ) { padding ->
         ScrollLazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-            items(items = chat) {
+            items(items = chat.sortedBy { it.timestamp }) {
                 // TODO: Row
                 //  1. Aligned left if from friend, right if user's own message
                 //  2. Different colors
                 //  3. Possibility to have username (for groups) or not
                 //  4. Space for error messages
                 //  5. Icon for read receipts (JIC)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (it.sender == it.primaryUserRef) {
+                        Spacer(modifier = Modifier.fillMaxHeight().weight(2f))
+                        Box(
+                            modifier = Modifier.fillMaxHeight().weight(8f).background(colorScheme.primaryContainer),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Text(
+                                text = it.message,
+                                style = typography.bodyLarge,
+                                color = colorScheme.onPrimaryContainer
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxHeight().weight(8f).background(colorScheme.secondaryContainer),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = it.message,
+                                style = typography.bodyLarge,
+                                color = colorScheme.onSecondaryContainer
+                            )
+                        }
+                        Spacer(modifier = Modifier.fillMaxHeight().weight(2f))
+                    }
+                }
             }
         }
     }
