@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
@@ -81,6 +82,21 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
         bottomBar = {
             Row(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                 OutlinedTextField(
+                    modifier = Modifier
+                        .weight(8f)
+                        .bringIntoViewRequester(keyboardRequester)
+                        .onFocusEvent {
+                            if (it.isFocused) {
+                                scope.launch { keyboardRequester.bringIntoView() }
+                            }
+                        }
+                        .onPreviewKeyEvent {
+                            if (it.key == Key.Enter && it.type == KeyEventType.KeyUp) {
+                                component.send(input.trimEnd())
+                                component.clearInput()
+                                true
+                            } else false
+                        },
                     value = input,
                     onValueChange = component::updateInput,
                     colors = textFieldColors(),
@@ -91,15 +107,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
                         autoCorrect = true,
                         imeAction = ImeAction.None,
                         capitalization = KeyboardCapitalization.Sentences,
-                    ),
-                    modifier = Modifier
-                        .weight(8f)
-                        .bringIntoViewRequester(keyboardRequester)
-                        .onFocusEvent {
-                            if (it.isFocused) {
-                                scope.launch { keyboardRequester.bringIntoView() }
-                            }
-                        }
+                    )
                 )
 
                 FilledIconButton(
