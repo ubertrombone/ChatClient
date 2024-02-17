@@ -21,6 +21,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import api.model.UpdatePasswordRequest
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.visibility
+import chatclient.shared.generated.resources.visibility_off
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import kotlinx.collections.immutable.persistentListOf
@@ -117,7 +120,7 @@ fun UpdatePassword(
                         modifier = Modifier.clip(CircleShape)
                     ) {
                         Icon(
-                            painter = painterResource(if (newPasswordVisibility) "visibility_off.xml" else "visibility.xml"),
+                            painter = painterResource(if (newPasswordVisibility) Res.drawable.visibility_off else Res.drawable.visibility),
                             contentDescription = "Show New Password?"
                         )
                     }
@@ -140,7 +143,7 @@ fun UpdatePassword(
                         modifier = Modifier.clip(CircleShape)
                     ) {
                         Icon(
-                            painter = painterResource(if (confirmPasswordVisibility) "visibility_off.xml" else "visibility.xml"),
+                            painter = painterResource(if (confirmPasswordVisibility) Res.drawable.visibility_off else Res.drawable.visibility),
                             contentDescription = "Show New Password?"
                         )
                     }

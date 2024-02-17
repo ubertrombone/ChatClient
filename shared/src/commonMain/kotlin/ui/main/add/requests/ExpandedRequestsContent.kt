@@ -13,14 +13,12 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.requests.RequestComponent
 import component.main.add.requests.RequestComponent.Child.ReceivedChild
 import component.main.add.requests.RequestComponent.Child.SentChild
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.icons.ReceivedRequestsIcon
 import ui.icons.SelectionIcon
 import ui.icons.SentRequestsIcon
 import ui.main.add.requests.received.ReceivedContent
 import ui.main.add.requests.sent.SentContent
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ExpandedRequestsContent(
     component: RequestComponent,

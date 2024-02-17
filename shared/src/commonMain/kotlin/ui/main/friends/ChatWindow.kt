@@ -11,7 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -127,7 +127,7 @@ fun ChatWindow(component: ChatComponent, modifier: Modifier = Modifier) {
                         disabledContentColor = colorScheme.onSecondaryContainer
                     )
                 ) {
-                    Icon(imageVector = Icons.Default.Send, contentDescription = "Send Message")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send Message")
                 }
             }
         }

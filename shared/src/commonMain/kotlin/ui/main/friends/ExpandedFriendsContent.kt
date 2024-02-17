@@ -1,8 +1,8 @@
 package ui.main.friends
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,7 +27,7 @@ fun ExpandedFriendsContent(component: FriendsComponent, modifier: Modifier = Mod
             friendSelected = component::showChat
         )
 
-        Divider(
+        VerticalDivider(
             modifier = Modifier.fillMaxHeight().weight(.01f),
             thickness = 0.01.dp,
             color = colorScheme.scrim

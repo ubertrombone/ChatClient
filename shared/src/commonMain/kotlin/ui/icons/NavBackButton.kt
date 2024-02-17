@@ -4,8 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons.Outlined
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun NavBackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Icon(
-        imageVector = Outlined.ArrowBack,
+        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
         contentDescription = "Return to previous page",
         tint = colorScheme.primary,
         modifier = modifier

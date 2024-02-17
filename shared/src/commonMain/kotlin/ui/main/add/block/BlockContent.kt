@@ -10,6 +10,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.remove
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.block.BlockComponent
 import kotlinx.collections.immutable.toImmutableList
@@ -40,7 +42,7 @@ fun BlockContent(component: BlockComponent, modifier: Modifier = Modifier) {
         AddCard(label = it.name, modifier = Modifier.fillMaxWidth()) {
             IconButton(modifier = Modifier.padding(end = 24.dp), onClick = { component.unblock(it) }) {
                 Icon(
-                    painter = painterResource("remove.xml"),
+                    painter = painterResource(Res.drawable.remove),
                     contentDescription = "Unblock ${it.name}",
                     tint = colorScheme.primary
                 )

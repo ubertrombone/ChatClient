@@ -3,6 +3,8 @@ package ui.main.settings
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.sentiment_satisfied
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.settings.SettingsComponent
 import kotlinx.coroutines.launch
@@ -39,7 +41,7 @@ fun UpdateStatus(
         isError = !isValid || label != null,
         autoCorrect = true,
         enabled = currentStatus != input && label == null,
-        leadingIcon = { Icon(painter = painterResource("sentiment_satisfied.xml"), contentDescription = "Status") },
+        leadingIcon = { Icon(painter = painterResource(Res.drawable.sentiment_satisfied), contentDescription = "Status") },
         onInputChange = component::updateStatusInput
     ) {
         scope.launch {

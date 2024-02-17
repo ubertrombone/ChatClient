@@ -8,13 +8,16 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.chat
+import chatclient.shared.generated.resources.groups
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.MainComponent
 import component.main.MainComponent.Child.*
@@ -67,7 +70,7 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
                         modifier = Modifier.padding(end = 12.dp),
                         onClick = component::logout
                     ) {
-                        Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "Logout")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     }
 
                     IconButton(
@@ -103,14 +106,14 @@ fun CompactScreen(component: MainComponent, modifier: Modifier = Modifier) {
                 NavigationBar(containerColor = colorScheme.primary) {
                     NavBarItem(
                         label = FRIENDS,
-                        icon = { Icon(painter = painterResource("chat.xml"), contentDescription = "Friends list") },
+                        icon = { Icon(painter = painterResource(Res.drawable.chat), contentDescription = "Friends list") },
                         selected = activeComponent is FriendsChild,
                         onClick = component::onFriendsTabClicked
                     )
 
                     NavBarItem(
                         label = GROUP_CHATS,
-                        icon = { Icon(painter = painterResource("groups.xml"), contentDescription = "Group chats") },
+                        icon = { Icon(painter = painterResource(Res.drawable.groups), contentDescription = "Group chats") },
                         selected = activeComponent is GroupChild,
                         onClick = component::onGroupChatsTabClicked
                     )

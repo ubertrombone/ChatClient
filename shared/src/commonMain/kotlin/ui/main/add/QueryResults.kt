@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.add_friend
 import component.main.add.model.Friends
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -56,7 +58,7 @@ fun QueryResults(
                                     onClick = { onClick(it) }
                                 ) {
                                     Icon(
-                                        painter = painterResource("add_friend.xml"),
+                                        painter = painterResource(Res.drawable.add_friend),
                                         contentDescription = "Send friend request to $it",
                                         tint = MaterialTheme.colorScheme.primary
                                     )

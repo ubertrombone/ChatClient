@@ -1,7 +1,7 @@
 package ui.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,7 +14,7 @@ fun Divider(
     thickness: Dp = 1.dp,
     color: Color = Color.Gray
 ) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier.fillMaxWidth(),
         thickness = thickness,
         color = color

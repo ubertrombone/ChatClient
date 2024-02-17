@@ -1,11 +1,11 @@
 package ui.main.add
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.person_alert
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import component.main.add.AddComponent.Config.BlockConfig
@@ -67,7 +69,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
             )
         }
 
-        Divider(
+        VerticalDivider(
             modifier = Modifier.fillMaxHeight().weight(.01f),
             thickness = 0.01.dp,
             color = colorScheme.scrim
@@ -88,7 +90,7 @@ fun ExpandedAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 ) {
                     IconButton(onClick = { component.showSlot(RequestConfig) }) {
                         Icon(
-                            painter = painterResource("person_alert.xml"),
+                            painter = painterResource(Res.drawable.person_alert),
                             contentDescription = "Go to requests",
                             tint = colorScheme.primary
                         )

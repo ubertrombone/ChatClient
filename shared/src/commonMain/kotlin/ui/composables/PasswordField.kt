@@ -17,6 +17,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.visibility
+import chatclient.shared.generated.resources.visibility_off
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -50,7 +53,7 @@ fun PasswordField(
                 modifier = Modifier.clip(CircleShape)
             ) {
                 Icon(
-                    painter = painterResource(if (visibility) "visibility_off.xml" else "visibility.xml"),
+                    painter = painterResource(if (visibility) Res.drawable.visibility_off else Res.drawable.visibility),
                     contentDescription = "Show Password?"
                 )
             }

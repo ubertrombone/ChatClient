@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import chatclient.shared.generated.resources.Res
+import chatclient.shared.generated.resources.person_alert
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import component.main.add.AddComponent
 import component.main.add.AddComponent.Config.BlockConfig
@@ -46,7 +48,7 @@ fun CompactAddContent(component: AddComponent, modifier: Modifier = Modifier) {
                 badge = { if (requests.reqs.isNotEmpty()) Badge { Text(text = "${requests.reqs.size}") } }
             ) {
                 Icon(
-                    painter = painterResource("person_alert.xml"),
+                    painter = painterResource(Res.drawable.person_alert),
                     contentDescription = "Go to requests",
                     tint = colorScheme.primary,
                     modifier = Modifier.padding(10.dp)
