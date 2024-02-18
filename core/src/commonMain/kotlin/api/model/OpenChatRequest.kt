@@ -1,9 +1,10 @@
 package api.model
 
 import kotlinx.serialization.Serializable
+import util.Username
 
 @Serializable
 data class OpenChatRequest(
-    val sender: Int,
-    val recipient: Int
+    val sender: Username,
+    val recipient: Username
 )
