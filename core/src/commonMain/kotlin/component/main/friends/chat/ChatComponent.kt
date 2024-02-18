@@ -1,6 +1,7 @@
 package component.main.friends.chat
 
 import api.ApplicationApi
+import api.ChatRequestApi
 import api.WebSocketApi
 import api.model.FriendInfo
 import com.arkivanov.decompose.value.Value
@@ -12,6 +13,7 @@ import util.Username
 interface ChatComponent {
     val server: ApplicationApi
     val webSocket: WebSocketApi
+    val chatRequests: ChatRequestApi
     val chatRepository: ChatRepository
     val cache: Boolean
     val username: Username

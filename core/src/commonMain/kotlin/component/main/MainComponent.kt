@@ -1,6 +1,7 @@
 package component.main
 
 import api.ApplicationApi
+import api.ChatRequestApi
 import api.WebSocketApi
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -22,6 +23,7 @@ interface MainComponent {
 
     val title: String
     val webSocket: WebSocketApi
+    val chatRequests: ChatRequestApi
     val isLogoutLoading: Value<Boolean>
     val logoutStatus: Value<Status>
     val isInitLoading: Value<Boolean>

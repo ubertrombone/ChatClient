@@ -1,6 +1,7 @@
 package component.main.friends
 
 import api.ApplicationApi
+import api.ChatRequestApi
 import api.WebSocketApi
 import api.model.FriendInfo
 import com.arkivanov.decompose.ComponentContext
@@ -19,6 +20,7 @@ class DefaultFriendsComponent(
     componentContext: ComponentContext,
     override val server: ApplicationApi,
     override val webSocket: WebSocketApi,
+    override val chatRequests: ChatRequestApi,
     override val chatRepository: ChatRepository,
     override val settings: SettingsRepository,
     override val friendsModel: FriendsModelImpl,
@@ -41,6 +43,7 @@ class DefaultFriendsComponent(
                 componentContext = childComponentContext,
                 server = server,
                 webSocket = webSocket,
+                chatRequests = chatRequests,
                 chatRepository = chatRepository,
                 username = settings.username.get().toUsername(),
                 cache = settings.cache.get().toBooleanStrict(),

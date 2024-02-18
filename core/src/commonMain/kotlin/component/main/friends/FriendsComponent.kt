@@ -1,6 +1,7 @@
 package component.main.friends
 
 import api.ApplicationApi
+import api.ChatRequestApi
 import api.WebSocketApi
 import api.model.FriendInfo
 import com.arkivanov.decompose.router.slot.ChildSlot
@@ -14,6 +15,7 @@ import util.Status
 interface FriendsComponent {
     val server: ApplicationApi
     val webSocket: WebSocketApi
+    val chatRequests: ChatRequestApi
     val chatRepository: ChatRepository
     val settings: SettingsRepository
     val friendsModel: FriendsModelImpl

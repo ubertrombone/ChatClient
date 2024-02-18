@@ -1,6 +1,7 @@
 package component.main
 
 import api.ApplicationApi
+import api.ChatRequestApi
 import api.WebSocketApi
 import api.callWrapper
 import com.arkivanov.decompose.ComponentContext
@@ -55,6 +56,14 @@ class DefaultMainComponent(
     override val webSocket = instanceKeeper.getOrCreate {
         WebSocketApi(
             userInput = MutableSharedFlow(),
+            settings = settings,
+            chatRepository = chatRepository
+        )
+    }
+
+    override val chatRequests = instanceKeeper.getOrCreate {
+        ChatRequestApi(
+            chatRequest = MutableSharedFlow(),
             settings = settings,
             chatRepository = chatRepository
         )
@@ -122,6 +131,7 @@ class DefaultMainComponent(
             componentContext = componentContext,
             server = server,
             webSocket = webSocket,
+            chatRequests = chatRequests,
             chatRepository = chatRepository,
             settings = settings,
             friendsModel = instanceKeeper.getOrCreate {
