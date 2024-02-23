@@ -16,24 +16,27 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
 import settings.SettingsRepository
 import util.Constants
 
 class ChatRequestApi(
-    chatRequest: MutableSharedFlow<OpenChatRequest?>,
     private val settings: SettingsRepository,
     private val chatRepository: ChatRepository
 ) : InstanceKeeper.Instance {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val json = Json { prettyPrint = true }
     private val client = HttpClient {
         install(WebSockets) { contentConverter = KotlinxWebsocketSerializationConverter(Json) }
-        install(ContentNegotiation) { json(json = Json { prettyPrint = true }) }
+        install(ContentNegotiation) { json(json) }
         defaultRequest { url(scheme = "ws", host = Constants.IP, port = Constants.PORT) }
     }
-    private val json = Json { prettyPrint = true }
 
-    private val _chatRequest = chatRequest
+    private val _chats: MutableSharedFlow<ChatApi> = MutableSharedFlow()
+    val chats = _chats.asSharedFlow()
+
+    private val _chatRequest = MutableSharedFlow<OpenChatRequest?>()
     suspend fun emitRequest(request: OpenChatRequest) = _chatRequest.emit(request)
 
     init {
@@ -54,7 +57,7 @@ class ChatRequestApi(
                 if (frame is Frame.Text) runCatching {
                     json.decodeFromString<ChatEndPointResponse>(frame.readText()).apply {
                         Napier.i { "Request Response: $this" }
-                        // TODO: Open new chat instance once class is built
+                        _chats.emit(ChatApi(chatId, settings, chatRepository))
                     }
                 }.getOrElse { Napier.e(it.message ?: "An unknown error has occurred.", throwable = it) }
             }
