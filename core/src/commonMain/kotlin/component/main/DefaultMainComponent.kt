@@ -61,13 +61,7 @@ class DefaultMainComponent(
         )
     }
 
-    override val chatRequests = instanceKeeper.getOrCreate {
-        ChatRequestApi(
-            chatRequest = MutableSharedFlow(),
-            settings = settings,
-            chatRepository = chatRepository
-        )
-    }
+    override val chatRequests = instanceKeeper.getOrCreate { ChatRequestApi(settings, chatRepository) }
 
     private val _isLogoutLoading = MutableValue(false)
     override val isLogoutLoading: Value<Boolean> = _isLogoutLoading
