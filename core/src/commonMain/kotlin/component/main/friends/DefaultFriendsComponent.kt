@@ -37,8 +37,8 @@ class DefaultFriendsComponent(
     override val isLoading: Value<Boolean> = friendsModel.friendsListLoading
     override val status: Value<Status> = friendsModel.friendsListStatus
 
-    // TODO: collect all ChatAPI instances here
     private val chats = LinkedHashSet<ChatApi>()
+    private var currentChat: ChatApi? = null
 
     // TODO: Have some kind of profile viewer here where a user will be able to block/remove a friend from their friends
     // TODO: Also consider making these actions possible within a FriendCard
@@ -63,14 +63,18 @@ class DefaultFriendsComponent(
         }
     override val chatSlot: Value<ChildSlot<*, ChatComponent>> = _chatSlot
 
-    override fun showChat(user: FriendInfo) = chatNavigation.activate(ChatConfig(user)).also {
-        scope.launch {
-            chatRequests.emitRequest(OpenChatRequest(
-                sender = settings.username.get().toUsername(),
-                recipient = user.username
-            ))
-        }
+    override fun showChat(user: FriendInfo) = activateChat(user).also { launchChat(user) }
+    private fun activateChat(user: FriendInfo) = chatNavigation.activate(ChatConfig(user))
+    private fun launchChat(user: FriendInfo) = scope.launch {
+        val req = OpenChatRequest(sender = settings.username.get().toUsername(), recipient = user.username)
+        chatRequests.emitRequest(req)
+        // TODO: Get ChatID by query DB with req info
+        logChat(1)
     }
+    private fun logChat(id: Int) = scope.launch {
+        currentChat = chats.find { it.chatId == id }
+    }
+
     override fun dismissChat() = chatNavigation.dismiss()
 
     init {
