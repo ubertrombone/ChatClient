@@ -1,5 +1,5 @@
 CREATE TABLE chats (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id INTEGER NOT NULL PRIMARY KEY,
     userOne TEXT NOT NULL,
     userTwo TEXT NOT NULL
 );
@@ -19,8 +19,8 @@ FROM chats
 WHERE userOne = :userOne AND userTwo = :userTwo OR userOne = :userTwo AND userTwo = :userOne;
 
 insertChat:
-INSERT INTO chats(userOne, userTwo)
-VALUES (:userOne, :userTwo);
+INSERT INTO chats(id, userOne, userTwo)
+VALUES (:id, :userOne, :userTwo);
 
 updateChat:
 UPDATE chats

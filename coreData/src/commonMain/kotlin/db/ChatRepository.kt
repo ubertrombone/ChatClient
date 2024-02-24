@@ -20,8 +20,8 @@ class ChatRepository(
     fun getChatById(id: Int): Flow<Chats?> = chats.chatsQueries.selectChatByID(id.toLong()).asFlow().mapToOneOrNull(dispatcher)
     fun selectChat(userOne: String, userTwo: String): Flow<Chats?> =
         chats.chatsQueries.selectChat(userOne, userTwo).asFlow().mapToOneOrNull(dispatcher)
-    suspend fun insertChat(userOne: String, userTwo: String) = withContext(scope.coroutineContext) {
-        chats.chatsQueries.insertChat(userOne, userTwo)
+    suspend fun insertChat(id: Int, userOne: String, userTwo: String) = withContext(scope.coroutineContext) {
+        chats.chatsQueries.insertChat(id.toLong(), userOne, userTwo)
     }
     suspend fun updateChat(userOne: String, userTwo: String, id: Int) = withContext(scope.coroutineContext) {
         chats.chatsQueries.updateChat(userOne = userOne, userTwo = userTwo, id = id.toLong())
