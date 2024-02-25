@@ -17,6 +17,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import settings.SettingsRepository
 import util.Constants
@@ -57,7 +58,10 @@ class ChatRequestApi(
                 if (frame is Frame.Text) runCatching {
                     json.decodeFromString<ChatEndPointResponse>(frame.readText()).apply {
                         Napier.i { "Request Response: $this" }
-                        _chats.emit(ChatApi(chatId, settings, chatRepository))
+                        if (chatId >= 0) {
+                            findOrCreateChat(this)
+                            _chats.emit(ChatApi(chatId, settings, chatRepository))
+                        } else { TODO() }
                     }
                 }.getOrElse { Napier.e(it.message ?: "An unknown error has occurred.", throwable = it) }
             }
@@ -73,6 +77,10 @@ class ChatRequestApi(
             }
         }
     }
+
+    private suspend fun findOrCreateChat(response: ChatEndPointResponse) =
+        chatRepository.selectChat(response.request!!.sender.name, response.request.recipient.name).first()?.id
+            ?: chatRepository.insertChat(response.chatId, response.request.sender.name, response.request.recipient.name)
 
     override fun onDestroy() {
         client.close()
