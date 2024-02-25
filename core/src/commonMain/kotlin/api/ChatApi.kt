@@ -11,11 +11,16 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
+import model.Message
 import settings.SettingsRepository
 import util.Constants
 
@@ -52,7 +57,34 @@ class ChatApi(
 
     private suspend fun DefaultClientWebSocketSession.incomingMessages() {
         while (scope.isActive) {
-
+            incoming.consumeEach { frame ->
+                if (frame is Frame.Text) receiveMessageOrResponse(
+                    frame = frame.readText(),
+                    json = json,
+                    message = {
+                        chatRepository.insertMessage(Message(
+                            message = it.message,
+                            sender = it.sender.name,
+                            timestamp = Clock.System.now(),
+                            primaryUserRef = settings.username.get(),
+                            chat = chatId
+                        ))
+                        _unreadMessageCount.update { count -> count + 1 }
+                    },
+                    response = {
+                        chatRepository.insertMessage(
+                            Message(
+                                message = it.message.message,
+                                sender = settings.username.get(),
+                                timestamp = Clock.System.now(),
+                                primaryUserRef = settings.username.get(),
+                                error = if (it.successful) null else 1,
+                                chat = chatId
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 
